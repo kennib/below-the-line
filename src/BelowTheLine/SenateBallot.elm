@@ -2,10 +2,12 @@ module BelowTheLine.SenateBallot exposing
     ( ballotView
     )
 
+import List.Extra as List
+
 import Html exposing (div, h1, h2, p, hr, br, span, strong, text)
 import Html.Attributes exposing (class, style)
 
-ballotView tickets =
+ballotView tickets order =
   div
     [ class "responsive-container"
     , style [("width", toString(164+List.length tickets*142)++"px")]
@@ -61,7 +63,7 @@ ballotView tickets =
             ]
           ]
         , div [class "option-b-select"]
-          ((List.map belowTicketView tickets)
+          ((List.map (belowTicketView order) tickets)
           ++ [ div [class "clearer"] [] ])
         ]
       ]
@@ -85,24 +87,29 @@ ticketView ticket =
         , div [class "ballot-party"] [text ticket.party]
         ]
 
-belowTicketView ticket =
+belowTicketView order ticket =
   let
     party =
       case ticket.ticket of
         "UG" -> "Ungrouped"
         _ -> ticket.party
 
-    candidates = List.map candidateView ticket.candidates
+    number candidate = List.elemIndex candidate order |> Maybe.map ((+) 1)
+
+    candidates =
+      List.map
+        (\candidate -> candidateView candidate <| number candidate)
+        ticket.candidates
 
   in
     div [class "below-ballot-position"]
       (p [class "party-title"] [text party]
       :: candidates)
 
-candidateView candidate =
+candidateView candidate number =
   div [class "ballot-candidate-group"]
     [ div [class "ballot-number"]
-      [ div [class "ballot-box"] [] ]
+      [ div [class "ballot-box"] [number |> Maybe.map toString |> Maybe.withDefault "" |> Html.text] ]
     , div [class "ballot-candidate"]
       [ text candidate.surname
       , br [] []

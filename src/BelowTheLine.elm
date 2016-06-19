@@ -145,7 +145,8 @@ view model =
                 , case model.division of
                     Just division ->
                         SenateBallot.ballotView
-                        <| ticketCandidates division candidates
+                            (ticketCandidates division candidates)
+                            (ballotCandidates division candidates)
                     Nothing ->
                         Html.text ""
                 ]
