@@ -31,6 +31,7 @@ type Msg
 
 type alias Model =
     { candidates : Maybe (List Candidate)
+    , ballotCandidates : Maybe (List Candidate)
     , division : Maybe String
     , moving : Maybe (Candidate, (Float, Float))
     , error : Maybe String
@@ -54,6 +55,7 @@ fetchCandidates =
 initModel : Model
 initModel =
     { candidates = Nothing
+    , ballotCandidates = Nothing
     , division = Nothing
     , moving = Nothing
     , error = Nothing
@@ -69,6 +71,7 @@ update msg model =
                 LoadCandidates candidates ->
                     { model
                     | candidates = Just candidates
+                    , ballotCandidates = Maybe.map (flip ballotCandidates <| candidates) model.division
                     }
                 LoadFailed error ->
                     { model
@@ -77,6 +80,7 @@ update msg model =
                 SelectDivision division ->
                     { model
                     | division = Just division
+                    , ballotCandidates = Maybe.map (ballotCandidates division) model.candidates
                     }
                 Moving candidate pos ->
                     { model
@@ -87,7 +91,7 @@ update msg model =
                         Just (candidate', pos) ->
                             { model
                             | moving = Nothing
-                            , candidates = Maybe.map (insertBefore candidate candidate') model.candidates
+                            , ballotCandidates = Maybe.map (insertBefore candidate candidate') model.ballotCandidates
                             }
                         Nothing ->
                             model
@@ -135,19 +139,19 @@ view model =
         Just candidates ->
             Html.div []
                 [ ballotSelection model candidates
-                , case model.division of
-                    Just division ->
+                , case model.ballotCandidates of
+                    Just ballotCandidates ->
                         candidatesView
                         model
-                        (ballotCandidates division candidates)
+                        ballotCandidates
                     Nothing ->
                         Html.text ""
-                , case model.division of
-                    Just division ->
+                , case (model.division, model.ballotCandidates) of
+                    (Just division, Just ballotCandidates) ->
                         SenateBallot.ballotView
                             (ticketCandidates division candidates)
-                            (ballotCandidates division candidates)
-                    Nothing ->
+                            ballotCandidates
+                    _ ->
                         Html.text ""
                 ]
         Nothing ->
