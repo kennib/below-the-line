@@ -164,7 +164,7 @@ ballotSelection model candidates =
         defaultOption =
             Html.option
                 [Html.Attributes.disabled True, Html.Attributes.selected True]
-                [Html.text "Select a state or electorate"]
+                [Html.text "Select a state"]
 
         divisionOptions =
             defaultOption ::
@@ -178,7 +178,7 @@ ballotSelection model candidates =
                 divisionOptions
     in
         Html.div []
-            [ Html.text "Select your electorate or state"
+            [ Html.text "Select your state"
             , Html.text " "
             , divisionSelect
             ]

@@ -118,7 +118,9 @@ ballotCandidates division candidates =
 divisions : List Candidate -> List String
 divisions candidates =
     let
-        divisions = List.map candidateDivision candidates
+        divisions =
+            List.filter (\candidate -> candidate.house == Upper) candidates
+            |> List.map candidateDivision
     in
         List.dropDuplicates <| List.sort <| divisions
 
