@@ -178,7 +178,8 @@ candidatesView model candidates =
             ]
 
         items =
-            Html.ol []
+            Html.ol
+                [style <| unselectable []]
                 <| List.indexedMap
                     item
                     candidates
@@ -209,6 +210,15 @@ candidatesView model candidates =
             [ items
             , moving
             ]
+
+unselectable : List (String, String) -> List (String, String)
+unselectable style =
+    style ++
+    [ ("user-select", "none")
+    , ("-webkit-user-select", "none")
+    , ("user-drag", "none")
+    , ("-webkit-user-drag", "none")
+    ]
 
 -- Events
 
