@@ -13,7 +13,7 @@ import Task
 import Http
 import Html exposing (Html)
 import Html.Attributes exposing (style, class)
-import Html.Events exposing (on, onMouseDown, onMouseUp, onClick)
+import Html.Events exposing (on, onMouseUp, onClick)
 import Html.App
 
 import BelowTheLine.Data exposing (..)
@@ -309,3 +309,10 @@ grabbingCursor style =
 onChange : (String -> msg) -> Html.Attribute msg
 onChange msg =
     on "change" (Json.map msg (Json.at ["target", "value"] Json.string))
+
+onMouseDown : msg -> Html.Attribute msg
+onMouseDown msg =
+    Html.Events.onWithOptions
+        "mousedown"
+        {stopPropagation = False, preventDefault = True}
+        (Json.succeed msg)
