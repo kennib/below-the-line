@@ -189,6 +189,9 @@ candidatesView model candidates =
                 [ Html.Attributes.id (toString index)
                 , onMouseDown (Moving candidate)
                 , onMouseUp (MovedTo candidate)
+                , style <| case model.moving of
+                    Just moving -> grabbingCursor []
+                    Nothing -> grabCursor []
                 ]
                 <| name candidate
 
@@ -220,6 +223,22 @@ unselectable style =
     , ("-webkit-user-drag", "none")
     ]
 
+grabCursor : List (String, String) -> List (String, String)
+grabCursor style =
+    style ++
+    [ ("cursor", "move")
+    , ("cursor", "grab")
+    , ("cursor", "-webkit-grab")
+    ]
+
+grabbingCursor : List (String, String) -> List (String, String)
+grabbingCursor style =
+    style ++
+    [ ("cursor", "move")
+    , ("cursor", "grabbing")
+    , ("cursor", "-webkit-grabbing")
+    ]
+
 -- Events
 
 onChange : (String -> msg) -> Html.Attribute msg
@@ -228,7 +247,10 @@ onChange msg =
 
 onMouseDown : ((Float, Float) -> msg) -> Html.Attribute msg
 onMouseDown msg =
-    on "mousedown" (Json.map msg coords)
+    Html.Events.onWithOptions
+        "mousedown"
+        {stopPropagation = False, preventDefault = True}
+        (Json.map msg coords)
 
 coords : Json.Decoder (Float, Float)
 coords =
