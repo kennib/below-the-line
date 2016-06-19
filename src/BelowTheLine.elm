@@ -13,7 +13,7 @@ import Task
 import Http
 import Html exposing (Html)
 import Html.Attributes exposing (style)
-import Html.Events exposing (on, onMouseUp, onClick)
+import Html.Events exposing (on, onMouseDown, onMouseUp, onClick)
 import Html.App
 
 import BelowTheLine.Data exposing (..)
@@ -26,19 +26,18 @@ type Msg
     | LoadFailed Http.Error
     | SelectDivision String
     | ChangeView BallotView
-    | Moving Candidate (Float, Float)
-    | MovedTo Candidate
-    | MovingStopped
+    | Moving (MoveItem Candidate)
 
 type alias Model =
     { candidates : Maybe (List Candidate)
     , ballotCandidates : Maybe (List Candidate)
     , division : Maybe String
     , ballotView : BallotView
-    , moving : Maybe (Candidate, (Float, Float))
+    , moving : MoveItem Candidate
     , error : Maybe String
     }
 
+type MoveItem a = MoveItem a | MovingItem a (Float, Float) | MovedToItem a | NoItem
 type BallotView = OrderBallot | ViewBallot
 
 main =
@@ -62,7 +61,7 @@ initModel =
     , ballotCandidates = Nothing
     , division = Nothing
     , ballotView = OrderBallot
-    , moving = Nothing
+    , moving = NoItem
     , error = Nothing
     }
 
@@ -91,23 +90,26 @@ update msg model =
                     { model
                     | ballotView = view
                     }
-                Moving candidate pos ->
-                    { model
-                    | moving = Just (candidate, pos)
-                    }
-                MovedTo candidate ->
-                    case model.moving of
-                        Just (candidate', pos) ->
+                Moving movement ->
+                    case movement of
+                        MovedToItem candidate ->
+                            case model.moving of
+                                MoveItem candidate' ->
+                                    { model
+                                    | moving = NoItem
+                                    , ballotCandidates = Maybe.map (insertBefore candidate candidate') model.ballotCandidates
+                                    }
+                                MovingItem candidate' _ ->
+                                    { model
+                                    | moving = NoItem
+                                    , ballotCandidates = Maybe.map (insertBefore candidate candidate') model.ballotCandidates
+                                    }
+                                _ ->
+                                    model
+                        movement ->
                             { model
-                            | moving = Nothing
-                            , ballotCandidates = Maybe.map (insertBefore candidate candidate') model.ballotCandidates
+                            | moving = movement
                             }
-                        Nothing ->
-                            model
-                MovingStopped ->
-                    { model
-                    | moving = Nothing
-                    }
     in
         (model', Cmd.none)
 
@@ -132,12 +134,17 @@ insertBefore before item items =
 subscriptions : Model -> Sub Msg
 subscriptions model =
     case model.moving of
-        Just (candidate, _) ->
+        MoveItem candidate ->
             Sub.batch
-                [ Mouse.moves (\pos -> Moving candidate (toFloat pos.x, toFloat pos.y))
-                , Mouse.ups (\pos -> MovingStopped)
+                [ Mouse.moves (\pos -> Moving <| MovingItem candidate (toFloat pos.x, toFloat pos.y))
+                , Mouse.ups (\pos -> Moving <| NoItem)
                 ]
-        Nothing ->
+        MovingItem candidate _ ->
+            Sub.batch
+                [ Mouse.moves (\pos -> Moving <| MovingItem candidate (toFloat pos.x, toFloat pos.y))
+                , Mouse.ups (\pos -> Moving <| NoItem)
+                ]
+        _ ->
             Sub.none
 
 -- View
@@ -229,17 +236,17 @@ candidatesView model candidates =
         item index candidate =
             Html.li
                 [ Html.Attributes.id (toString index)
-                , onMouseDown (Moving candidate)
-                , onMouseUp (MovedTo candidate)
+                , onMouseDown (Moving <| MoveItem candidate)
+                , onMouseUp (Moving <| MovedToItem candidate)
                 , style <| case model.moving of
-                    Just moving -> grabbingCursor []
-                    Nothing -> grabCursor []
+                    NoItem -> grabCursor []
+                    moving -> grabbingCursor []
                 ]
                 <| name candidate
 
         moving =
             case model.moving of
-                Just (candidate, (x,y)) ->
+                MovingItem candidate (x,y) ->
                     Html.div
                         [style
                             [ ("position", "absolute")
@@ -249,7 +256,7 @@ candidatesView model candidates =
                             ]
                         ]
                         <| name candidate
-                Nothing -> Html.text ""
+                _ -> Html.text ""
     in
         Html.div []
             [ items
@@ -292,16 +299,3 @@ grabbingCursor style =
 onChange : (String -> msg) -> Html.Attribute msg
 onChange msg =
     on "change" (Json.map msg (Json.at ["target", "value"] Json.string))
-
-onMouseDown : ((Float, Float) -> msg) -> Html.Attribute msg
-onMouseDown msg =
-    Html.Events.onWithOptions
-        "mousedown"
-        {stopPropagation = False, preventDefault = True}
-        (Json.map msg coords)
-
-coords : Json.Decoder (Float, Float)
-coords =
-    Json.object2 (,)
-        ("screenX" := Json.float)
-        ("screenY" := Json.float)
