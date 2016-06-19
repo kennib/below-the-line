@@ -150,7 +150,6 @@ ticketCandidates division candidates =
 
         stateCandidates =
             List.filter inDivision candidates
-            |> List.sortBy ticket
 
         ticketGroups =
             List.groupWhile (\a b -> ticket a == ticket b) stateCandidates
@@ -158,7 +157,7 @@ ticketCandidates division candidates =
         ticketCandidates candidates =
             { ticket = candidatesTicket candidates
             , party = candidatesParty candidates
-            , candidates = List.sortBy position candidates
+            , candidates = candidates
             }
 
         candidatesTicket candidates =
