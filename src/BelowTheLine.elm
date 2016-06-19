@@ -26,6 +26,7 @@ type Msg
     | SelectDivision String
     | Moving Candidate (Float, Float)
     | MovedTo Candidate
+    | MovingStopped
 
 type alias Model =
     { candidates : Maybe (List Candidate)
@@ -89,6 +90,10 @@ update msg model =
                             }
                         Nothing ->
                             model
+                MovingStopped ->
+                    { model
+                    | moving = Nothing
+                    }
     in
         (model', Cmd.none)
 
@@ -114,7 +119,10 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
     case model.moving of
         Just (candidate, _) ->
-            Mouse.moves (\pos -> Moving candidate (toFloat pos.x, toFloat pos.y))
+            Sub.batch
+                [ Mouse.moves (\pos -> Moving candidate (toFloat pos.x, toFloat pos.y))
+                , Mouse.ups (\pos -> MovingStopped)
+                ]
         Nothing ->
             Sub.none
 
