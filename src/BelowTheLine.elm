@@ -12,7 +12,7 @@ import Mouse
 import Task
 import Http
 import Html exposing (Html)
-import Html.Attributes exposing (style)
+import Html.Attributes exposing (style, class)
 import Html.Events exposing (on, onMouseDown, onMouseUp, onClick)
 import Html.App
 
@@ -226,6 +226,16 @@ candidatesView model candidates =
             , Html.text candidate.surname
             ]
 
+        party candidate =
+            [ Html.text candidate.party
+            ]
+
+        view candidate =
+            [ Html.span [class "name"] <| name candidate
+            , Html.text " "
+            , Html.span [class "party"] <| party candidate
+            ]
+
         items =
             Html.ol
                 [style <| unselectable []]
@@ -242,7 +252,7 @@ candidatesView model candidates =
                     NoItem -> grabCursor []
                     moving -> grabbingCursor []
                 ]
-                <| name candidate
+                <| view candidate
 
         moving =
             case model.moving of
@@ -255,7 +265,7 @@ candidatesView model candidates =
                             , ("pointer-events", "none")
                             ]
                         ]
-                        <| name candidate
+                        <| view candidate
                 _ -> Html.text ""
     in
         Html.div []
