@@ -5,9 +5,12 @@ module BelowTheLine.Data exposing
     , fetchData
     , ballotCandidates
     , divisions
+    , ticketCandidates
     )
 
 import List.Extra as List
+import String
+
 import Task exposing (Task)
 import Http
 import Json.Decode as Json exposing ((:=))
@@ -34,6 +37,12 @@ type Ballot
         { division : String
         , ballotPosition : Int
         }
+
+type alias Ticket =
+    { ticket : String
+    , party : String
+    , candidates : List Candidate
+    }
 
 -- Decoding
 
@@ -118,3 +127,50 @@ candidateDivision candidate =
     case candidate.ballot of
         UpperBallot ballot -> ballot.state
         LowerBallot ballot -> ballot.division
+
+ticketCandidates : String -> List Candidate -> List Ticket
+ticketCandidates division candidates =
+    let
+        ticket candidate =
+            case candidate.ballot of
+                UpperBallot ballot -> ballot.ticket
+                _ -> ""
+
+        position candidate =
+            case candidate.ballot of
+                UpperBallot ballot -> ballot.ballotPosition
+                _ -> 0
+
+        inDivision candidate =
+            case candidate.ballot of
+                UpperBallot ballot -> ballot.state == division
+                _ -> False
+
+        stateCandidates =
+            List.filter inDivision candidates
+            |> List.sortBy ticket
+
+        ticketGroups =
+            List.groupWhile (\a b -> ticket a == ticket b) stateCandidates
+
+        ticketCandidates candidates =
+            { ticket = candidatesTicket candidates
+            , party = candidatesParty candidates
+            , candidates = List.sortBy position candidates
+            }
+
+        candidatesTicket candidates =
+            List.head candidates
+            |> Maybe.map ticket
+            |> Maybe.withDefault ""
+
+        candidatesParty candidates =
+            List.sortBy position candidates
+            |> List.map (.party)
+            |> List.dropDuplicates
+            |> String.join "/"
+
+        tickets =
+            List.map ticketCandidates ticketGroups
+    in
+        tickets

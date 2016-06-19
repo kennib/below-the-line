@@ -17,6 +17,7 @@ import Html.Events exposing (on, onMouseUp)
 import Html.App
 
 import BelowTheLine.Data exposing (..)
+import BelowTheLine.SenateBallot as SenateBallot
 
 -- App
 
@@ -139,6 +140,12 @@ view model =
                         candidatesView
                         model
                         (ballotCandidates division candidates)
+                    Nothing ->
+                        Html.text ""
+                , case model.division of
+                    Just division ->
+                        SenateBallot.ballotView
+                        <| ticketCandidates division candidates
                     Nothing ->
                         Html.text ""
                 ]

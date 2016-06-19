@@ -1,0 +1,304 @@
+/* Bootstrap */
+*, : after, : before {
+  box-sizing: border-box; 
+}
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #333;
+}
+/* Styling for practice ballot papers */
+h1, h2, h3, h4 {
+   font-family: Helvetica,Arial,sans-serif;
+}
+/* Senate */
+.responsive-container {
+  margin: 5px;
+}
+@media (max-width: 1300px){
+	.responsive-container {
+		overflow-y: hidden;
+		overflow-x: scroll;
+		border: 1px solid #666;
+	}
+}    
+.ballot-paper-sen {
+  display: flex;
+  flex-direction: column;
+	background: #fff url("/assets/images/senate-bp-official-block.png") top right no-repeat;
+	position: relative;
+}
+.ballot-header-title {
+	padding: 10px 0 0 90px;
+	background: transparent url("/assets/images/senate-bp-state-block.png") 0 0 no-repeat;
+	font-size: 1.3em;
+	height: 56px;
+	margin-bottom: 20px;
+}
+.ballot-option-a, .ballot-option-b {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  line-height: 20px;
+}
+.ballot-line {
+  width: 100%;
+  border-bottom: 15px solid black;
+  margin: 0px 0px 10px 0px;
+}
+.option-a-header, .option-b-header {
+	width: 164px;
+  flex-shrink: 0;
+}
+.option-a-select, .option-b-select {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+}
+.option-a-header h2, .option-b-header h2 {
+	letter-spacing: -1px;
+	font-size: 1.7em;
+    font-weight: bold;
+	margin: 0;
+}
+.option-a-header p, .option-b-header p {
+    letter-spacing: -.5px;
+}
+p.senate-option {
+	background: #fff url("/assets/images/senate-arrow.jpg") 0 0 no-repeat;
+	color: #fff;
+	font-size: 1.6em;
+	font-weight: bold;
+	letter-spacing: normal;
+	width: 160px;
+	height: 27px;
+	padding: 3px 0 0 5px;
+	margin: 5px 0;
+}
+.ballot-logo-sen {
+	margin: 10px 10px 10px 0;
+	height: 40px;
+	width: 40px;
+	background: transparent url('/assets/images/sample-logo-sen.png') no-repeat 0 0;
+}
+.ballot-logo-sen.blank {
+	background: none;
+}
+.ballot-position, .below-ballot-position {
+  flex-shrink: 0;
+	font-size: 1.1em;
+	width: 136px;
+	border-left: 1px solid #000;
+  float: left;
+}
+.ballot-position {
+	height: 220px;
+	padding-left: 5px;
+}
+.below-ballot-position {
+	min-height: 500px;
+	padding-left: 5px;
+	padding-bottom: 20px;
+}
+.ballot-number {
+	padding: 0;
+	margin: 0;
+}
+.ballot-box {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  float: left;
+  border: 1px solid black;
+}
+.ballot-party {
+	padding: 10px 0 0;
+	font-weight: bold;
+	clear: both;
+}
+p.party-title {
+	margin: 10px 0 50px 5px;
+	font-weight: 800;
+}
+.ballot-candidate-group {
+	margin: 20px 0;
+	padding-left: 5px;
+}
+.ballot-candidate {
+	margin-left: 45px;
+	font-size: 1em;
+	line-height: 16px;
+}
+.ballot-candidate span {
+	font-size: .9em;
+	font-weight: normal;
+	letter-spacing: -.5px;
+}
+.ballot-candidate span span {
+	font-size: .8em;
+	font-weight: normal;
+	letter-spacing: normal;
+}
+.sample-text {
+	background: transparent url("/assets/images/sample-banner.png") bottom right no-repeat;
+	position: absolute;
+	height: 117px;
+	width: 117px;
+	bottom: 0;
+	right: 0;
+}
+
+/* House of Reps */
+.ballot-paper-hor {
+	max-width: 420px;
+	margin: 10px auto;
+	padding: 35px 20px 20px 20px;
+	background: #eff7e8 url("/assets/images/hor-bp-state-block.png") 20px 20px no-repeat;
+	position: relative;
+	color: #231f20;
+}
+.ballot-paper-hor p {
+	margin: 0;
+}
+p.hor-title {
+	 *padding-top: 20px;
+	 font-size: 1.3em;
+	 margin: 0 0 0 90px;
+	 font-weight: 100;
+}
+p.hor-state-title {
+	font-size: 1.4em;
+	margin-top: 30px;	
+}
+p.hor-div-title {
+	font-size: 1.4em;
+	font-weight: bold;
+	padding-bottom: 4px;
+	border-bottom: 4px solid #231f20;
+	margin-top: 10px;
+}
+p.hor-instruction-title {
+	font-size: 1.85em;
+	line-height: 1.1em;
+	font-weight: bold;
+	padding-bottom: 10px;
+	border-bottom: 1px solid #231f20;
+	margin-top: 8px;
+	letter-spacing: -1px;
+}
+p.hor-footer {
+	margin-top: 80px;
+	font-size: 1.1em;
+	border-top: 4px solid #231f20;
+	padding-top: 4px;
+	font-weight: bold;
+	letter-spacing: -1px;
+}
+.ballot-position-hor p {
+	font-size: 2em;
+	font-weight: bold;
+	text-align: center;
+	font-style: italic;
+	padding: 0;
+	line-height: 1em;
+}
+.ballot-paper-hor p span {
+	font-size: .66em;
+	font-style: normal;
+	line-height: .7em;
+}
+.ballot-border-ref {
+	border: 1px solid #231f20;
+	padding: 20px;
+	margin: 10px 0 20px 0;
+}
+.ballot-logo-hor {
+	margin: 10px 10px 10px 0;
+	height: 52px;
+	width: 52px;
+	background: transparent url('/assets/images/sample-logo.png') no-repeat 0 0;
+	float: left;
+}
+.ballot-logo-hor.blank {
+	background: none;
+}
+.ballot-position-hor {
+	margin: 5px 0;
+	font-size: 1.2em;
+	clear: both;
+}
+.ballot-number-hor {
+	float: left;
+	padding: 10px 10px 10px 0;
+}
+.ballot-candidate-hor {
+	padding: 17px 0 10px;
+	font-weight: normal;
+	font-size: 1.2em;
+	letter-spacing: -1px;
+}
+.ballot-candidate-hor span {
+	font-size: .6em;
+	text-transform: uppercase;
+	letter-spacing: normal;
+}
+.hor-logo, .ref-logo {
+	background: #eff7e8 url("/assets/images/senate-bp-aec-logo.gif") center bottom no-repeat;
+	position: relative;
+	width: 180px;
+	height: 41px;
+	top: 40px;
+	left: 55px;
+}
+
+/* Referendum */
+.ballot-paper-ref {
+	max-width: 410px;
+	margin: 10px auto;
+	background: #f3e4c4 url("/assets/images/hor-bp-state-block.gif") 20px 20px no-repeat;
+}
+.ballot-paper-ref {
+	padding: 70px 20px 20px 20px;
+}
+.ballot-paper-ref hr{
+	border-top: 1px solid #000;
+	height: 0;
+}	
+.ballot-paper-ref h2{
+	text-align: center;
+	line-height: 30px;
+	margin-top: 0;
+	font-size: 1.6em;
+	font-weight: bold;
+}
+.ballot-paper-ref h2 span {
+	padding-top: 50px;
+	font-size: .8em;
+}
+.ballot-paper-ref h3 {
+	text-align: center;
+	margin-top: 0;
+}
+.ballot-paper-ref p {
+	font-size: 1.2em;
+	text-align: center;
+	margin: 10px 0;
+	padding: 0;
+	line-height: 1em;
+}
+.ballot-paper-ref p span{
+	font-size: .9em;
+	float: right;
+	text-align: right;
+	font-weight: bold;
+}
+input#answer {
+	width: 100%;
+	margin-top: 10px;
+	height: 40px;
+	font-size: 1.8em;
+}
+.ref-logo {
+  background-color: #f3e4c4;
+}
