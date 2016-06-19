@@ -13,7 +13,7 @@ import Task
 import Http
 import Html exposing (Html)
 import Html.Attributes exposing (style)
-import Html.Events exposing (on, onMouseUp)
+import Html.Events exposing (on, onMouseUp, onClick)
 import Html.App
 
 import BelowTheLine.Data exposing (..)
@@ -25,6 +25,7 @@ type Msg
     = LoadCandidates (List Candidate)
     | LoadFailed Http.Error
     | SelectDivision String
+    | ChangeView BallotView
     | Moving Candidate (Float, Float)
     | MovedTo Candidate
     | MovingStopped
@@ -33,9 +34,12 @@ type alias Model =
     { candidates : Maybe (List Candidate)
     , ballotCandidates : Maybe (List Candidate)
     , division : Maybe String
+    , ballotView : BallotView
     , moving : Maybe (Candidate, (Float, Float))
     , error : Maybe String
     }
+
+type BallotView = OrderBallot | ViewBallot
 
 main =
     Html.App.program
@@ -57,6 +61,7 @@ initModel =
     { candidates = Nothing
     , ballotCandidates = Nothing
     , division = Nothing
+    , ballotView = OrderBallot
     , moving = Nothing
     , error = Nothing
     }
@@ -81,6 +86,10 @@ update msg model =
                     { model
                     | division = Just division
                     , ballotCandidates = Maybe.map (ballotCandidates division) model.candidates
+                    }
+                ChangeView view ->
+                    { model
+                    | ballotView = view
                     }
                 Moving candidate pos ->
                     { model
@@ -139,18 +148,18 @@ view model =
         Just candidates ->
             Html.div []
                 [ ballotSelection model candidates
-                , case model.ballotCandidates of
-                    Just ballotCandidates ->
-                        candidatesView
-                        model
-                        ballotCandidates
-                    Nothing ->
-                        Html.text ""
                 , case (model.division, model.ballotCandidates) of
                     (Just division, Just ballotCandidates) ->
-                        SenateBallot.ballotView
-                            (ticketCandidates division candidates)
-                            ballotCandidates
+                        case model.ballotView of
+                            OrderBallot ->
+                                candidatesView
+                                model
+                                ballotCandidates
+                            ViewBallot ->
+                                ballotView
+                                division
+                                candidates
+                                ballotCandidates
                     _ ->
                         Html.text ""
                 ]
@@ -180,13 +189,26 @@ ballotSelection model candidates =
             Html.select
                 [onChange SelectDivision]
                 divisionOptions
+
+        viewToggle =
+            case model.ballotView of
+                OrderBallot ->
+                    Html.button
+                    [onClick <| ChangeView ViewBallot]
+                    [Html.text "View your ballot paper"]
+                ViewBallot ->
+                    Html.button
+                    [onClick <| ChangeView OrderBallot]
+                    [Html.text "Change your preference order"]
     in
         Html.div []
             [ Html.text "Select your state"
             , Html.text " "
             , divisionSelect
+            , case model.division of
+                Just _ -> viewToggle
+                Nothing -> Html.text ""
             ]
-
 
 candidatesView : Model -> List Candidate -> Html Msg
 candidatesView model candidates =
@@ -233,6 +255,12 @@ candidatesView model candidates =
             [ items
             , moving
             ]
+
+ballotView : String -> List Candidate -> List Candidate -> Html Msg
+ballotView division candidates ballotCandidates =
+    SenateBallot.ballotView
+        (ticketCandidates division candidates)
+        ballotCandidates
 
 unselectable : List (String, String) -> List (String, String)
 unselectable style =
