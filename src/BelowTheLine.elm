@@ -16,18 +16,20 @@ import Html.Attributes exposing (style)
 import Html.Events exposing (on, onMouseUp)
 import Html.App
 
-import BelowTheLine.Data exposing (Candidate, House(..), fetchData, ballotCandidates)
+import BelowTheLine.Data exposing (..)
 
 -- App
 
 type Msg
     = LoadCandidates (List Candidate)
     | LoadFailed Http.Error
+    | SelectDivision String
     | Moving Candidate (Float, Float)
     | MovedTo Candidate
 
 type alias Model =
     { candidates : Maybe (List Candidate)
+    , division : Maybe String
     , moving : Maybe (Candidate, (Float, Float))
     , error : Maybe String
     }
@@ -50,6 +52,7 @@ fetchCandidates =
 initModel : Model
 initModel =
     { candidates = Nothing
+    , division = Nothing
     , moving = Nothing
     , error = Nothing
     }
@@ -68,6 +71,10 @@ update msg model =
                 LoadFailed error ->
                     { model
                     | error = Just <| toString error
+                    }
+                SelectDivision division ->
+                    { model
+                    | division = Just division
                     }
                 Moving candidate pos ->
                     { model
@@ -117,13 +124,49 @@ view : Model -> Html Msg
 view model =
     case model.candidates of
         Just candidates ->
-            candidatesView model candidates
+            Html.div []
+                [ ballotSelection model candidates
+                , case model.division of
+                    Just division ->
+                        candidatesView
+                        model
+                        (ballotCandidates division candidates)
+                    Nothing ->
+                        Html.text ""
+                ]
         Nothing ->
             Html.div []
             [case model.error of
                 Just error -> Html.text error
                 Nothing -> Html.text "Loading candidates"
             ]
+
+ballotSelection : Model -> List Candidate -> Html Msg
+ballotSelection model candidates =
+    let
+        divisionOption division = Html.option [] [Html.text division]
+        defaultOption =
+            Html.option
+                [Html.Attributes.disabled True, Html.Attributes.selected True]
+                [Html.text "Select a state or electorate"]
+
+        divisionOptions =
+            defaultOption ::
+            List.map
+                divisionOption
+                (divisions candidates)
+
+        divisionSelect =
+            Html.select
+                [onChange SelectDivision]
+                divisionOptions
+    in
+        Html.div []
+            [ Html.text "Select your electorate or state"
+            , Html.text " "
+            , divisionSelect
+            ]
+
 
 candidatesView : Model -> List Candidate -> Html Msg
 candidatesView model candidates =
@@ -168,6 +211,10 @@ candidatesView model candidates =
             ]
 
 -- Events
+
+onChange : (String -> msg) -> Html.Attribute msg
+onChange msg =
+    on "change" (Json.map msg (Json.at ["target", "value"] Json.string))
 
 onMouseDown : ((Float, Float) -> msg) -> Html.Attribute msg
 onMouseDown msg =
