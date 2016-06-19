@@ -271,5 +271,5 @@ onMouseDown msg =
 coords : Json.Decoder (Float, Float)
 coords =
     Json.object2 (,)
-        ("clientX" := Json.float)
-        ("clientY" := Json.float)
+        ("screenX" := Json.float)
+        ("screenY" := Json.float)
