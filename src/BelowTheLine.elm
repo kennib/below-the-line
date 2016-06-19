@@ -238,7 +238,9 @@ candidatesView model candidates =
 
         items =
             Html.ol
-                [style <| unselectable []]
+                [ class "candidates"
+                , style <| unselectable []
+                ]
                 <| List.indexedMap
                     item
                     candidates
@@ -246,6 +248,7 @@ candidatesView model candidates =
         item index candidate =
             Html.li
                 [ Html.Attributes.id (toString index)
+                , class "candidate"
                 , onMouseDown (Moving <| MoveItem candidate)
                 , onMouseUp (Moving <| MovedToItem candidate)
                 , style <| case model.moving of
@@ -258,7 +261,8 @@ candidatesView model candidates =
             case model.moving of
                 MovingItem candidate (x,y) ->
                     Html.div
-                        [style
+                        [ class "candidate moving"
+                        , style
                             [ ("position", "absolute")
                             , ("left", toString x ++ "px")
                             , ("top", toString y ++ "px")
