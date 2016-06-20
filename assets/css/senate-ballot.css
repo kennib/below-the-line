@@ -31,12 +31,12 @@ h1, h2, h3, h4 {
 }
 /* Senate */
 .ballot-paper-sen {
-  background: #fff url("/assets/images/senate-bp-official-block.png") top right no-repeat;
+  background: #fff url("../images/senate-bp-official-block.png") top right no-repeat;
   position: relative;
   overflow-x: scroll;
 }
 .ballot-header {
-  background: transparent url("/assets/images/senate-bp-state-block.png") 0 0 no-repeat;
+  background: transparent url("../images/senate-bp-state-block.png") 0 0 no-repeat;
   font-size: 1.3em;
   height: 56px;
   margin-bottom: 20px;
@@ -69,7 +69,7 @@ h1, h2, h3, h4 {
     letter-spacing: -.5px;
 }
 p.senate-option {
-  background: #fff url("/assets/images/senate-arrow.jpg") 0 0 no-repeat;
+  background: #fff url("../images/senate-arrow.jpg") 0 0 no-repeat;
   color: #fff;
   font-size: 1.6em;
   font-weight: bold;
@@ -83,7 +83,7 @@ p.senate-option {
   margin: 10px 10px 10px 0;
   height: 40px;
   width: 40px;
-  background: transparent url('/assets/images/sample-logo-sen.png') no-repeat 0 0;
+  background: transparent url('../images/sample-logo-sen.png') no-repeat 0 0;
 }
 .ballot-logo-sen.blank {
   background: none;
@@ -152,7 +152,7 @@ p.party-title {
   letter-spacing: normal;
 }
 .sample-text {
-  background: transparent url("/assets/images/sample-banner.png") bottom right no-repeat;
+  background: transparent url("../images/sample-banner.png") bottom right no-repeat;
   position: absolute;
   height: 117px;
   width: 117px;
@@ -165,7 +165,7 @@ p.party-title {
   max-width: 420px;
   margin: 10px auto;
   padding: 35px 20px 20px 20px;
-  background: #eff7e8 url("/assets/images/hor-bp-state-block.png") 20px 20px no-repeat;
+  background: #eff7e8 url("../images/hor-bp-state-block.png") 20px 20px no-repeat;
   position: relative;
   color: #231f20;
 }
@@ -228,7 +228,7 @@ p.hor-footer {
   margin: 10px 10px 10px 0;
   height: 52px;
   width: 52px;
-  background: transparent url('/assets/images/sample-logo.png') no-repeat 0 0;
+  background: transparent url('../images/sample-logo.png') no-repeat 0 0;
   float: left;
 }
 .ballot-logo-hor.blank {
@@ -255,7 +255,7 @@ p.hor-footer {
   letter-spacing: normal;
 }
 .hor-logo, .ref-logo {
-  background: #eff7e8 url("/assets/images/senate-bp-aec-logo.gif") center bottom no-repeat;
+  background: #eff7e8 url("../images/senate-bp-aec-logo.gif") center bottom no-repeat;
   position: relative;
   width: 180px;
   height: 41px;
@@ -267,7 +267,7 @@ p.hor-footer {
 .ballot-paper-ref {
   max-width: 410px;
   margin: 10px auto;
-  background: #f3e4c4 url("/assets/images/hor-bp-state-block.gif") 20px 20px no-repeat;
+  background: #f3e4c4 url("../images/hor-bp-state-block.gif") 20px 20px no-repeat;
 }
 .ballot-paper-ref {
   padding: 70px 20px 20px 20px;
