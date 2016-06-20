@@ -10305,12 +10305,8 @@ var _user$project$BelowTheLine$candidatesView = F3(
 				]),
 			_elm_lang$core$Native_List.fromArray(
 				[choices]));
-		return A2(
-			_elm_lang$html$Html$div,
-			_elm_lang$core$Native_List.fromArray(
-				[]),
-			_elm_lang$core$Native_List.fromArray(
-				[preferencesBox, choicesBox]));
+		return _elm_lang$core$Native_List.fromArray(
+			[preferencesBox, choicesBox]);
 	});
 var _user$project$BelowTheLine$ChangeView = function (a) {
 	return {ctor: 'ChangeView', _0: a};
@@ -10405,10 +10401,17 @@ var _user$project$BelowTheLine$ballotSelection = F2(
 					_user$project$BelowTheLine$onChange(_user$project$BelowTheLine$SelectDivision)
 				]),
 			divisionOptions);
+		var noSelection = _elm_lang$core$Native_Utils.eq(model.division, _elm_lang$core$Maybe$Nothing);
 		return A2(
 			_elm_lang$html$Html$div,
 			_elm_lang$core$Native_List.fromArray(
-				[]),
+				[
+					_elm_lang$html$Html_Attributes$class(
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						'ballot-selection',
+						noSelection ? ' only' : ''))
+				]),
 			_elm_lang$core$Native_List.fromArray(
 				[
 					_elm_lang$html$Html$text('Select your state'),
@@ -10432,10 +10435,13 @@ var _user$project$BelowTheLine$view = function (model) {
 			_elm_lang$html$Html$div,
 			_elm_lang$core$Native_List.fromArray(
 				[]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					A2(_user$project$BelowTheLine$ballotSelection, model, _p15),
-					function () {
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(_user$project$BelowTheLine$ballotSelection, model, _p15)
+					]),
+				function () {
 					var _p12 = {ctor: '_Tuple2', _0: model.division, _1: model.ballotCandidates};
 					if (((_p12.ctor === '_Tuple2') && (_p12._0.ctor === 'Just')) && (_p12._1.ctor === 'Just')) {
 						var _p14 = _p12._0._0;
@@ -10447,13 +10453,18 @@ var _user$project$BelowTheLine$view = function (model) {
 								_p14,
 								A2(_user$project$BelowTheLine_Data$ticketCandidates, _p14, _p12._1._0));
 						} else {
-							return A3(_user$project$BelowTheLine$ballotView, _p14, _p15, model.preferences);
+							return _elm_lang$core$Native_List.fromArray(
+								[
+									A3(_user$project$BelowTheLine$ballotView, _p14, _p15, model.preferences)
+								]);
 						}
 					} else {
-						return _elm_lang$html$Html$text('');
+						return _elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text('')
+							]);
 					}
-				}()
-				]));
+				}()));
 	} else {
 		return A2(
 			_elm_lang$html$Html$div,
