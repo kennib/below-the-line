@@ -163,8 +163,8 @@ view model =
     case model.candidates of
         Just candidates ->
             Html.div []
-                [ ballotSelection model candidates
-                , case (model.division, model.ballotCandidates) of
+                <| [ ballotSelection model candidates ] ++
+                case (model.division, model.ballotCandidates) of
                     (Just division, Just ballotCandidates) ->
                         case model.ballotView of
                             OrderBallot ->
@@ -173,13 +173,12 @@ view model =
                                 division
                                 (ticketCandidates division ballotCandidates)
                             ViewBallot ->
-                                ballotView
+                                [ ballotView
                                 division
                                 candidates
-                                model.preferences
+                                model.preferences ]
                     _ ->
-                        Html.text ""
-                ]
+                        [Html.text ""]
         Nothing ->
             Html.div []
             [case model.error of
@@ -190,6 +189,7 @@ view model =
 ballotSelection : Model -> List Candidate -> Html Msg
 ballotSelection model candidates =
     let
+        noSelection = model.division == Nothing
         divisionOption division = Html.option [] [Html.text division]
         defaultOption =
             Html.option
@@ -218,7 +218,8 @@ ballotSelection model candidates =
                     [onClick <| ChangeView OrderBallot]
                     [Html.text "Change your preference order"]
     in
-        Html.div []
+        Html.div
+            [class <| "ballot-selection" ++ if noSelection then " only" else ""]
             [ Html.text "Select your state"
             , Html.text " "
             , divisionSelect
@@ -227,7 +228,7 @@ ballotSelection model candidates =
                 Nothing -> Html.text ""
             ]
 
-candidatesView : Model -> String -> List Ticket -> Html Msg
+candidatesView : Model -> String -> List Ticket -> List (Html Msg)
 candidatesView model division tickets =
     let
         allPreferenced = List.all (\candidate -> List.member candidate model.preferences)
@@ -352,10 +353,9 @@ candidatesView model division tickets =
                 [choices]
 
     in
-        Html.div []
-            [ preferencesBox
-            , choicesBox
-            ]
+        [ preferencesBox
+        , choicesBox
+        ]
 
 ballotView : String -> List Candidate -> List Candidate -> Html Msg
 ballotView division candidates ballotCandidates =
