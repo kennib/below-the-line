@@ -79,3 +79,8 @@ body {
 .preferences .candidate button {
   float: right;
 }
+
+.choices button.increase,
+.choices button.decrease {
+  display: none;
+}

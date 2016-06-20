@@ -25,6 +25,8 @@ type Msg
     | SelectDivision String
     | ChangeView BallotView
     | TogglePreference Candidate
+    | IncreasePreference Candidate
+    | DecreasePreference Candidate
 
 type alias Model =
     { candidates : Maybe (List Candidate)
@@ -91,6 +93,14 @@ update msg model =
                     { model
                     | preferences = toggle candidate model.preferences
                     }
+                IncreasePreference candidate ->
+                    { model
+                    | preferences = moveFront candidate model.preferences
+                    }
+                DecreasePreference candidate ->
+                    { model
+                    | preferences = moveBack candidate model.preferences
+                    }
     in
         (model', Cmd.none)
 
@@ -100,6 +110,33 @@ toggle item items =
         List.filter ((/=) item) items
     else
         items ++ [item]
+
+moveFront : a -> List a -> List a
+moveFront item items =
+    case List.elemIndex item items of
+        Just place ->
+            let
+                front = List.take (place-1) items
+                back = List.drop (place+1) items
+                swap = List.take place >> List.drop (place-1) <| items
+            in
+                front ++ [item] ++ swap ++ back
+        Nothing ->
+            items
+
+moveBack : a -> List a -> List a
+moveBack item items =
+    case List.elemIndex item items of
+        Just place ->
+            let
+                front = List.take place items
+                back = List.drop (place+2) items
+                swap = List.take (place+2) >> List.drop (place+1) <| items
+            in
+                front ++ swap ++ [item] ++ back
+        Nothing ->
+            items
+
 
 -- Subscriptions
 
@@ -198,10 +235,22 @@ candidatesView model division tickets =
                     Html.text "-"
                   else
                      Html.text "+"
-                ]
+                 ]
+
+        increase candidate =
+            Html.button
+                [class "increase", onClick <| IncreasePreference candidate]
+                [Html.text "^"]
+
+        decrease candidate =
+            Html.button
+                [class "decrease", onClick <| DecreasePreference candidate]
+                [Html.text "v"]
 
         view candidate =
-            [ toggle candidate
+            [ increase candidate
+            , decrease candidate
+            , toggle candidate
             , Html.span [class "name"] <| name candidate
             , Html.text " "
             , Html.span [class "party"] <| party candidate
