@@ -10328,7 +10328,7 @@ var _user$project$BelowTheLine$fetchCandidates = A3(
 	_elm_lang$core$Task$perform,
 	_user$project$BelowTheLine$LoadFailed,
 	_user$project$BelowTheLine$LoadCandidates,
-	_user$project$BelowTheLine_Data$fetchData('/candidates.json'));
+	_user$project$BelowTheLine_Data$fetchData('candidates.json'));
 var _user$project$BelowTheLine$ViewBallot = {ctor: 'ViewBallot'};
 var _user$project$BelowTheLine$OrderBallot = {ctor: 'OrderBallot'};
 var _user$project$BelowTheLine$initModel = {
