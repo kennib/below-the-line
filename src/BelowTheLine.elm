@@ -244,7 +244,7 @@ ballotSelection model candidates =
                     [onClick <| ChangeView OrderBallot]
                     [Html.text "Change your preference order"]
     in
-        Html.div []
+        Html.div [class "ballot-selection"]
             [ Html.text "Select your state"
             , Html.text " "
             , divisionSelect

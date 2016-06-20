@@ -10,7 +10,12 @@ import Html.Attributes exposing (class, style, colspan)
 import BelowTheLine.Data exposing (senatorCount)
 
 ballotView division tickets order =
-  table [class "ballot-paper-sen"]
+  table
+    [ class "ballot-paper-sen"
+    , style
+      [ ("width", (toString <| List.length tickets * 150) ++ "px")
+      ]
+    ]
     [ tr [class "ballot-header"]
       [ td [class "ballot-header-title", colspan <| List.length tickets + 1]
         [ text "Senate Ballot Paper"
@@ -29,7 +34,7 @@ ballotView division tickets order =
           , br [] []
           , text "two ways"
           ]
-        , p [class "senate-option"] [text "Either:"]
+        , p [class "senate-option"] [text "Either"]
         , h2 [] [text "Above the line"]
         , p []
           [ text "By numbering at least "
@@ -45,11 +50,11 @@ ballotView division tickets order =
       ]
       ++ (List.map ticketView tickets))
     , tr [class "ballot-space"] []
-    , tr [class "ballot-line"] [ td [colspan <| List.length tickets + 1] []]
+    , tr [class "ballot-line"] [ td [colspan <| List.length tickets + 1] [Html.text "-"]]
     , tr [class "ballot-space"] []
     , tr [class "ballot-option-b"]
       ([ td [class "option-b-header"]
-        [ p [class "senate-option"] [text "Or:"]
+        [ p [class "senate-option"] [text "Or"]
         , h2 [] [text "Below the line"]
         , p []
           [ text "By numbering at least "
