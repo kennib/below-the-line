@@ -197,7 +197,7 @@ view model =
                                 candidatesView
                                 model
                                 division
-                                ballotCandidates
+                                (ticketCandidates division ballotCandidates)
                             ViewBallot ->
                                 ballotView
                                 division
@@ -253,8 +253,8 @@ ballotSelection model candidates =
                 Nothing -> Html.text ""
             ]
 
-candidatesView : Model -> String -> List Candidate -> Html Msg
-candidatesView model division candidates =
+candidatesView : Model -> String -> List Ticket -> Html Msg
+candidatesView model division tickets =
     let
         name candidate =
             [ Html.text candidate.givenName
@@ -289,9 +289,7 @@ candidatesView model division candidates =
                 [ class "candidates"
                 , style <| unselectable []
                 ]
-                <| List.indexedMap
-                    choice
-                    model.preferences
+                (List.map preference model.preferences)
 
         preference candidate =
             Html.li
@@ -336,18 +334,30 @@ candidatesView model division candidates =
                     ]
 
         choices =
-            Html.ul
-                [ class "candidates choices"
+            Html.table
+                [ class "choices"
                 , style <| unselectable []
                 ]
-                <| List.indexedMap
-                    choice
-                    candidates
+                [ Html.tr [] <| List.map ticketParty tickets
+                , Html.tr [class "tickets"] <| List.map ticketCandidates tickets
+                ]
 
-        choice index candidate =
+        ticketParty ticket =
+            Html.th
+                [class "ticket-party"]
+                [Html.text ticket.party]
+
+        ticketCandidates ticket =
+            Html.td
+                []
+                [ Html.ul
+                    [class "candidates"]
+                    (List.map choice ticket.candidates)
+                ]
+
+        choice candidate =
             Html.li
-                [ Html.Attributes.id (toString index)
-                , class "candidate"
+                [ class "candidate"
                 , onMouseDown (Moving <| MoveItem candidate)
                 , onMouseUp (Moving <| MovedToItem candidate)
                 , style <| case model.moving of

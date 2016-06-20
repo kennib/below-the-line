@@ -2,6 +2,7 @@ module BelowTheLine.Data exposing
     ( Candidate
     , House(..)
     , Ballot(..)
+    , Ticket
     , fetchData
     , ballotCandidates
     , divisions

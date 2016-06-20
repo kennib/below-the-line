@@ -1,3 +1,7 @@
+body {
+  overflow-x: hidden;
+}
+
 .preferences {
 }
   
@@ -8,16 +12,24 @@
 }
 
 .choices {
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: column;
-
   width: 100vw;
-  height: 50vh;
   overflow-x: scroll;
 }
 
+.choices .ticket-party {
+  font-weight: bold;
+  font-size: 12px;
+  text-align: center;
+  min-height: 20px;
+}
+
+.choices .tickets {
+  vertical-align: top;
+}
 .choices .candidates {
+  min-width: 200px;
+  overflow-y: scroll;
+
   list-style: none;
   -webkit-padding-start: 0px;
 }
@@ -30,10 +42,14 @@
   padding: 5px;
   font-size: 14px;
   margin: 2px;
+  min-height: 50px;
 }
 
 .candidate.moving {
   box-shadow: 3px 3px 3px rgba(0,0,0, 0.4);
+}
+.candidate.moving button {
+  display: none;
 }
 
 .candidate .name {
