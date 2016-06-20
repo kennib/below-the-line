@@ -7,13 +7,11 @@ import String
 import Char
 import Json.Decode as Json exposing ((:=))
 
-import Mouse
-
 import Task
 import Http
 import Html exposing (Html)
 import Html.Attributes exposing (style, class)
-import Html.Events exposing (on, onMouseUp, onClick)
+import Html.Events exposing (on, onClick)
 import Html.App
 
 import BelowTheLine.Data exposing (..)
@@ -27,7 +25,6 @@ type Msg
     | SelectDivision String
     | ChangeView BallotView
     | TogglePreference Candidate
-    | Moving (MoveItem Candidate)
 
 type alias Model =
     { candidates : Maybe (List Candidate)
@@ -35,11 +32,9 @@ type alias Model =
     , preferences : List Candidate
     , division : Maybe String
     , ballotView : BallotView
-    , moving : MoveItem Candidate
     , error : Maybe String
     }
 
-type MoveItem a = MoveItem a | MovingItem a (Float, Float) | MovedToItem a | MovedToEnd | NoItem
 type BallotView = OrderBallot | ViewBallot
 
 main =
@@ -64,7 +59,6 @@ initModel =
     , preferences = []
     , division = Nothing
     , ballotView = OrderBallot
-    , moving = NoItem
     , error = Nothing
     }
 
@@ -97,40 +91,6 @@ update msg model =
                     { model
                     | preferences = toggle candidate model.preferences
                     }
-                Moving movement ->
-                    case movement of
-                        MovedToEnd ->
-                            case model.moving of
-                                MoveItem candidate' ->
-                                    { model
-                                    | moving = NoItem
-                                    , preferences = insert candidate' model.preferences
-                                    }
-                                MovingItem candidate' _ ->
-                                    { model
-                                    | moving = NoItem
-                                    , preferences = insert candidate' model.preferences
-                                    }
-                                _ ->
-                                    model
-                        MovedToItem candidate ->
-                            case model.moving of
-                                MoveItem candidate' ->
-                                    { model
-                                    | moving = NoItem
-                                    , preferences = insertBefore candidate candidate' model.preferences
-                                    }
-                                MovingItem candidate' _ ->
-                                    { model
-                                    | moving = NoItem
-                                    , preferences = insertBefore candidate candidate' model.preferences
-                                    }
-                                _ ->
-                                    model
-                        movement ->
-                            { model
-                            | moving = movement
-                            }
     in
         (model', Cmd.none)
 
@@ -141,46 +101,11 @@ toggle item items =
     else
         items ++ [item]
 
-insert : a -> List a -> List a
-insert item items =
-    let
-        items' = List.filter ((/=) item) items
-    in
-        items' ++ [item]
-
-insertBefore : a -> a -> List a -> List a
-insertBefore before item items =
-    let
-        items' = List.filter ((/=) item) items
-        index = List.elemIndex before items'
-    in
-        case index of
-            Just index ->
-                let
-                    (head, tail) = List.splitAt index items'
-                in
-                    head ++ [item] ++ tail
-            Nothing ->
-                items
-
-
 -- Subscriptions
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    case model.moving of
-        MoveItem candidate ->
-            Sub.batch
-                [ Mouse.moves (\pos -> Moving <| MovingItem candidate (toFloat pos.x, toFloat pos.y))
-                , Mouse.ups (\pos -> Moving <| NoItem)
-                ]
-        MovingItem candidate _ ->
-            Sub.batch
-                [ Mouse.moves (\pos -> Moving <| MovingItem candidate (toFloat pos.x, toFloat pos.y))
-                , Mouse.ups (\pos -> Moving <| NoItem)
-                ]
-        _ ->
-            Sub.none
+    Sub.none
 
 -- View
 
@@ -244,7 +169,7 @@ ballotSelection model candidates =
                     [onClick <| ChangeView OrderBallot]
                     [Html.text "Change your preference order"]
     in
-        Html.div [class "ballot-selection"]
+        Html.div []
             [ Html.text "Select your state"
             , Html.text " "
             , divisionSelect
@@ -293,13 +218,7 @@ candidatesView model division tickets =
 
         preference candidate =
             Html.li
-                [ class "candidate"
-                , onMouseDown (Moving <| MoveItem candidate)
-                , onMouseUp (Moving <| MovedToItem candidate)
-                , style <| case model.moving of
-                    NoItem -> grabCursor []
-                    moving -> grabbingCursor []
-                ]
+                [class "candidate"]
                 <| view candidate
 
         preferencesBox =
@@ -308,9 +227,8 @@ candidatesView model division tickets =
                     [class "preferences empty"]
                     [ Html.p
                         [ class "message"
-                        , onMouseUp (Moving <| MovedToEnd)
                         ]
-                        [Html.text "Drag preferences here"]
+                        [Html.text "You must add 12 preferences"]
                     ]
             else if missingPreferences > 0 then
                 Html.div
@@ -318,7 +236,6 @@ candidatesView model division tickets =
                     [ preferences
                     , Html.p
                         [ class "message"
-                        , onMouseUp (Moving <| MovedToEnd)
                         ]
                         [Html.text <| "Please add at least " ++ toString missingPreferences ++ " more preferences"]
                     ]
@@ -328,7 +245,6 @@ candidatesView model division tickets =
                     [ preferences
                     , Html.p
                         [ class "message"
-                        , onMouseUp (Moving <| MovedToEnd)
                         ]
                         [Html.text <| "You have the required 12 preferences but you may add more"]
                     ]
@@ -357,13 +273,7 @@ candidatesView model division tickets =
 
         choice candidate =
             Html.li
-                [ class "candidate"
-                , onMouseDown (Moving <| MoveItem candidate)
-                , onMouseUp (Moving <| MovedToItem candidate)
-                , style <| case model.moving of
-                    NoItem -> grabCursor []
-                    moving -> grabbingCursor []
-                ]
+                [class "candidate"]
                 <| view candidate
 
         choicesBox =
@@ -371,25 +281,10 @@ candidatesView model division tickets =
                 [class "choices"]
                 [choices]
 
-        moving =
-            case model.moving of
-                MovingItem candidate (x,y) ->
-                    Html.div
-                        [ class "candidate moving"
-                        , style
-                            [ ("position", "absolute")
-                            , ("left", toString x ++ "px")
-                            , ("top", toString y ++ "px")
-                            , ("pointer-events", "none")
-                            ]
-                        ]
-                        <| view candidate
-                _ -> Html.text ""
     in
         Html.div []
             [ preferencesBox
             , choicesBox
-            , moving
             ]
 
 ballotView : String -> List Candidate -> List Candidate -> Html Msg
@@ -408,31 +303,8 @@ unselectable style =
     , ("-webkit-user-drag", "none")
     ]
 
-grabCursor : List (String, String) -> List (String, String)
-grabCursor style =
-    style ++
-    [ ("cursor", "move")
-    , ("cursor", "grab")
-    , ("cursor", "-webkit-grab")
-    ]
-
-grabbingCursor : List (String, String) -> List (String, String)
-grabbingCursor style =
-    style ++
-    [ ("cursor", "move")
-    , ("cursor", "grabbing")
-    , ("cursor", "-webkit-grabbing")
-    ]
-
 -- Events
 
 onChange : (String -> msg) -> Html.Attribute msg
 onChange msg =
     on "change" (Json.map msg (Json.at ["target", "value"] Json.string))
-
-onMouseDown : msg -> Html.Attribute msg
-onMouseDown msg =
-    Html.Events.onWithOptions
-        "mousedown"
-        {stopPropagation = False, preventDefault = True}
-        (Json.succeed msg)
