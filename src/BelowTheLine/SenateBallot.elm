@@ -4,80 +4,75 @@ module BelowTheLine.SenateBallot exposing
 
 import List.Extra as List
 
-import Html exposing (div, h1, h2, p, hr, br, span, strong, text)
-import Html.Attributes exposing (class, style)
+import Html exposing (table, tr, td, div, h1, h2, p, br, span, strong, text)
+import Html.Attributes exposing (class, style, colspan)
 
 ballotView tickets order =
-  div
-    [ class "responsive-container"
-    , style [("width", toString(164+List.length tickets*142)++"px")]
-    ]
-    [ div [class "ballot-paper-sen"]
-      [ div [class "ballot-header-title"]
-        [ p []
-          [ text "Senate Ballot Paper"
-          , br [] []
-          , strong [] [text "State"]
-          , text " - Election of 12 Senators"
-          ]
-        ]
-      , div [class "ballot-option-a"]
-        [ div [class "option-a-header"]
-          [ h2 []
-            [ text "You may"
-            , br [] []
-            , text "vote in one of"
-            , br [] []
-            , text "two ways"
-            ]
-          , p [class "senate-option"] [text "Either:"]
-          , h2 [] [text "Above the line"]
-          , p []
-            [ text "By numbering at least "
-            , strong [] [text "6"]
-            , br [] []
-            , text "of these boxes in the order"
-            , br [] []
-            , text "of your choice (with number"
-            , br [] []
-            , text "1 as your first choice)"
-            ]
-          ]
-        , div [class "option-a-select"]
-          (List.map ticketView tickets)
-        ]
-      , hr [class "ballot-line"] []
-      , div [class "ballot-option-b"]
-        [ div [class "option-b-header"]
-          [ p [class "senate-option"] [text "Or:"]
-          , h2 [] [text "Below the line"]
-          , p []
-            [ text "By numbering at least "
-            , strong [] [text "12"]
-            , br [] []
-            , text "of these boxes in the order"
-            , br [] []
-            , text "of your choice (with number"
-            , br [] []
-            , text "1 as your first choice)."
-            ]
-          ]
-        , div [class "option-b-select"]
-          ((List.map (belowTicketView order) tickets)
-          ++ [ div [class "clearer"] [] ])
+  table [class "ballot-paper-sen"]
+    [ tr [class "ballot-header"]
+      [ td [class "ballot-header-title", colspan <| List.length tickets + 1]
+        [ text "Senate Ballot Paper"
+        , br [] []
+        , strong [] [text "State"]
+        , text " - Election of 12 Senators"
         ]
       ]
+    , tr [class "ballot-space"] []
+    , tr [class "ballot-option-a"]
+      ([ td [class "option-a-header"]
+        [ h2 []
+          [ text "You may"
+          , br [] []
+          , text "vote in one of"
+          , br [] []
+          , text "two ways"
+          ]
+        , p [class "senate-option"] [text "Either:"]
+        , h2 [] [text "Above the line"]
+        , p []
+          [ text "By numbering at least "
+          , strong [] [text "6"]
+          , br [] []
+          , text "of these boxes in the order"
+          , br [] []
+          , text "of your choice (with number"
+          , br [] []
+          , text "1 as your first choice)"
+          ]
+        ]
+      ]
+      ++ (List.map ticketView tickets))
+    , tr [class "ballot-space"] []
+    , tr [class "ballot-line"] [ td [colspan <| List.length tickets + 1] []]
+    , tr [class "ballot-space"] []
+    , tr [class "ballot-option-b"]
+      ([ td [class "option-b-header"]
+        [ p [class "senate-option"] [text "Or:"]
+        , h2 [] [text "Below the line"]
+        , p []
+          [ text "By numbering at least "
+          , strong [] [text "12"]
+          , br [] []
+          , text "of these boxes in the order"
+          , br [] []
+          , text "of your choice (with number"
+          , br [] []
+          , text "1 as your first choice)."
+          ]
+        ]
+      ]
+      ++ (List.map (belowTicketView order) tickets))
     ]
 
 ticketView ticket =
   case ticket.ticket of
     "UG" ->
-      div [class "ballot-position"]
+      td [class "ballot-position"]
         [ div [class "ballot-number blank"] [ ]
         , div [class "ballot-party"] [ ]
         ]
     _ ->
-      div [class "ballot-position"]
+      td [class "ballot-position"]
         [ div [class "ballot-number"]
           [ text ticket.ticket
           , div [class "ballot-logo-sen blank"] []
@@ -102,7 +97,7 @@ belowTicketView order ticket =
         ticket.candidates
 
   in
-    div [class "below-ballot-position"]
+    td [class "below-ballot-position"]
       (p [class "party-title"] [text party]
       :: candidates)
 
