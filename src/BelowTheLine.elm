@@ -51,7 +51,7 @@ main =
 fetchCandidates : Cmd Msg
 fetchCandidates =
     Task.perform LoadFailed LoadCandidates
-        <| fetchData "candidates.json"
+        <| fetchData "/candidates.json"
 
 -- Model
 

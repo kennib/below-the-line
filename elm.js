@@ -9973,7 +9973,9 @@ var _user$project$BelowTheLine$update = F2(
 							ballotCandidates: A2(
 								_elm_lang$core$Maybe$map,
 								A2(_elm_lang$core$Basics$flip, _user$project$BelowTheLine_Data$ballotCandidates, _p7),
-								model.division)
+								model.division),
+							preferences: _elm_lang$core$Native_List.fromArray(
+								[])
 						});
 				case 'LoadFailed':
 					return _elm_lang$core$Native_Utils.update(
@@ -9991,7 +9993,9 @@ var _user$project$BelowTheLine$update = F2(
 							ballotCandidates: A2(
 								_elm_lang$core$Maybe$map,
 								_user$project$BelowTheLine_Data$ballotCandidates(_p8),
-								model.candidates)
+								model.candidates),
+							preferences: _elm_lang$core$Native_List.fromArray(
+								[])
 						});
 				case 'ChangeView':
 					return _elm_lang$core$Native_Utils.update(
@@ -10324,7 +10328,7 @@ var _user$project$BelowTheLine$fetchCandidates = A3(
 	_elm_lang$core$Task$perform,
 	_user$project$BelowTheLine$LoadFailed,
 	_user$project$BelowTheLine$LoadCandidates,
-	_user$project$BelowTheLine_Data$fetchData('candidates.json'));
+	_user$project$BelowTheLine_Data$fetchData('/candidates.json'));
 var _user$project$BelowTheLine$ViewBallot = {ctor: 'ViewBallot'};
 var _user$project$BelowTheLine$OrderBallot = {ctor: 'OrderBallot'};
 var _user$project$BelowTheLine$initModel = {
