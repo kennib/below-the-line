@@ -24,6 +24,7 @@ type Msg
     | LoadFailed Http.Error
     | SelectDivision String
     | ChangeView BallotView
+    | AddAll (List Candidate)
     | TogglePreference Candidate
     | IncreasePreference Candidate
     | DecreasePreference Candidate
@@ -89,6 +90,10 @@ update msg model =
                     { model
                     | ballotView = view
                     }
+                AddAll candidates ->
+                    { model
+                    | preferences = union candidates model.preferences
+                    }
                 TogglePreference candidate ->
                     { model
                     | preferences = toggle candidate model.preferences
@@ -103,6 +108,13 @@ update msg model =
                     }
     in
         (model', Cmd.none)
+
+union : List a -> List a -> List a
+union items' items =
+    let
+        diff = List.filter (\item -> not <| List.member item items) items'
+    in
+        items ++ diff
 
 toggle : a -> List a -> List a
 toggle item items =
@@ -218,6 +230,8 @@ ballotSelection model candidates =
 candidatesView : Model -> String -> List Ticket -> Html Msg
 candidatesView model division tickets =
     let
+        allPreferenced = List.all (\candidate -> List.member candidate model.preferences)
+
         name candidate =
             [ Html.text candidate.givenName
             , Html.text " "
@@ -310,7 +324,14 @@ candidatesView model division tickets =
         ticketParty ticket =
             Html.th
                 [class "ticket-party"]
-                [Html.text ticket.party]
+                [ Html.button
+                    [ onClick <| AddAll ticket.candidates
+                    , Html.Attributes.disabled <| allPreferenced ticket.candidates
+                    ]
+                    [Html.text "+"]
+                , Html.span []
+                    [Html.text ticket.party]
+                ]
 
         ticketCandidates ticket =
             Html.td
