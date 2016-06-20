@@ -4,6 +4,7 @@
 .preferences .message {
   padding: 15px;
   text-align: center;
+  background: #dadada;
 }
 
 .choices {
@@ -37,10 +38,23 @@
 
 .candidate .name {
   display: block;
+  margin-left: 45px;
 }
 
 .candidate .party {
   display: block;
+  margin-left: 45px;
   font-size: 12px;
   font-weight: bold;
+}
+
+.candidate button {
+  float: left;
+  margin-right: 5px;
+  width: 40px;
+  height: 40px;
+}
+
+.preferences .candidate button {
+  float: right;
 }

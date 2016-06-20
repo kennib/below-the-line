@@ -26,6 +26,7 @@ type Msg
     | LoadFailed Http.Error
     | SelectDivision String
     | ChangeView BallotView
+    | TogglePreference Candidate
     | Moving (MoveItem Candidate)
 
 type alias Model =
@@ -92,6 +93,10 @@ update msg model =
                     { model
                     | ballotView = view
                     }
+                TogglePreference candidate ->
+                    { model
+                    | preferences = toggle candidate model.preferences
+                    }
                 Moving movement ->
                     case movement of
                         MovedToEnd ->
@@ -128,6 +133,13 @@ update msg model =
                             }
     in
         (model', Cmd.none)
+
+toggle : a -> List a -> List a
+toggle item items =
+    if List.member item items then
+        List.filter ((/=) item) items
+    else
+        items ++ [item]
 
 insert : a -> List a -> List a
 insert item items =
@@ -254,8 +266,18 @@ candidatesView model division candidates =
             [ Html.text candidate.party
             ]
 
+        toggle candidate =
+            Html.button
+                [onClick <| TogglePreference candidate]
+                [ if List.member candidate model.preferences then
+                    Html.text "-"
+                  else
+                     Html.text "+"
+                ]
+
         view candidate =
-            [ Html.span [class "name"] <| name candidate
+            [ toggle candidate
+            , Html.span [class "name"] <| name candidate
             , Html.text " "
             , Html.span [class "party"] <| party candidate
             ]
