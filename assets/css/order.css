@@ -1,5 +1,5 @@
 body {
-  overflow-x: scroll;
+  overflow-x: hidden;
 }
 
 .ballot-selection button {
