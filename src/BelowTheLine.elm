@@ -31,13 +31,14 @@ type Msg
 type alias Model =
     { candidates : Maybe (List Candidate)
     , ballotCandidates : Maybe (List Candidate)
+    , preferences : List Candidate
     , division : Maybe String
     , ballotView : BallotView
     , moving : MoveItem Candidate
     , error : Maybe String
     }
 
-type MoveItem a = MoveItem a | MovingItem a (Float, Float) | MovedToItem a | NoItem
+type MoveItem a = MoveItem a | MovingItem a (Float, Float) | MovedToItem a | MovedToEnd | NoItem
 type BallotView = OrderBallot | ViewBallot
 
 main =
@@ -59,6 +60,7 @@ initModel : Model
 initModel =
     { candidates = Nothing
     , ballotCandidates = Nothing
+    , preferences = []
     , division = Nothing
     , ballotView = OrderBallot
     , moving = NoItem
@@ -92,17 +94,31 @@ update msg model =
                     }
                 Moving movement ->
                     case movement of
+                        MovedToEnd ->
+                            case model.moving of
+                                MoveItem candidate' ->
+                                    { model
+                                    | moving = NoItem
+                                    , preferences = insert candidate' model.preferences
+                                    }
+                                MovingItem candidate' _ ->
+                                    { model
+                                    | moving = NoItem
+                                    , preferences = insert candidate' model.preferences
+                                    }
+                                _ ->
+                                    model
                         MovedToItem candidate ->
                             case model.moving of
                                 MoveItem candidate' ->
                                     { model
                                     | moving = NoItem
-                                    , ballotCandidates = Maybe.map (insertBefore candidate candidate') model.ballotCandidates
+                                    , preferences = insertBefore candidate candidate' model.preferences
                                     }
                                 MovingItem candidate' _ ->
                                     { model
                                     | moving = NoItem
-                                    , ballotCandidates = Maybe.map (insertBefore candidate candidate') model.ballotCandidates
+                                    , preferences = insertBefore candidate candidate' model.preferences
                                     }
                                 _ ->
                                     model
@@ -112,6 +128,13 @@ update msg model =
                             }
     in
         (model', Cmd.none)
+
+insert : a -> List a -> List a
+insert item items =
+    let
+        items' = List.filter ((/=) item) items
+    in
+        items' ++ [item]
 
 insertBefore : a -> a -> List a -> List a
 insertBefore before item items =
@@ -161,12 +184,13 @@ view model =
                             OrderBallot ->
                                 candidatesView
                                 model
+                                division
                                 ballotCandidates
                             ViewBallot ->
                                 ballotView
                                 division
                                 candidates
-                                ballotCandidates
+                                model.preferences
                     _ ->
                         Html.text ""
                 ]
@@ -217,8 +241,8 @@ ballotSelection model candidates =
                 Nothing -> Html.text ""
             ]
 
-candidatesView : Model -> List Candidate -> Html Msg
-candidatesView model candidates =
+candidatesView : Model -> String -> List Candidate -> Html Msg
+candidatesView model division candidates =
     let
         name candidate =
             [ Html.text candidate.givenName
@@ -236,16 +260,69 @@ candidatesView model candidates =
             , Html.span [class "party"] <| party candidate
             ]
 
-        items =
+        missingPreferences = max 0 <| 12 - List.length model.preferences
+
+        preferences =
             Html.ol
                 [ class "candidates"
                 , style <| unselectable []
                 ]
                 <| List.indexedMap
-                    item
+                    choice
+                    model.preferences
+
+        preference candidate =
+            Html.li
+                [ class "candidate"
+                , onMouseDown (Moving <| MoveItem candidate)
+                , onMouseUp (Moving <| MovedToItem candidate)
+                , style <| case model.moving of
+                    NoItem -> grabCursor []
+                    moving -> grabbingCursor []
+                ]
+                <| view candidate
+
+        preferencesBox =
+            if List.length model.preferences == 0 then
+                Html.div
+                    [class "preferences empty"]
+                    [ Html.p
+                        [ class "message"
+                        , onMouseUp (Moving <| MovedToEnd)
+                        ]
+                        [Html.text "Drag preferences here"]
+                    ]
+            else if missingPreferences > 0 then
+                Html.div
+                    [class "preferences missing"]
+                    [ preferences
+                    , Html.p
+                        [ class "message"
+                        , onMouseUp (Moving <| MovedToEnd)
+                        ]
+                        [Html.text <| "Please add at least " ++ toString missingPreferences ++ " more preferences"]
+                    ]
+            else
+                Html.div
+                    [class "preferences"]
+                    [ preferences
+                    , Html.p
+                        [ class "message"
+                        , onMouseUp (Moving <| MovedToEnd)
+                        ]
+                        [Html.text <| "You have the required 12 preferences but you may add more"]
+                    ]
+
+        choices =
+            Html.ul
+                [ class "candidates choices"
+                , style <| unselectable []
+                ]
+                <| List.indexedMap
+                    choice
                     candidates
 
-        item index candidate =
+        choice index candidate =
             Html.li
                 [ Html.Attributes.id (toString index)
                 , class "candidate"
@@ -256,6 +333,11 @@ candidatesView model candidates =
                     moving -> grabbingCursor []
                 ]
                 <| view candidate
+
+        choicesBox =
+            Html.div
+                [class "choices"]
+                [choices]
 
         moving =
             case model.moving of
@@ -273,13 +355,15 @@ candidatesView model candidates =
                 _ -> Html.text ""
     in
         Html.div []
-            [ items
+            [ preferencesBox
+            , choicesBox
             , moving
             ]
 
 ballotView : String -> List Candidate -> List Candidate -> Html Msg
 ballotView division candidates ballotCandidates =
     SenateBallot.ballotView
+        division
         (ticketCandidates division candidates)
         ballotCandidates
 

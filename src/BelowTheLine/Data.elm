@@ -6,6 +6,7 @@ module BelowTheLine.Data exposing
     , ballotCandidates
     , divisions
     , ticketCandidates
+    , senatorCount
     )
 
 import List.Extra as List
@@ -175,3 +176,10 @@ ticketCandidates division candidates =
             List.map ticketCandidates ticketGroups
     in
         tickets
+
+senatorCount : String -> Int
+senatorCount state =
+    case state of
+        "ACT" -> 2
+        "NT"  -> 2
+        _     -> 12

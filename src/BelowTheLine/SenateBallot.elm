@@ -7,7 +7,9 @@ import List.Extra as List
 import Html exposing (table, tr, td, div, h1, h2, p, br, span, strong, text)
 import Html.Attributes exposing (class, style, colspan)
 
-ballotView tickets order =
+import BelowTheLine.Data exposing (senatorCount)
+
+ballotView division tickets order =
   table [class "ballot-paper-sen"]
     [ tr [class "ballot-header"]
       [ td [class "ballot-header-title", colspan <| List.length tickets + 1]
@@ -51,7 +53,7 @@ ballotView tickets order =
         , h2 [] [text "Below the line"]
         , p []
           [ text "By numbering at least "
-          , strong [] [text "12"]
+          , strong [] [text <| toString <| senatorCount division]
           , br [] []
           , text "of these boxes in the order"
           , br [] []
