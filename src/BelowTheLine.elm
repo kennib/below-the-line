@@ -76,6 +76,7 @@ update msg model =
                     { model
                     | candidates = Just candidates
                     , ballotCandidates = Maybe.map (flip ballotCandidates <| candidates) model.division
+                    , preferences = []
                     }
                 LoadFailed error ->
                     { model
@@ -85,6 +86,7 @@ update msg model =
                     { model
                     | division = Just division
                     , ballotCandidates = Maybe.map (ballotCandidates division) model.candidates
+                    , preferences = []
                     }
                 ChangeView view ->
                     { model
