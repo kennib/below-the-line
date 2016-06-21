@@ -7164,6 +7164,47 @@ var _elm_lang$core$Json_Decode$dict = function (decoder) {
 };
 var _elm_lang$core$Json_Decode$Decoder = {ctor: 'Decoder'};
 
+var _elm_lang$core$Process$kill = _elm_lang$core$Native_Scheduler.kill;
+var _elm_lang$core$Process$sleep = _elm_lang$core$Native_Scheduler.sleep;
+var _elm_lang$core$Process$spawn = _elm_lang$core$Native_Scheduler.spawn;
+
+var _elm_lang$dom$Native_Dom = function() {
+
+function on(node)
+{
+	return function(eventName, decoder, toTask)
+	{
+		return _elm_lang$core$Native_Scheduler.nativeBinding(function(callback) {
+
+			function performTask(event)
+			{
+				var result = A2(_elm_lang$core$Json_Decode$decodeValue, decoder, event);
+				if (result.ctor === 'Ok')
+				{
+					_elm_lang$core$Native_Scheduler.rawSpawn(toTask(result._0));
+				}
+			}
+
+			node.addEventListener(eventName, performTask);
+
+			return function()
+			{
+				node.removeEventListener(eventName, performTask);
+			};
+		});
+	};
+}
+
+return {
+	onDocument: F3(on(document)),
+	onWindow: F3(on(window))
+};
+
+}();
+
+var _elm_lang$dom$Dom_LowLevel$onWindow = _elm_lang$dom$Native_Dom.onWindow;
+var _elm_lang$dom$Dom_LowLevel$onDocument = _elm_lang$dom$Native_Dom.onDocument;
+
 //import Native.Json //
 
 var _elm_lang$virtual_dom$Native_VirtualDom = function() {
@@ -8807,6 +8848,353 @@ var _elm_lang$html$Html_Events$Options = F2(
 		return {stopPropagation: a, preventDefault: b};
 	});
 
+var _elm_lang$navigation$Native_Navigation = function() {
+
+function go(n)
+{
+	return _elm_lang$core$Native_Scheduler.nativeBinding(function(callback)
+	{
+		if (n !== 0)
+		{
+			history.go(n);
+		}
+		callback(_elm_lang$core$Native_Scheduler.succeed(_elm_lang$core$Native_Utils.Tuple0));
+	});
+}
+
+function pushState(url)
+{
+	return _elm_lang$core$Native_Scheduler.nativeBinding(function(callback)
+	{
+		history.pushState({}, '', url);
+		callback(_elm_lang$core$Native_Scheduler.succeed(getLocation()));
+	});
+}
+
+function replaceState(url)
+{
+	return _elm_lang$core$Native_Scheduler.nativeBinding(function(callback)
+	{
+		history.replaceState({}, '', url);
+		callback(_elm_lang$core$Native_Scheduler.succeed(getLocation()));
+	});
+}
+
+function getLocation()
+{
+	var location = document.location;
+
+	return {
+		href: location.href,
+		host: location.host,
+		hostname: location.hostname,
+		protocol: location.protocol,
+		origin: location.origin,
+		port_: location.port,
+		pathname: location.pathname,
+		search: location.search,
+		hash: location.hash,
+		username: location.username,
+		password: location.password
+	};
+}
+
+
+return {
+	go: go,
+	pushState: pushState,
+	replaceState: replaceState,
+	getLocation: getLocation
+};
+
+}();
+
+var _elm_lang$navigation$Navigation$replaceState = _elm_lang$navigation$Native_Navigation.replaceState;
+var _elm_lang$navigation$Navigation$pushState = _elm_lang$navigation$Native_Navigation.pushState;
+var _elm_lang$navigation$Navigation$go = _elm_lang$navigation$Native_Navigation.go;
+var _elm_lang$navigation$Navigation$spawnPopState = function (router) {
+	return _elm_lang$core$Process$spawn(
+		A3(
+			_elm_lang$dom$Dom_LowLevel$onWindow,
+			'popstate',
+			_elm_lang$core$Json_Decode$value,
+			function (_p0) {
+				return A2(
+					_elm_lang$core$Platform$sendToSelf,
+					router,
+					_elm_lang$navigation$Native_Navigation.getLocation(
+						{ctor: '_Tuple0'}));
+			}));
+};
+var _elm_lang$navigation$Navigation_ops = _elm_lang$navigation$Navigation_ops || {};
+_elm_lang$navigation$Navigation_ops['&>'] = F2(
+	function (task1, task2) {
+		return A2(
+			_elm_lang$core$Task$andThen,
+			task1,
+			function (_p1) {
+				return task2;
+			});
+	});
+var _elm_lang$navigation$Navigation$notify = F3(
+	function (router, subs, location) {
+		var send = function (_p2) {
+			var _p3 = _p2;
+			return A2(
+				_elm_lang$core$Platform$sendToApp,
+				router,
+				_p3._0(location));
+		};
+		return A2(
+			_elm_lang$navigation$Navigation_ops['&>'],
+			_elm_lang$core$Task$sequence(
+				A2(_elm_lang$core$List$map, send, subs)),
+			_elm_lang$core$Task$succeed(
+				{ctor: '_Tuple0'}));
+	});
+var _elm_lang$navigation$Navigation$onSelfMsg = F3(
+	function (router, location, state) {
+		return A2(
+			_elm_lang$navigation$Navigation_ops['&>'],
+			A3(_elm_lang$navigation$Navigation$notify, router, state.subs, location),
+			_elm_lang$core$Task$succeed(state));
+	});
+var _elm_lang$navigation$Navigation$cmdHelp = F3(
+	function (router, subs, cmd) {
+		var _p4 = cmd;
+		switch (_p4.ctor) {
+			case 'Jump':
+				return _elm_lang$navigation$Navigation$go(_p4._0);
+			case 'New':
+				return A2(
+					_elm_lang$core$Task$andThen,
+					_elm_lang$navigation$Navigation$pushState(_p4._0),
+					A2(_elm_lang$navigation$Navigation$notify, router, subs));
+			default:
+				return A2(
+					_elm_lang$core$Task$andThen,
+					_elm_lang$navigation$Navigation$replaceState(_p4._0),
+					A2(_elm_lang$navigation$Navigation$notify, router, subs));
+		}
+	});
+var _elm_lang$navigation$Navigation$updateHelp = F2(
+	function (func, _p5) {
+		var _p6 = _p5;
+		return {
+			ctor: '_Tuple2',
+			_0: _p6._0,
+			_1: A2(_elm_lang$core$Platform_Cmd$map, func, _p6._1)
+		};
+	});
+var _elm_lang$navigation$Navigation$subscription = _elm_lang$core$Native_Platform.leaf('Navigation');
+var _elm_lang$navigation$Navigation$command = _elm_lang$core$Native_Platform.leaf('Navigation');
+var _elm_lang$navigation$Navigation$Location = function (a) {
+	return function (b) {
+		return function (c) {
+			return function (d) {
+				return function (e) {
+					return function (f) {
+						return function (g) {
+							return function (h) {
+								return function (i) {
+									return function (j) {
+										return function (k) {
+											return {href: a, host: b, hostname: c, protocol: d, origin: e, port_: f, pathname: g, search: h, hash: i, username: j, password: k};
+										};
+									};
+								};
+							};
+						};
+					};
+				};
+			};
+		};
+	};
+};
+var _elm_lang$navigation$Navigation$State = F2(
+	function (a, b) {
+		return {subs: a, process: b};
+	});
+var _elm_lang$navigation$Navigation$init = _elm_lang$core$Task$succeed(
+	A2(
+		_elm_lang$navigation$Navigation$State,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		_elm_lang$core$Maybe$Nothing));
+var _elm_lang$navigation$Navigation$onEffects = F4(
+	function (router, cmds, subs, _p7) {
+		var _p8 = _p7;
+		var _p10 = _p8.process;
+		var stepState = function () {
+			var _p9 = {ctor: '_Tuple2', _0: subs, _1: _p10};
+			_v4_2:
+			do {
+				if (_p9._0.ctor === '[]') {
+					if (_p9._1.ctor === 'Just') {
+						return A2(
+							_elm_lang$navigation$Navigation_ops['&>'],
+							_elm_lang$core$Process$kill(_p9._1._0),
+							_elm_lang$core$Task$succeed(
+								A2(_elm_lang$navigation$Navigation$State, subs, _elm_lang$core$Maybe$Nothing)));
+					} else {
+						break _v4_2;
+					}
+				} else {
+					if (_p9._1.ctor === 'Nothing') {
+						return A2(
+							_elm_lang$core$Task$andThen,
+							_elm_lang$navigation$Navigation$spawnPopState(router),
+							function (pid) {
+								return _elm_lang$core$Task$succeed(
+									A2(
+										_elm_lang$navigation$Navigation$State,
+										subs,
+										_elm_lang$core$Maybe$Just(pid)));
+							});
+					} else {
+						break _v4_2;
+					}
+				}
+			} while(false);
+			return _elm_lang$core$Task$succeed(
+				A2(_elm_lang$navigation$Navigation$State, subs, _p10));
+		}();
+		return A2(
+			_elm_lang$navigation$Navigation_ops['&>'],
+			_elm_lang$core$Task$sequence(
+				A2(
+					_elm_lang$core$List$map,
+					A2(_elm_lang$navigation$Navigation$cmdHelp, router, subs),
+					cmds)),
+			stepState);
+	});
+var _elm_lang$navigation$Navigation$UserMsg = function (a) {
+	return {ctor: 'UserMsg', _0: a};
+};
+var _elm_lang$navigation$Navigation$Change = function (a) {
+	return {ctor: 'Change', _0: a};
+};
+var _elm_lang$navigation$Navigation$Parser = function (a) {
+	return {ctor: 'Parser', _0: a};
+};
+var _elm_lang$navigation$Navigation$makeParser = _elm_lang$navigation$Navigation$Parser;
+var _elm_lang$navigation$Navigation$Modify = function (a) {
+	return {ctor: 'Modify', _0: a};
+};
+var _elm_lang$navigation$Navigation$modifyUrl = function (url) {
+	return _elm_lang$navigation$Navigation$command(
+		_elm_lang$navigation$Navigation$Modify(url));
+};
+var _elm_lang$navigation$Navigation$New = function (a) {
+	return {ctor: 'New', _0: a};
+};
+var _elm_lang$navigation$Navigation$newUrl = function (url) {
+	return _elm_lang$navigation$Navigation$command(
+		_elm_lang$navigation$Navigation$New(url));
+};
+var _elm_lang$navigation$Navigation$Jump = function (a) {
+	return {ctor: 'Jump', _0: a};
+};
+var _elm_lang$navigation$Navigation$back = function (n) {
+	return _elm_lang$navigation$Navigation$command(
+		_elm_lang$navigation$Navigation$Jump(0 - n));
+};
+var _elm_lang$navigation$Navigation$forward = function (n) {
+	return _elm_lang$navigation$Navigation$command(
+		_elm_lang$navigation$Navigation$Jump(n));
+};
+var _elm_lang$navigation$Navigation$cmdMap = F2(
+	function (_p11, myCmd) {
+		var _p12 = myCmd;
+		switch (_p12.ctor) {
+			case 'Jump':
+				return _elm_lang$navigation$Navigation$Jump(_p12._0);
+			case 'New':
+				return _elm_lang$navigation$Navigation$New(_p12._0);
+			default:
+				return _elm_lang$navigation$Navigation$Modify(_p12._0);
+		}
+	});
+var _elm_lang$navigation$Navigation$Monitor = function (a) {
+	return {ctor: 'Monitor', _0: a};
+};
+var _elm_lang$navigation$Navigation$programWithFlags = F2(
+	function (_p13, stuff) {
+		var _p14 = _p13;
+		var _p16 = _p14._0;
+		var location = _elm_lang$navigation$Native_Navigation.getLocation(
+			{ctor: '_Tuple0'});
+		var init = function (flags) {
+			return A2(
+				_elm_lang$navigation$Navigation$updateHelp,
+				_elm_lang$navigation$Navigation$UserMsg,
+				A2(
+					stuff.init,
+					flags,
+					_p16(location)));
+		};
+		var view = function (model) {
+			return A2(
+				_elm_lang$html$Html_App$map,
+				_elm_lang$navigation$Navigation$UserMsg,
+				stuff.view(model));
+		};
+		var subs = function (model) {
+			return _elm_lang$core$Platform_Sub$batch(
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$navigation$Navigation$subscription(
+						_elm_lang$navigation$Navigation$Monitor(_elm_lang$navigation$Navigation$Change)),
+						A2(
+						_elm_lang$core$Platform_Sub$map,
+						_elm_lang$navigation$Navigation$UserMsg,
+						stuff.subscriptions(model))
+					]));
+		};
+		var update = F2(
+			function (msg, model) {
+				return A2(
+					_elm_lang$navigation$Navigation$updateHelp,
+					_elm_lang$navigation$Navigation$UserMsg,
+					function () {
+						var _p15 = msg;
+						if (_p15.ctor === 'Change') {
+							return A2(
+								stuff.urlUpdate,
+								_p16(_p15._0),
+								model);
+						} else {
+							return A2(stuff.update, _p15._0, model);
+						}
+					}());
+			});
+		return _elm_lang$html$Html_App$programWithFlags(
+			{init: init, view: view, update: update, subscriptions: subs});
+	});
+var _elm_lang$navigation$Navigation$program = F2(
+	function (parser, stuff) {
+		return A2(
+			_elm_lang$navigation$Navigation$programWithFlags,
+			parser,
+			_elm_lang$core$Native_Utils.update(
+				stuff,
+				{
+					init: function (_p17) {
+						return stuff.init;
+					}
+				}));
+	});
+var _elm_lang$navigation$Navigation$subMap = F2(
+	function (func, _p18) {
+		var _p19 = _p18;
+		return _elm_lang$navigation$Navigation$Monitor(
+			function (_p20) {
+				return func(
+					_p19._0(_p20));
+			});
+	});
+_elm_lang$core$Native_Platform.effectManagers['Navigation'] = {pkg: 'elm-lang/navigation', init: _elm_lang$navigation$Navigation$init, onEffects: _elm_lang$navigation$Navigation$onEffects, onSelfMsg: _elm_lang$navigation$Navigation$onSelfMsg, tag: 'fx', cmdMap: _elm_lang$navigation$Navigation$cmdMap, subMap: _elm_lang$navigation$Navigation$subMap};
+
 //import Dict, List, Maybe, Native.Scheduler //
 
 var _evancz$elm_http$Native_Http = function() {
@@ -9165,9 +9553,28 @@ var _evancz$elm_http$Http$post = F3(
 			A2(_evancz$elm_http$Http$send, _evancz$elm_http$Http$defaultSettings, request));
 	});
 
+var _user$project$BelowTheLine_Data$candidateId = function (candidate) {
+	var _p0 = candidate.ballot;
+	if (_p0.ctor === 'UpperBallot') {
+		var _p1 = _p0._0;
+		return A2(
+			_elm_lang$core$Basics_ops['++'],
+			_p1.state,
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				_p1.ticket,
+				_elm_lang$core$Basics$toString(_p1.ballotPosition)));
+	} else {
+		var _p2 = _p0._0;
+		return A2(
+			_elm_lang$core$Basics_ops['++'],
+			_p2.division,
+			_elm_lang$core$Basics$toString(_p2.ballotPosition));
+	}
+};
 var _user$project$BelowTheLine_Data$senatorCount = function (state) {
-	var _p0 = state;
-	switch (_p0) {
+	var _p3 = state;
+	switch (_p3) {
 		case 'ACT':
 			return 2;
 		case 'NT':
@@ -9179,18 +9586,18 @@ var _user$project$BelowTheLine_Data$senatorCount = function (state) {
 var _user$project$BelowTheLine_Data$ticketCandidates = F2(
 	function (division, candidates) {
 		var inDivision = function (candidate) {
-			var _p1 = candidate.ballot;
-			if (_p1.ctor === 'UpperBallot') {
-				return _elm_lang$core$Native_Utils.eq(_p1._0.state, division);
+			var _p4 = candidate.ballot;
+			if (_p4.ctor === 'UpperBallot') {
+				return _elm_lang$core$Native_Utils.eq(_p4._0.state, division);
 			} else {
 				return false;
 			}
 		};
 		var stateCandidates = A2(_elm_lang$core$List$filter, inDivision, candidates);
 		var position = function (candidate) {
-			var _p2 = candidate.ballot;
-			if (_p2.ctor === 'UpperBallot') {
-				return _p2._0.ballotPosition;
+			var _p5 = candidate.ballot;
+			if (_p5.ctor === 'UpperBallot') {
+				return _p5._0.ballotPosition;
 			} else {
 				return 0;
 			}
@@ -9208,9 +9615,9 @@ var _user$project$BelowTheLine_Data$ticketCandidates = F2(
 						A2(_elm_lang$core$List$sortBy, position, candidates))));
 		};
 		var ticket = function (candidate) {
-			var _p3 = candidate.ballot;
-			if (_p3.ctor === 'UpperBallot') {
-				return _p3._0.ticket;
+			var _p6 = candidate.ballot;
+			if (_p6.ctor === 'UpperBallot') {
+				return _p6._0.ticket;
 			} else {
 				return '';
 			}
@@ -9244,11 +9651,11 @@ var _user$project$BelowTheLine_Data$ticketCandidates = F2(
 		return tickets;
 	});
 var _user$project$BelowTheLine_Data$candidateDivision = function (candidate) {
-	var _p4 = candidate.ballot;
-	if (_p4.ctor === 'UpperBallot') {
-		return _p4._0.state;
+	var _p7 = candidate.ballot;
+	if (_p7.ctor === 'UpperBallot') {
+		return _p7._0.state;
 	} else {
-		return _p4._0.division;
+		return _p7._0.division;
 	}
 };
 var _user$project$BelowTheLine_Data$ballotCandidates = F2(
@@ -9273,8 +9680,8 @@ var _user$project$BelowTheLine_Data$Ticket = F3(
 var _user$project$BelowTheLine_Data$Lower = {ctor: 'Lower'};
 var _user$project$BelowTheLine_Data$Upper = {ctor: 'Upper'};
 var _user$project$BelowTheLine_Data$house = function (houseCode) {
-	var _p5 = houseCode;
-	switch (_p5) {
+	var _p8 = houseCode;
+	switch (_p8) {
 		case 'H':
 			return _elm_lang$core$Json_Decode$succeed(_user$project$BelowTheLine_Data$Lower);
 		case 'S':
@@ -9323,8 +9730,8 @@ var _user$project$BelowTheLine_Data$upperBallot = A4(
 	A2(_elm_lang$core$Json_Decode_ops[':='], 'ticket', _elm_lang$core$Json_Decode$string),
 	A2(_elm_lang$core$Json_Decode_ops[':='], 'ballot_position', _elm_lang$core$Json_Decode$int));
 var _user$project$BelowTheLine_Data$ballot = function (house) {
-	var _p6 = house;
-	if (_p6.ctor === 'Upper') {
+	var _p9 = house;
+	if (_p9.ctor === 'Upper') {
 		return _user$project$BelowTheLine_Data$upperBallot;
 	} else {
 		return _user$project$BelowTheLine_Data$lowerBallot;
@@ -9959,13 +10366,66 @@ var _user$project$BelowTheLine$union = F2(
 			items$);
 		return A2(_elm_lang$core$Basics_ops['++'], items, diff);
 	});
+var _user$project$BelowTheLine$getPreferences = F2(
+	function (candidateIds, candidates) {
+		return A2(
+			_elm_lang$core$List$filterMap,
+			function (id) {
+				return A2(
+					_elm_community$list_extra$List_Extra$find,
+					function (candidate) {
+						return _elm_lang$core$Native_Utils.eq(
+							_user$project$BelowTheLine_Data$candidateId(candidate),
+							id);
+					},
+					candidates);
+			},
+			candidateIds);
+	});
+var _user$project$BelowTheLine$urlUpdate = F2(
+	function (data, model) {
+		var preferences = A2(
+			_elm_lang$core$Maybe$withDefault,
+			_elm_lang$core$Native_List.fromArray(
+				[]),
+			A2(
+				_elm_lang$core$Maybe$map,
+				_user$project$BelowTheLine$getPreferences(data.preferences),
+				model.candidates));
+		var candidates = A3(_elm_lang$core$Maybe$map2, _user$project$BelowTheLine_Data$ballotCandidates, data.division, model.candidates);
+		var model$ = _elm_lang$core$Native_Utils.update(
+			model,
+			{division: data.division, ballotCandidates: candidates, ballotView: data.ballotView, preferences: preferences});
+		return {ctor: '_Tuple2', _0: model$, _1: _elm_lang$core$Platform_Cmd$none};
+	});
+var _user$project$BelowTheLine$urlMaker = function (model) {
+	var preferences = A2(
+		_elm_lang$core$String$join,
+		',',
+		A2(_elm_lang$core$List$map, _user$project$BelowTheLine_Data$candidateId, model.preferences));
+	var ballotView = _elm_lang$core$Basics$toString(model.ballotView);
+	var division = A2(_elm_lang$core$Maybe$withDefault, '', model.division);
+	return A2(
+		_elm_lang$core$Basics_ops['++'],
+		'?division=',
+		A2(
+			_elm_lang$core$Basics_ops['++'],
+			division,
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				'&ballotView=',
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					ballotView,
+					A2(_elm_lang$core$Basics_ops['++'], '&preferences=', preferences)))));
+};
 var _user$project$BelowTheLine$update = F2(
 	function (msg, model) {
 		var model$ = function () {
 			var _p6 = msg;
 			switch (_p6.ctor) {
 				case 'LoadCandidates':
-					var _p7 = _p6._0;
+					var _p7 = _p6._1;
 					return _elm_lang$core$Native_Utils.update(
 						model,
 						{
@@ -9974,8 +10434,7 @@ var _user$project$BelowTheLine$update = F2(
 								_elm_lang$core$Maybe$map,
 								A2(_elm_lang$core$Basics$flip, _user$project$BelowTheLine_Data$ballotCandidates, _p7),
 								model.division),
-							preferences: _elm_lang$core$Native_List.fromArray(
-								[])
+							preferences: A2(_user$project$BelowTheLine$getPreferences, _p6._0, _p7)
 						});
 				case 'LoadFailed':
 					return _elm_lang$core$Native_Utils.update(
@@ -10027,11 +10486,36 @@ var _user$project$BelowTheLine$update = F2(
 						});
 			}
 		}();
-		return {ctor: '_Tuple2', _0: model$, _1: _elm_lang$core$Platform_Cmd$none};
+		var updateUrl = _elm_lang$navigation$Navigation$modifyUrl(
+			_user$project$BelowTheLine$urlMaker(model$));
+		var addUrl = _elm_lang$navigation$Navigation$newUrl(
+			_user$project$BelowTheLine$urlMaker(model$));
+		var cmd = function () {
+			var _p9 = msg;
+			switch (_p9.ctor) {
+				case 'SelectDivision':
+					return addUrl;
+				case 'AddAll':
+					return updateUrl;
+				case 'TogglePreference':
+					return updateUrl;
+				case 'IncreasePreference':
+					return updateUrl;
+				case 'DecreasePreference':
+					return updateUrl;
+				default:
+					return _elm_lang$core$Platform_Cmd$none;
+			}
+		}();
+		return {ctor: '_Tuple2', _0: model$, _1: cmd};
 	});
 var _user$project$BelowTheLine$Model = F6(
 	function (a, b, c, d, e, f) {
 		return {candidates: a, ballotCandidates: b, preferences: c, division: d, ballotView: e, error: f};
+	});
+var _user$project$BelowTheLine$UrlData = F3(
+	function (a, b, c) {
+		return {division: a, ballotView: b, preferences: c};
 	});
 var _user$project$BelowTheLine$DecreasePreference = function (a) {
 	return {ctor: 'DecreasePreference', _0: a};
@@ -10321,30 +10805,120 @@ var _user$project$BelowTheLine$SelectDivision = function (a) {
 var _user$project$BelowTheLine$LoadFailed = function (a) {
 	return {ctor: 'LoadFailed', _0: a};
 };
-var _user$project$BelowTheLine$LoadCandidates = function (a) {
-	return {ctor: 'LoadCandidates', _0: a};
+var _user$project$BelowTheLine$LoadCandidates = F2(
+	function (a, b) {
+		return {ctor: 'LoadCandidates', _0: a, _1: b};
+	});
+var _user$project$BelowTheLine$fetchPreferences = function (preferences) {
+	return A3(
+		_elm_lang$core$Task$perform,
+		_user$project$BelowTheLine$LoadFailed,
+		_user$project$BelowTheLine$LoadCandidates(preferences),
+		_user$project$BelowTheLine_Data$fetchData('candidates.json'));
 };
-var _user$project$BelowTheLine$fetchCandidates = A3(
-	_elm_lang$core$Task$perform,
-	_user$project$BelowTheLine$LoadFailed,
-	_user$project$BelowTheLine$LoadCandidates,
-	_user$project$BelowTheLine_Data$fetchData('candidates.json'));
+var _user$project$BelowTheLine$init = function (urlData) {
+	var model = {
+		candidates: _elm_lang$core$Maybe$Nothing,
+		ballotCandidates: _elm_lang$core$Maybe$Nothing,
+		preferences: _elm_lang$core$Native_List.fromArray(
+			[]),
+		division: urlData.division,
+		ballotView: urlData.ballotView,
+		error: _elm_lang$core$Maybe$Nothing
+	};
+	return {
+		ctor: '_Tuple2',
+		_0: model,
+		_1: _user$project$BelowTheLine$fetchPreferences(urlData.preferences)
+	};
+};
 var _user$project$BelowTheLine$ViewBallot = {ctor: 'ViewBallot'};
 var _user$project$BelowTheLine$OrderBallot = {ctor: 'OrderBallot'};
-var _user$project$BelowTheLine$initModel = {
-	candidates: _elm_lang$core$Maybe$Nothing,
-	ballotCandidates: _elm_lang$core$Maybe$Nothing,
-	preferences: _elm_lang$core$Native_List.fromArray(
-		[]),
-	division: _elm_lang$core$Maybe$Nothing,
-	ballotView: _user$project$BelowTheLine$OrderBallot,
-	error: _elm_lang$core$Maybe$Nothing
+var _user$project$BelowTheLine$urlParser = function (location) {
+	var ballotViewFromString = function (string) {
+		var _p10 = string;
+		switch (_p10) {
+			case 'OrderBallot':
+				return _elm_lang$core$Maybe$Just(_user$project$BelowTheLine$OrderBallot);
+			case 'ViewBallot':
+				return _elm_lang$core$Maybe$Just(_user$project$BelowTheLine$ViewBallot);
+			default:
+				return _elm_lang$core$Maybe$Nothing;
+		}
+	};
+	var getValue = function (entry) {
+		var _p11 = entry;
+		if (_p11.ctor === '::') {
+			if (_p11._1.ctor === '::') {
+				return _p11._1._0;
+			} else {
+				return _p11._0;
+			}
+		} else {
+			return '';
+		}
+	};
+	var getKey = function (entry) {
+		var _p12 = entry;
+		if (_p12.ctor === '::') {
+			return _p12._0;
+		} else {
+			return '';
+		}
+	};
+	var params = A2(
+		_elm_lang$core$List$map,
+		_elm_lang$core$String$split('='),
+		A2(
+			_elm_lang$core$String$split,
+			'&',
+			A2(
+				_elm_lang$core$String$dropLeft,
+				1,
+				A2(_elm_lang$core$Debug$log, 'search', location.search))));
+	var getParam = function (key) {
+		return A2(
+			_elm_community$list_extra$List_Extra$find,
+			function (entry) {
+				return _elm_lang$core$Native_Utils.eq(
+					getKey(entry),
+					key);
+			},
+			params);
+	};
+	var division = A2(
+		_elm_lang$core$Maybe$map,
+		getValue,
+		getParam('division'));
+	var ballotView = A2(
+		_elm_lang$core$Maybe$withDefault,
+		_user$project$BelowTheLine$OrderBallot,
+		A3(
+			_elm_lang$core$Basics$flip,
+			_elm_lang$core$Maybe$andThen,
+			ballotViewFromString,
+			A2(
+				_elm_lang$core$Maybe$map,
+				getValue,
+				getParam('ballotView'))));
+	var preferences = A2(
+		_elm_lang$core$Maybe$withDefault,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		A2(
+			_elm_lang$core$Maybe$map,
+			_elm_lang$core$String$split(','),
+			A2(
+				_elm_lang$core$Maybe$map,
+				getValue,
+				getParam('preferences'))));
+	return {division: division, ballotView: ballotView, preferences: preferences};
 };
 var _user$project$BelowTheLine$ballotSelection = F2(
 	function (model, candidates) {
 		var viewToggle = function () {
-			var _p9 = model.ballotView;
-			if (_p9.ctor === 'OrderBallot') {
+			var _p13 = model.ballotView;
+			if (_p13.ctor === 'OrderBallot') {
 				return A2(
 					_elm_lang$html$Html$button,
 					_elm_lang$core$Native_List.fromArray(
@@ -10381,22 +10955,32 @@ var _user$project$BelowTheLine$ballotSelection = F2(
 				[
 					_elm_lang$html$Html$text('Select a state')
 				]));
-		var divisionOption = function (division) {
-			return A2(
-				_elm_lang$html$Html$option,
-				_elm_lang$core$Native_List.fromArray(
-					[]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html$text(division)
-					]));
-		};
+		var divisionOption = F2(
+			function ($default, division) {
+				return A2(
+					_elm_lang$html$Html$option,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$selected($default)
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text(division)
+						]));
+			});
 		var divisionOptions = A2(
 			_elm_lang$core$List_ops['::'],
 			defaultOption,
 			A2(
 				_elm_lang$core$List$map,
-				divisionOption,
+				function (division) {
+					return A2(
+						divisionOption,
+						_elm_lang$core$Native_Utils.eq(
+							_elm_lang$core$Maybe$Just(division),
+							model.division),
+						division);
+				},
 				_user$project$BelowTheLine_Data$divisions(candidates)));
 		var divisionSelect = A2(
 			_elm_lang$html$Html$select,
@@ -10422,8 +11006,8 @@ var _user$project$BelowTheLine$ballotSelection = F2(
 					_elm_lang$html$Html$text(' '),
 					divisionSelect,
 					function () {
-					var _p10 = model.division;
-					if (_p10.ctor === 'Just') {
+					var _p14 = model.division;
+					if (_p14.ctor === 'Just') {
 						return viewToggle;
 					} else {
 						return _elm_lang$html$Html$text('');
@@ -10432,9 +11016,9 @@ var _user$project$BelowTheLine$ballotSelection = F2(
 				]));
 	});
 var _user$project$BelowTheLine$view = function (model) {
-	var _p11 = model.candidates;
-	if (_p11.ctor === 'Just') {
-		var _p15 = _p11._0;
+	var _p15 = model.candidates;
+	if (_p15.ctor === 'Just') {
+		var _p19 = _p15._0;
 		return A2(
 			_elm_lang$html$Html$div,
 			_elm_lang$core$Native_List.fromArray(
@@ -10443,23 +11027,23 @@ var _user$project$BelowTheLine$view = function (model) {
 				_elm_lang$core$Basics_ops['++'],
 				_elm_lang$core$Native_List.fromArray(
 					[
-						A2(_user$project$BelowTheLine$ballotSelection, model, _p15)
+						A2(_user$project$BelowTheLine$ballotSelection, model, _p19)
 					]),
 				function () {
-					var _p12 = {ctor: '_Tuple2', _0: model.division, _1: model.ballotCandidates};
-					if (((_p12.ctor === '_Tuple2') && (_p12._0.ctor === 'Just')) && (_p12._1.ctor === 'Just')) {
-						var _p14 = _p12._0._0;
-						var _p13 = model.ballotView;
-						if (_p13.ctor === 'OrderBallot') {
+					var _p16 = {ctor: '_Tuple2', _0: model.division, _1: model.ballotCandidates};
+					if (((_p16.ctor === '_Tuple2') && (_p16._0.ctor === 'Just')) && (_p16._1.ctor === 'Just')) {
+						var _p18 = _p16._0._0;
+						var _p17 = model.ballotView;
+						if (_p17.ctor === 'OrderBallot') {
 							return A3(
 								_user$project$BelowTheLine$candidatesView,
 								model,
-								_p14,
-								A2(_user$project$BelowTheLine_Data$ticketCandidates, _p14, _p12._1._0));
+								_p18,
+								A2(_user$project$BelowTheLine_Data$ticketCandidates, _p18, _p16._1._0));
 						} else {
 							return _elm_lang$core$Native_List.fromArray(
 								[
-									A3(_user$project$BelowTheLine$ballotView, _p14, _p15, model.preferences)
+									A3(_user$project$BelowTheLine$ballotView, _p18, _p19, model.preferences)
 								]);
 						}
 					} else {
@@ -10477,9 +11061,9 @@ var _user$project$BelowTheLine$view = function (model) {
 			_elm_lang$core$Native_List.fromArray(
 				[
 					function () {
-					var _p16 = model.error;
-					if (_p16.ctor === 'Just') {
-						return _elm_lang$html$Html$text(_p16._0);
+					var _p20 = model.error;
+					if (_p20.ctor === 'Just') {
+						return _elm_lang$html$Html$text(_p20._0);
 					} else {
 						return _elm_lang$html$Html$text('Loading candidates');
 					}
@@ -10488,13 +11072,10 @@ var _user$project$BelowTheLine$view = function (model) {
 	}
 };
 var _user$project$BelowTheLine$main = {
-	main: _elm_lang$html$Html_App$program(
-		{
-			init: {ctor: '_Tuple2', _0: _user$project$BelowTheLine$initModel, _1: _user$project$BelowTheLine$fetchCandidates},
-			update: _user$project$BelowTheLine$update,
-			subscriptions: _user$project$BelowTheLine$subscriptions,
-			view: _user$project$BelowTheLine$view
-		})
+	main: A2(
+		_elm_lang$navigation$Navigation$program,
+		_elm_lang$navigation$Navigation$makeParser(_user$project$BelowTheLine$urlParser),
+		{init: _user$project$BelowTheLine$init, update: _user$project$BelowTheLine$update, urlUpdate: _user$project$BelowTheLine$urlUpdate, subscriptions: _user$project$BelowTheLine$subscriptions, view: _user$project$BelowTheLine$view})
 };
 
 var Elm = {};
