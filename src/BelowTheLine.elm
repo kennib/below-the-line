@@ -220,6 +220,8 @@ update msg model =
             case msg of
                 SelectDivision _ ->
                     addUrl
+                ChangeView _ ->
+                    updateUrl
                 AddAll _ ->
                     updateUrl
                 TogglePreference _ ->
