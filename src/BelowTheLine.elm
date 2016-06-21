@@ -314,7 +314,10 @@ ballotSelection : Model -> List Candidate -> Html Msg
 ballotSelection model candidates =
     let
         noSelection = model.division == Nothing
-        divisionOption division = Html.option [] [Html.text division]
+        divisionOption default division =
+            Html.option
+                [Html.Attributes.selected default]
+                [Html.text division]
         defaultOption =
             Html.option
                 [Html.Attributes.disabled True, Html.Attributes.selected True]
@@ -323,7 +326,7 @@ ballotSelection model candidates =
         divisionOptions =
             defaultOption ::
             List.map
-                divisionOption
+                (\division -> divisionOption (Just division == model.division) division)
                 (divisions candidates)
 
         divisionSelect =
