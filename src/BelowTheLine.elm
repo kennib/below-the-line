@@ -9,6 +9,7 @@ import Json.Decode as Json exposing ((:=))
 
 import Task
 import Http
+import Navigation exposing (Location, modifyUrl, newUrl)
 import Html exposing (Html)
 import Html.Attributes exposing (style, class)
 import Html.Events exposing (on, onClick)
@@ -20,7 +21,7 @@ import BelowTheLine.SenateBallot as SenateBallot
 -- App
 
 type Msg
-    = LoadCandidates (List Candidate)
+    = LoadCandidates (List CandidateId) (List Candidate)
     | LoadFailed Http.Error
     | SelectDivision String
     | ChangeView BallotView
@@ -40,43 +41,147 @@ type alias Model =
 
 type BallotView = OrderBallot | ViewBallot
 
+type alias UrlData =
+    { division : Maybe String
+    , ballotView : BallotView
+    , preferences : List CandidateId
+    }
+
 main =
-    Html.App.program
-        { init = (initModel, fetchCandidates)
+    Navigation.program
+        (Navigation.makeParser urlParser)
+        { init = init
         , update = update
+        , urlUpdate = urlUpdate
         , subscriptions = subscriptions
         , view = view
         }
 
-fetchCandidates : Cmd Msg
-fetchCandidates =
-    Task.perform LoadFailed LoadCandidates
-        <| fetchData "candidates.json"
+-- URL
+
+urlParser : Location -> UrlData
+urlParser location =
+    let
+        params =
+            Debug.log "search" location.search
+            |> String.dropLeft 1
+            |> String.split "&"
+            |> List.map (String.split "=")
+
+        getParam key =
+            List.find
+                (\entry -> getKey entry == key)
+                params
+        getKey entry =
+            case entry of
+                key::_ -> key
+                [] -> ""
+        getValue entry =
+            case entry of
+                key::value::_ -> value
+                [key] -> key
+                [] -> ""
+
+        division =
+            getParam "division"
+            |> Maybe.map getValue
+        ballotView =
+            getParam "ballotView"
+            |> Maybe.map getValue
+            |> (flip Maybe.andThen) ballotViewFromString
+            |> Maybe.withDefault OrderBallot
+        ballotViewFromString string =
+            case string of
+                "OrderBallot" -> Just OrderBallot
+                "ViewBallot" -> Just ViewBallot
+                _ -> Nothing
+        preferences =
+            getParam "preferences"
+            |> Maybe.map getValue
+            |> Maybe.map (String.split ",")
+            |> Maybe.withDefault []
+    in
+        { division = division
+        , ballotView = ballotView
+        , preferences = preferences
+        }
+
+urlMaker : Model -> String
+urlMaker model =
+    let
+        division = model.division |> Maybe.withDefault ""
+        ballotView = toString model.ballotView
+        preferences =
+            List.map candidateId model.preferences
+            |> String.join ","
+    in
+        "?division=" ++ division
+        ++ "&ballotView=" ++ ballotView
+        ++ "&preferences=" ++ preferences
 
 -- Model
 
-initModel : Model
-initModel =
-    { candidates = Nothing
-    , ballotCandidates = Nothing
-    , preferences = []
-    , division = Nothing
-    , ballotView = OrderBallot
-    , error = Nothing
-    }
+init : UrlData -> (Model, Cmd Msg)
+init urlData =
+    let
+        model =
+            { candidates = Nothing
+            , ballotCandidates = Nothing
+            , preferences = []
+            , division = urlData.division
+            , ballotView = urlData.ballotView
+            , error = Nothing
+            }
+    in
+        (model, fetchPreferences urlData.preferences)
+
+fetchPreferences : List CandidateId -> Cmd Msg
+fetchPreferences preferences =
+    Task.perform LoadFailed (LoadCandidates preferences)
+        <| fetchData "candidates.json"
+
+getPreferences : List CandidateId -> List Candidate -> List Candidate
+getPreferences candidateIds candidates =
+    List.filterMap
+        (\id -> List.find (\candidate -> candidateId candidate == id) candidates)
+        candidateIds
 
 -- Update
+
+urlUpdate : UrlData -> Model -> (Model, Cmd Msg)
+urlUpdate data model =
+    let
+        candidates =
+            Maybe.map2 ballotCandidates
+                data.division
+                model.candidates
+
+        model' =
+            { model
+            | division = data.division
+            , ballotCandidates = candidates
+            , ballotView = data.ballotView
+            , preferences = preferences
+            }
+
+        preferences =
+            Maybe.map
+                (getPreferences data.preferences)
+                model.candidates
+            |> Maybe.withDefault []
+    in
+        (model', Cmd.none)
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
     let
         model' =
             case msg of
-                LoadCandidates candidates ->
+                LoadCandidates preferences candidates ->
                     { model
                     | candidates = Just candidates
                     , ballotCandidates = Maybe.map (flip ballotCandidates <| candidates) model.division
-                    , preferences = []
+                    , preferences = getPreferences preferences candidates
                     }
                 LoadFailed error ->
                     { model
@@ -108,8 +213,25 @@ update msg model =
                     { model
                     | preferences = moveBack candidate model.preferences
                     }
+
+        updateUrl = modifyUrl <| urlMaker model'
+        addUrl = newUrl <| urlMaker model'
+        cmd =
+            case msg of
+                SelectDivision _ ->
+                    addUrl
+                AddAll _ ->
+                    updateUrl
+                TogglePreference _ ->
+                    updateUrl
+                IncreasePreference _ ->
+                    updateUrl
+                DecreasePreference _ ->
+                    updateUrl
+                _ ->
+                    Cmd.none
     in
-        (model', Cmd.none)
+        (model', cmd)
 
 union : List a -> List a -> List a
 union items' items =

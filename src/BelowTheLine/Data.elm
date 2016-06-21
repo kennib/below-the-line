@@ -1,5 +1,6 @@
 module BelowTheLine.Data exposing
     ( Candidate
+    , CandidateId
     , House(..)
     , Ballot(..)
     , Ticket
@@ -8,6 +9,7 @@ module BelowTheLine.Data exposing
     , divisions
     , ticketCandidates
     , senatorCount
+    , candidateId
     )
 
 import List.Extra as List
@@ -26,6 +28,8 @@ type alias Candidate =
     , house : House
     , ballot : Ballot
     }
+
+type alias CandidateId = String
 
 type House = Upper | Lower
 
@@ -184,3 +188,11 @@ senatorCount state =
         "ACT" -> 2
         "NT"  -> 2
         _     -> 12
+
+candidateId : Candidate -> CandidateId
+candidateId candidate =
+    case candidate.ballot of
+        UpperBallot ballot ->
+            ballot.state ++ ballot.ticket ++ toString ballot.ballotPosition
+        LowerBallot ballot ->
+            ballot.division ++ toString ballot.ballotPosition
