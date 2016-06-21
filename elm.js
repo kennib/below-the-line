@@ -10495,6 +10495,8 @@ var _user$project$BelowTheLine$update = F2(
 			switch (_p9.ctor) {
 				case 'SelectDivision':
 					return addUrl;
+				case 'ChangeView':
+					return updateUrl;
 				case 'AddAll':
 					return updateUrl;
 				case 'TogglePreference':
