@@ -311,8 +311,8 @@ view model =
             case (model.candidates, model.ballotCandidates) of
                 (Just candidates, Just ballotCandidates) ->
                     ballotDisplay
-                        model.ballotView
                         division
+                        model.ballotView
                         candidates
                         (ticketCandidates division candidates)
                         model.preferences
@@ -327,8 +327,8 @@ view model =
                         ]
     ]
 
-ballotDisplay : BallotView -> String -> List Candidate -> List Ticket -> List Candidate -> Html Msg
-ballotDisplay ballotView division candidates tickets preferences =
+ballotDisplay : String -> BallotView -> List Candidate -> List Ticket -> List Candidate -> Html Msg
+ballotDisplay division ballotView candidates tickets preferences =
     let
         selection =
             BallotSelection.view
@@ -339,10 +339,9 @@ ballotDisplay ballotView division candidates tickets preferences =
 
         order =
             OrderPreferences.view
-                division
                 tickets
                 preferences
-            |> List.map (Html.App.map OrderPreferences)
+            |> Html.App.map OrderPreferences
 
         view =
             SenateBallot.ballotView
@@ -352,9 +351,10 @@ ballotDisplay ballotView division candidates tickets preferences =
     in
         Html.div
             []
-        <| [ selection ] ++ 
-        case ballotView of
-            OrderBallot ->
-                order
-            ViewBallot ->
-                [ view ]
+            [ selection
+            ,case ballotView of
+                OrderBallot ->
+                    order
+                ViewBallot ->
+                    view
+            ]
