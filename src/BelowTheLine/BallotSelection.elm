@@ -2,6 +2,8 @@ module BelowTheLine.BallotSelection exposing
     ( BallotView(..)
     , Msg(..)
     , view
+    , divisionSelect
+    , ballotToggle
     )
 
 import List.Extra as List
@@ -26,8 +28,17 @@ type Msg
 
 view : Maybe String -> BallotView -> List Candidate -> Html Msg
 view division ballotView candidates =
+    Html.div
+        [class <| "ballot-selection"]
+        [ Html.text "Select your state"
+        , Html.text " "
+        , divisionSelect division candidates
+        , ballotToggle ballotView
+        ]
+
+divisionSelect : Maybe String -> List Candidate -> Html Msg
+divisionSelect division candidates =
     let
-        noSelection = division == Nothing
         divisionOption default division =
             Html.option
                 [Html.Attributes.selected default]
@@ -42,32 +53,22 @@ view division ballotView candidates =
             List.map
                 (\division' -> divisionOption (Just division' == division) division')
                 (divisions candidates)
-
-        divisionSelect =
-            Html.select
-                [onChange SelectDivision]
-                divisionOptions
-
-        viewToggle =
-            case ballotView of
-                OrderBallot ->
-                    Html.button
-                    [onClick <| ChangeView ViewBallot]
-                    [Html.text "View your ballot paper"]
-                ViewBallot ->
-                    Html.button
-                    [onClick <| ChangeView OrderBallot]
-                    [Html.text "Change your preference order"]
     in
-        Html.div
-            [class <| "ballot-selection" ++ if noSelection then " only" else ""]
-            [ Html.text "Select your state"
-            , Html.text " "
-            , divisionSelect
-            , case division of
-                Just _ -> viewToggle
-                Nothing -> Html.text ""
-            ]
+        Html.select
+            [onChange SelectDivision]
+            divisionOptions
+
+ballotToggle : BallotView -> Html Msg
+ballotToggle ballotView =
+    case ballotView of
+        OrderBallot ->
+            Html.button
+            [onClick <| ChangeView ViewBallot]
+            [Html.text "View your ballot paper"]
+        ViewBallot ->
+            Html.button
+            [onClick <| ChangeView OrderBallot]
+            [Html.text "Change your preference order"]
 
 -- Events
 
