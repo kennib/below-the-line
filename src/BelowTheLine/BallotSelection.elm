@@ -30,9 +30,7 @@ view : Maybe String -> BallotView -> List Candidate -> Html Msg
 view division ballotView candidates =
     Html.div
         [class <| "ballot-selection"]
-        [ Html.text "Select your state"
-        , Html.text " "
-        , divisionSelect division candidates
+        [ divisionSelect division candidates
         , ballotToggle ballotView
         ]
 

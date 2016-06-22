@@ -9883,8 +9883,6 @@ var _user$project$BelowTheLine_BallotSelection$view = F3(
 				]),
 			_elm_lang$core$Native_List.fromArray(
 				[
-					_elm_lang$html$Html$text('Select your state'),
-					_elm_lang$html$Html$text(' '),
 					A2(_user$project$BelowTheLine_BallotSelection$divisionSelect, division, candidates),
 					_user$project$BelowTheLine_BallotSelection$ballotToggle(ballotView)
 				]));
@@ -9955,7 +9953,7 @@ var _user$project$BelowTheLine_OrderPreferences$icon = function (name) {
 		_elm_lang$html$Html$i,
 		_elm_lang$core$Native_List.fromArray(
 			[
-				_elm_lang$html$Html_Attributes$class('material-icons md-24')
+				_elm_lang$html$Html_Attributes$class('material-icons')
 			]),
 		_elm_lang$core$Native_List.fromArray(
 			[
@@ -10043,9 +10041,18 @@ var _user$project$BelowTheLine_OrderPreferences$candidateView = F2(
 	function (candidate, preferences) {
 		return _elm_lang$core$Native_List.fromArray(
 			[
-				_user$project$BelowTheLine_OrderPreferences$increase(candidate),
-				_user$project$BelowTheLine_OrderPreferences$decrease(candidate),
-				A2(_user$project$BelowTheLine_OrderPreferences$toggle, candidate, preferences),
+				A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('preference-controls')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_user$project$BelowTheLine_OrderPreferences$increase(candidate),
+						_user$project$BelowTheLine_OrderPreferences$decrease(candidate),
+						A2(_user$project$BelowTheLine_OrderPreferences$toggle, candidate, preferences)
+					])),
 				A2(
 				_elm_lang$html$Html$span,
 				_elm_lang$core$Native_List.fromArray(
@@ -10068,10 +10075,17 @@ var _user$project$BelowTheLine_OrderPreferences$preferencesView = function (pref
 		return A2(
 			_elm_lang$html$Html$li,
 			_elm_lang$core$Native_List.fromArray(
+				[]),
+			_elm_lang$core$Native_List.fromArray(
 				[
-					_elm_lang$html$Html_Attributes$class('candidate')
-				]),
-			A2(_user$project$BelowTheLine_OrderPreferences$candidateView, candidate, preferences));
+					A2(
+					_elm_lang$html$Html$div,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$class('candidate')
+						]),
+					A2(_user$project$BelowTheLine_OrderPreferences$candidateView, candidate, preferences))
+				]));
 	};
 	var preferenceList = A2(
 		_elm_lang$html$Html$ol,
@@ -10174,23 +10188,16 @@ var _user$project$BelowTheLine_OrderPreferences$choicesView = F2(
 		};
 		var ticketCandidates = function (ticket) {
 			return A2(
-				_elm_lang$html$Html$td,
-				_elm_lang$core$Native_List.fromArray(
-					[]),
+				_elm_lang$html$Html$ul,
 				_elm_lang$core$Native_List.fromArray(
 					[
-						A2(
-						_elm_lang$html$Html$ul,
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html_Attributes$class('candidates')
-							]),
-						A2(_elm_lang$core$List$map, choice, ticket.candidates))
-					]));
+						_elm_lang$html$Html_Attributes$class('candidates')
+					]),
+				A2(_elm_lang$core$List$map, choice, ticket.candidates));
 		};
 		var ticketParty = function (ticket) {
 			return A2(
-				_elm_lang$html$Html$th,
+				_elm_lang$html$Html$div,
 				_elm_lang$core$Native_List.fromArray(
 					[
 						_elm_lang$html$Html_Attributes$class('ticket-party')
@@ -10218,8 +10225,21 @@ var _user$project$BelowTheLine_OrderPreferences$choicesView = F2(
 							]))
 					]));
 		};
+		var ticketView = function (ticket) {
+			return A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('ticket')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						ticketParty(ticket),
+						ticketCandidates(ticket)
+					]));
+		};
 		var choices = A2(
-			_elm_lang$html$Html$table,
+			_elm_lang$html$Html$div,
 			_elm_lang$core$Native_List.fromArray(
 				[
 					_elm_lang$html$Html_Attributes$style(
@@ -10227,21 +10247,7 @@ var _user$project$BelowTheLine_OrderPreferences$choicesView = F2(
 						_elm_lang$core$Native_List.fromArray(
 							[])))
 				]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					A2(
-					_elm_lang$html$Html$tr,
-					_elm_lang$core$Native_List.fromArray(
-						[]),
-					A2(_elm_lang$core$List$map, ticketParty, tickets)),
-					A2(
-					_elm_lang$html$Html$tr,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$class('tickets')
-						]),
-					A2(_elm_lang$core$List$map, ticketCandidates, tickets))
-				]));
+			A2(_elm_lang$core$List$map, ticketView, tickets));
 		return A2(
 			_elm_lang$html$Html$div,
 			_elm_lang$core$Native_List.fromArray(
@@ -10510,7 +10516,7 @@ var _user$project$BelowTheLine_SenateBallot$ballotView = F3(
 							_1: A2(
 								_elm_lang$core$Basics_ops['++'],
 								_elm_lang$core$Basics$toString(
-									_elm_lang$core$List$length(tickets) * 150),
+									_elm_lang$core$List$length(tickets) * 110),
 								'px')
 						}
 						]))
@@ -11153,7 +11159,13 @@ var _user$project$BelowTheLine$ballotDisplay = F5(
 		return A2(
 			_elm_lang$html$Html$div,
 			_elm_lang$core$Native_List.fromArray(
-				[]),
+				[
+					_elm_lang$html$Html_Attributes$class(
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						'ballot-page ',
+						_elm_lang$core$Native_Utils.eq(ballotView, _user$project$BelowTheLine_BallotSelection$ViewBallot) ? 'view' : 'order'))
+				]),
 			_elm_lang$core$Native_List.fromArray(
 				[
 					selection,

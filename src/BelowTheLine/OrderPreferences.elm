@@ -43,8 +43,11 @@ preferencesView preferences =
 
         preference candidate =
             Html.li
-                [class "candidate"]
-                <| candidateView candidate preferences
+                []
+                [ Html.div
+                    [class "candidate"]
+                    <| candidateView candidate preferences
+                ]
     in
         if List.length preferences == 0 then
             Html.div
@@ -74,15 +77,20 @@ choicesView : List Ticket -> List Candidate -> Html Msg
 choicesView tickets preferences =
     let
         choices =
-            Html.table
+            Html.div
                 [ style <| unselectable []
                 ]
-                [ Html.tr [] <| List.map ticketParty tickets
-                , Html.tr [class "tickets"] <| List.map ticketCandidates tickets
+                <| List.map ticketView tickets
+
+        ticketView ticket =
+            Html.div
+                [class "ticket"]
+                [ ticketParty ticket
+                , ticketCandidates ticket
                 ]
 
         ticketParty ticket =
-            Html.th
+            Html.div
                 [class "ticket-party"]
                 [ Html.button
                     [ onClick <|
@@ -101,12 +109,9 @@ choicesView tickets preferences =
                 ]
 
         ticketCandidates ticket =
-            Html.td
-                []
-                [ Html.ul
-                    [class "candidates"]
-                    (List.map choice ticket.candidates)
-                ]
+            Html.ul
+                [class "candidates"]
+                (List.map choice ticket.candidates)
 
         choice candidate =
             Html.li
@@ -130,9 +135,12 @@ party candidate =
     ]
 
 candidateView candidate preferences =
-    [ increase candidate
-    , decrease candidate
-    , toggle candidate preferences
+    [ Html.div
+        [ class "preference-controls" ]
+        [ increase candidate
+        , decrease candidate
+        , toggle candidate preferences
+        ]
     , Html.span [class "name"] <| name candidate
     , Html.text " "
     , Html.span [class "party"] <| party candidate
@@ -172,5 +180,5 @@ unselectable style =
 icon : String -> Html a
 icon name =
     Html.i
-        [ class "material-icons md-24" ]
+        [ class "material-icons" ]
         [ Html.text name ]
