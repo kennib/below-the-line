@@ -9767,6 +9767,485 @@ var _user$project$BelowTheLine_Data$fetchData = function (url) {
 	return A2(_evancz$elm_http$Http$get, _user$project$BelowTheLine_Data$candidates, url);
 };
 
+var _user$project$BelowTheLine_BallotSelection$onChange = function (msg) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'change',
+		A2(
+			_elm_lang$core$Json_Decode$map,
+			msg,
+			A2(
+				_elm_lang$core$Json_Decode$at,
+				_elm_lang$core$Native_List.fromArray(
+					['target', 'value']),
+				_elm_lang$core$Json_Decode$string)));
+};
+var _user$project$BelowTheLine_BallotSelection$ViewBallot = {ctor: 'ViewBallot'};
+var _user$project$BelowTheLine_BallotSelection$OrderBallot = {ctor: 'OrderBallot'};
+var _user$project$BelowTheLine_BallotSelection$ChangeView = function (a) {
+	return {ctor: 'ChangeView', _0: a};
+};
+var _user$project$BelowTheLine_BallotSelection$ballotToggle = function (ballotView) {
+	var _p0 = ballotView;
+	if (_p0.ctor === 'OrderBallot') {
+		return A2(
+			_elm_lang$html$Html$button,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html_Events$onClick(
+					_user$project$BelowTheLine_BallotSelection$ChangeView(_user$project$BelowTheLine_BallotSelection$ViewBallot))
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html$text('View your ballot paper')
+				]));
+	} else {
+		return A2(
+			_elm_lang$html$Html$button,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html_Events$onClick(
+					_user$project$BelowTheLine_BallotSelection$ChangeView(_user$project$BelowTheLine_BallotSelection$OrderBallot))
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html$text('Change your preference order')
+				]));
+	}
+};
+var _user$project$BelowTheLine_BallotSelection$SelectDivision = function (a) {
+	return {ctor: 'SelectDivision', _0: a};
+};
+var _user$project$BelowTheLine_BallotSelection$divisionSelect = F2(
+	function (division, candidates) {
+		var defaultOption = A2(
+			_elm_lang$html$Html$option,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html_Attributes$disabled(true),
+					_elm_lang$html$Html_Attributes$selected(true)
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html$text('Select a state')
+				]));
+		var divisionOption = F2(
+			function ($default, division) {
+				return A2(
+					_elm_lang$html$Html$option,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$selected($default)
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text(division)
+						]));
+			});
+		var divisionOptions = A2(
+			_elm_lang$core$List_ops['::'],
+			defaultOption,
+			A2(
+				_elm_lang$core$List$map,
+				function (division$) {
+					return A2(
+						divisionOption,
+						_elm_lang$core$Native_Utils.eq(
+							_elm_lang$core$Maybe$Just(division$),
+							division),
+						division$);
+				},
+				_user$project$BelowTheLine_Data$divisions(candidates)));
+		return A2(
+			_elm_lang$html$Html$select,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_user$project$BelowTheLine_BallotSelection$onChange(_user$project$BelowTheLine_BallotSelection$SelectDivision)
+				]),
+			divisionOptions);
+	});
+var _user$project$BelowTheLine_BallotSelection$view = F3(
+	function (division, ballotView, candidates) {
+		return A2(
+			_elm_lang$html$Html$div,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html_Attributes$class('ballot-selection')
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html$text('Select your state'),
+					_elm_lang$html$Html$text(' '),
+					A2(_user$project$BelowTheLine_BallotSelection$divisionSelect, division, candidates),
+					_user$project$BelowTheLine_BallotSelection$ballotToggle(ballotView)
+				]));
+	});
+
+var _user$project$BelowTheLine_Splash$view = F3(
+	function (division, candidates, error) {
+		return A2(
+			_elm_lang$html$Html$div,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html_Attributes$class('splash')
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A2(
+					_elm_lang$html$Html$h1,
+					_elm_lang$core$Native_List.fromArray(
+						[]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text('Below The Line')
+						])),
+					A2(
+					_elm_lang$html$Html$p,
+					_elm_lang$core$Native_List.fromArray(
+						[]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text('Prepare for your 2016 Australian Federal Election senate vote')
+						])),
+					function () {
+					var _p0 = candidates;
+					if (_p0.ctor === 'Just') {
+						return A2(_user$project$BelowTheLine_BallotSelection$divisionSelect, division, _p0._0);
+					} else {
+						var _p1 = error;
+						if (_p1.ctor === 'Just') {
+							return A2(
+								_elm_lang$html$Html$p,
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html_Attributes$class('error')
+									]),
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html$text('Oops, something has gone wrong. Try reloading the page')
+									]));
+						} else {
+							return A2(
+								_elm_lang$html$Html$p,
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html_Attributes$class('error')
+									]),
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html$text('Loading candidates')
+									]));
+						}
+					}
+				}()
+				]));
+	});
+
+var _user$project$BelowTheLine_OrderPreferences$icon = function (name) {
+	return A2(
+		_elm_lang$html$Html$i,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$class('material-icons md-24')
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html$text(name)
+			]));
+};
+var _user$project$BelowTheLine_OrderPreferences$unselectable = function (style) {
+	return A2(
+		_elm_lang$core$Basics_ops['++'],
+		style,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				{ctor: '_Tuple2', _0: 'user-select', _1: 'none'},
+				{ctor: '_Tuple2', _0: '-webkit-user-select', _1: 'none'},
+				{ctor: '_Tuple2', _0: 'user-drag', _1: 'none'},
+				{ctor: '_Tuple2', _0: '-webkit-user-drag', _1: 'none'}
+			]));
+};
+var _user$project$BelowTheLine_OrderPreferences$DecreasePreference = function (a) {
+	return {ctor: 'DecreasePreference', _0: a};
+};
+var _user$project$BelowTheLine_OrderPreferences$IncreasePreference = function (a) {
+	return {ctor: 'IncreasePreference', _0: a};
+};
+var _user$project$BelowTheLine_OrderPreferences$TogglePreference = function (a) {
+	return {ctor: 'TogglePreference', _0: a};
+};
+var _user$project$BelowTheLine_OrderPreferences$RemoveAll = function (a) {
+	return {ctor: 'RemoveAll', _0: a};
+};
+var _user$project$BelowTheLine_OrderPreferences$AddAll = function (a) {
+	return {ctor: 'AddAll', _0: a};
+};
+var _user$project$BelowTheLine_OrderPreferences$view = F3(
+	function (division, tickets, preferences) {
+		var missingPreferences = A2(
+			_elm_lang$core$Basics$max,
+			0,
+			12 - _elm_lang$core$List$length(preferences));
+		var decrease = function (candidate) {
+			return A2(
+				_elm_lang$html$Html$button,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('decrease'),
+						_elm_lang$html$Html_Events$onClick(
+						_user$project$BelowTheLine_OrderPreferences$DecreasePreference(candidate))
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_user$project$BelowTheLine_OrderPreferences$icon('arrow_downward')
+					]));
+		};
+		var increase = function (candidate) {
+			return A2(
+				_elm_lang$html$Html$button,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('increase'),
+						_elm_lang$html$Html_Events$onClick(
+						_user$project$BelowTheLine_OrderPreferences$IncreasePreference(candidate))
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_user$project$BelowTheLine_OrderPreferences$icon('arrow_upward')
+					]));
+		};
+		var toggle = function (candidate) {
+			return A2(
+				_elm_lang$html$Html$button,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Events$onClick(
+						_user$project$BelowTheLine_OrderPreferences$TogglePreference(candidate))
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(_elm_lang$core$List$member, candidate, preferences) ? _user$project$BelowTheLine_OrderPreferences$icon('remove') : _user$project$BelowTheLine_OrderPreferences$icon('add')
+					]));
+		};
+		var party = function (candidate) {
+			return _elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html$text(candidate.party)
+				]);
+		};
+		var name = function (candidate) {
+			return _elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html$text(candidate.givenName),
+					_elm_lang$html$Html$text(' '),
+					_elm_lang$html$Html$text(candidate.surname)
+				]);
+		};
+		var view = function (candidate) {
+			return _elm_lang$core$Native_List.fromArray(
+				[
+					increase(candidate),
+					decrease(candidate),
+					toggle(candidate),
+					A2(
+					_elm_lang$html$Html$span,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$class('name')
+						]),
+					name(candidate)),
+					_elm_lang$html$Html$text(' '),
+					A2(
+					_elm_lang$html$Html$span,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$class('party')
+						]),
+					party(candidate))
+				]);
+		};
+		var preference = function (candidate) {
+			return A2(
+				_elm_lang$html$Html$li,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('candidate')
+					]),
+				view(candidate));
+		};
+		var preferenceList = A2(
+			_elm_lang$html$Html$ol,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html_Attributes$class('candidates'),
+					_elm_lang$html$Html_Attributes$style(
+					_user$project$BelowTheLine_OrderPreferences$unselectable(
+						_elm_lang$core$Native_List.fromArray(
+							[])))
+				]),
+			A2(_elm_lang$core$List$map, preference, preferences));
+		var preferencesBox = _elm_lang$core$Native_Utils.eq(
+			_elm_lang$core$List$length(preferences),
+			0) ? A2(
+			_elm_lang$html$Html$div,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html_Attributes$class('preferences empty')
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A2(
+					_elm_lang$html$Html$p,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$class('message')
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text('You must add 12 preferences')
+						]))
+				])) : ((_elm_lang$core$Native_Utils.cmp(missingPreferences, 0) > 0) ? A2(
+			_elm_lang$html$Html$div,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html_Attributes$class('preferences missing')
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					preferenceList,
+					A2(
+					_elm_lang$html$Html$p,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$class('message')
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text(
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								'Please add at least ',
+								A2(
+									_elm_lang$core$Basics_ops['++'],
+									_elm_lang$core$Basics$toString(missingPreferences),
+									' more preferences')))
+						]))
+				])) : A2(
+			_elm_lang$html$Html$div,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html_Attributes$class('preferences')
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					preferenceList,
+					A2(
+					_elm_lang$html$Html$p,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$class('message')
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text('You have the required 12 preferences but you may add more')
+						]))
+				])));
+		var choice = function (candidate) {
+			return A2(
+				_elm_lang$html$Html$li,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('candidate')
+					]),
+				view(candidate));
+		};
+		var ticketCandidates = function (ticket) {
+			return A2(
+				_elm_lang$html$Html$td,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_elm_lang$html$Html$ul,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$class('candidates')
+							]),
+						A2(_elm_lang$core$List$map, choice, ticket.candidates))
+					]));
+		};
+		var allPreferenced = _elm_lang$core$List$all(
+			function (candidate) {
+				return A2(_elm_lang$core$List$member, candidate, preferences);
+			});
+		var ticketParty = function (ticket) {
+			return A2(
+				_elm_lang$html$Html$th,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('ticket-party')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_elm_lang$html$Html$button,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Events$onClick(
+								allPreferenced(ticket.candidates) ? _user$project$BelowTheLine_OrderPreferences$RemoveAll(ticket.candidates) : _user$project$BelowTheLine_OrderPreferences$AddAll(ticket.candidates))
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								allPreferenced(ticket.candidates) ? _user$project$BelowTheLine_OrderPreferences$icon('remove') : _user$project$BelowTheLine_OrderPreferences$icon('add')
+							])),
+						A2(
+						_elm_lang$html$Html$span,
+						_elm_lang$core$Native_List.fromArray(
+							[]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text(ticket.party)
+							]))
+					]));
+		};
+		var choices = A2(
+			_elm_lang$html$Html$table,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html_Attributes$class('choices'),
+					_elm_lang$html$Html_Attributes$style(
+					_user$project$BelowTheLine_OrderPreferences$unselectable(
+						_elm_lang$core$Native_List.fromArray(
+							[])))
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A2(
+					_elm_lang$html$Html$tr,
+					_elm_lang$core$Native_List.fromArray(
+						[]),
+					A2(_elm_lang$core$List$map, ticketParty, tickets)),
+					A2(
+					_elm_lang$html$Html$tr,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$class('tickets')
+						]),
+					A2(_elm_lang$core$List$map, ticketCandidates, tickets))
+				]));
+		var choicesBox = A2(
+			_elm_lang$html$Html$div,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html_Attributes$class('choices')
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[choices]));
+		return _elm_lang$core$Native_List.fromArray(
+			[preferencesBox, choicesBox]);
+	});
+
 var _user$project$BelowTheLine_SenateBallot$candidateView = F2(
 	function (candidate, number) {
 		return A2(
@@ -10257,51 +10736,6 @@ var _user$project$BelowTheLine_SenateBallot$ballotView = F3(
 				]));
 	});
 
-var _user$project$BelowTheLine$onChange = function (msg) {
-	return A2(
-		_elm_lang$html$Html_Events$on,
-		'change',
-		A2(
-			_elm_lang$core$Json_Decode$map,
-			msg,
-			A2(
-				_elm_lang$core$Json_Decode$at,
-				_elm_lang$core$Native_List.fromArray(
-					['target', 'value']),
-				_elm_lang$core$Json_Decode$string)));
-};
-var _user$project$BelowTheLine$icon = function (name) {
-	return A2(
-		_elm_lang$html$Html$i,
-		_elm_lang$core$Native_List.fromArray(
-			[
-				_elm_lang$html$Html_Attributes$class('material-icons md-24')
-			]),
-		_elm_lang$core$Native_List.fromArray(
-			[
-				_elm_lang$html$Html$text(name)
-			]));
-};
-var _user$project$BelowTheLine$unselectable = function (style) {
-	return A2(
-		_elm_lang$core$Basics_ops['++'],
-		style,
-		_elm_lang$core$Native_List.fromArray(
-			[
-				{ctor: '_Tuple2', _0: 'user-select', _1: 'none'},
-				{ctor: '_Tuple2', _0: '-webkit-user-select', _1: 'none'},
-				{ctor: '_Tuple2', _0: 'user-drag', _1: 'none'},
-				{ctor: '_Tuple2', _0: '-webkit-user-drag', _1: 'none'}
-			]));
-};
-var _user$project$BelowTheLine$ballotView = F3(
-	function (division, candidates, ballotCandidates) {
-		return A3(
-			_user$project$BelowTheLine_SenateBallot$ballotView,
-			division,
-			A2(_user$project$BelowTheLine_Data$ticketCandidates, division, candidates),
-			ballotCandidates);
-	});
 var _user$project$BelowTheLine$subscriptions = function (model) {
 	return _elm_lang$core$Platform_Sub$none;
 };
@@ -10470,53 +10904,60 @@ var _user$project$BelowTheLine$update = F2(
 							error: _elm_lang$core$Maybe$Just(
 								_elm_lang$core$Basics$toString(_p6._0))
 						});
-				case 'SelectDivision':
+				case 'BallotSelection':
 					var _p8 = _p6._0;
-					return _elm_lang$core$Native_Utils.update(
-						model,
-						{
-							division: _elm_lang$core$Maybe$Just(_p8),
-							ballotCandidates: A2(
-								_elm_lang$core$Maybe$map,
-								_user$project$BelowTheLine_Data$ballotCandidates(_p8),
-								model.candidates),
-							preferences: _elm_lang$core$Native_List.fromArray(
-								[])
-						});
-				case 'ChangeView':
-					return _elm_lang$core$Native_Utils.update(
-						model,
-						{ballotView: _p6._0});
-				case 'AddAll':
-					return _elm_lang$core$Native_Utils.update(
-						model,
-						{
-							preferences: A2(_user$project$BelowTheLine$union, _p6._0, model.preferences)
-						});
-				case 'RemoveAll':
-					return _elm_lang$core$Native_Utils.update(
-						model,
-						{
-							preferences: A2(_user$project$BelowTheLine$difference, _p6._0, model.preferences)
-						});
-				case 'TogglePreference':
-					return _elm_lang$core$Native_Utils.update(
-						model,
-						{
-							preferences: A2(_user$project$BelowTheLine$toggle, _p6._0, model.preferences)
-						});
-				case 'IncreasePreference':
-					return _elm_lang$core$Native_Utils.update(
-						model,
-						{
-							preferences: A2(_user$project$BelowTheLine$moveFront, _p6._0, model.preferences)
-						});
+					if (_p8.ctor === 'SelectDivision') {
+						var _p9 = _p8._0;
+						return _elm_lang$core$Native_Utils.update(
+							model,
+							{
+								division: _elm_lang$core$Maybe$Just(_p9),
+								ballotCandidates: A2(
+									_elm_lang$core$Maybe$map,
+									_user$project$BelowTheLine_Data$ballotCandidates(_p9),
+									model.candidates),
+								preferences: _elm_lang$core$Native_List.fromArray(
+									[])
+							});
+					} else {
+						return _elm_lang$core$Native_Utils.update(
+							model,
+							{ballotView: _p8._0});
+					}
 				default:
-					return _elm_lang$core$Native_Utils.update(
-						model,
-						{
-							preferences: A2(_user$project$BelowTheLine$moveBack, _p6._0, model.preferences)
-						});
+					var _p10 = _p6._0;
+					switch (_p10.ctor) {
+						case 'AddAll':
+							return _elm_lang$core$Native_Utils.update(
+								model,
+								{
+									preferences: A2(_user$project$BelowTheLine$union, _p10._0, model.preferences)
+								});
+						case 'RemoveAll':
+							return _elm_lang$core$Native_Utils.update(
+								model,
+								{
+									preferences: A2(_user$project$BelowTheLine$difference, _p10._0, model.preferences)
+								});
+						case 'TogglePreference':
+							return _elm_lang$core$Native_Utils.update(
+								model,
+								{
+									preferences: A2(_user$project$BelowTheLine$toggle, _p10._0, model.preferences)
+								});
+						case 'IncreasePreference':
+							return _elm_lang$core$Native_Utils.update(
+								model,
+								{
+									preferences: A2(_user$project$BelowTheLine$moveFront, _p10._0, model.preferences)
+								});
+						default:
+							return _elm_lang$core$Native_Utils.update(
+								model,
+								{
+									preferences: A2(_user$project$BelowTheLine$moveBack, _p10._0, model.preferences)
+								});
+					}
 			}
 		}();
 		var updateUrl = _elm_lang$navigation$Navigation$modifyUrl(
@@ -10524,26 +10965,112 @@ var _user$project$BelowTheLine$update = F2(
 		var addUrl = _elm_lang$navigation$Navigation$newUrl(
 			_user$project$BelowTheLine$urlMaker(model$));
 		var cmd = function () {
-			var _p9 = msg;
-			switch (_p9.ctor) {
-				case 'SelectDivision':
-					return addUrl;
-				case 'ChangeView':
-					return updateUrl;
-				case 'AddAll':
-					return updateUrl;
-				case 'TogglePreference':
-					return updateUrl;
-				case 'IncreasePreference':
-					return updateUrl;
-				case 'DecreasePreference':
-					return updateUrl;
+			var _p11 = msg;
+			switch (_p11.ctor) {
+				case 'BallotSelection':
+					var _p12 = _p11._0;
+					if (_p12.ctor === 'SelectDivision') {
+						return addUrl;
+					} else {
+						return updateUrl;
+					}
+				case 'OrderPreferences':
+					var _p13 = _p11._0;
+					switch (_p13.ctor) {
+						case 'AddAll':
+							return updateUrl;
+						case 'RemoveAll':
+							return updateUrl;
+						case 'TogglePreference':
+							return updateUrl;
+						case 'IncreasePreference':
+							return updateUrl;
+						default:
+							return updateUrl;
+					}
 				default:
 					return _elm_lang$core$Platform_Cmd$none;
 			}
 		}();
 		return {ctor: '_Tuple2', _0: model$, _1: cmd};
 	});
+var _user$project$BelowTheLine$urlParser = function (location) {
+	var ballotViewFromString = function (string) {
+		var _p14 = string;
+		switch (_p14) {
+			case 'OrderBallot':
+				return _elm_lang$core$Maybe$Just(_user$project$BelowTheLine_BallotSelection$OrderBallot);
+			case 'ViewBallot':
+				return _elm_lang$core$Maybe$Just(_user$project$BelowTheLine_BallotSelection$ViewBallot);
+			default:
+				return _elm_lang$core$Maybe$Nothing;
+		}
+	};
+	var getValue = function (entry) {
+		var _p15 = entry;
+		if (_p15.ctor === '::') {
+			if (_p15._1.ctor === '::') {
+				return _p15._1._0;
+			} else {
+				return _p15._0;
+			}
+		} else {
+			return '';
+		}
+	};
+	var getKey = function (entry) {
+		var _p16 = entry;
+		if (_p16.ctor === '::') {
+			return _p16._0;
+		} else {
+			return '';
+		}
+	};
+	var params = A2(
+		_elm_lang$core$List$map,
+		_elm_lang$core$String$split('='),
+		A2(
+			_elm_lang$core$String$split,
+			'&',
+			A2(_elm_lang$core$String$dropLeft, 1, location.search)));
+	var getParam = function (key) {
+		return A2(
+			_elm_community$list_extra$List_Extra$find,
+			function (entry) {
+				return _elm_lang$core$Native_Utils.eq(
+					getKey(entry),
+					key);
+			},
+			params);
+	};
+	var division = A2(
+		_elm_lang$core$Maybe$map,
+		getValue,
+		getParam('division'));
+	var ballotView = A2(
+		_elm_lang$core$Maybe$withDefault,
+		_user$project$BelowTheLine_BallotSelection$OrderBallot,
+		A3(
+			_elm_lang$core$Basics$flip,
+			_elm_lang$core$Maybe$andThen,
+			ballotViewFromString,
+			A2(
+				_elm_lang$core$Maybe$map,
+				getValue,
+				getParam('ballotView'))));
+	var preferences = A2(
+		_elm_lang$core$Maybe$withDefault,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		A2(
+			_elm_lang$core$Maybe$map,
+			_elm_lang$core$String$split(','),
+			A2(
+				_elm_lang$core$Maybe$map,
+				getValue,
+				getParam('preferences'))));
+	return {division: division, ballotView: ballotView, preferences: preferences};
+};
 var _user$project$BelowTheLine$Model = F6(
 	function (a, b, c, d, e, f) {
 		return {candidates: a, ballotCandidates: b, preferences: c, division: d, ballotView: e, error: f};
@@ -10552,291 +11079,91 @@ var _user$project$BelowTheLine$UrlData = F3(
 	function (a, b, c) {
 		return {division: a, ballotView: b, preferences: c};
 	});
-var _user$project$BelowTheLine$DecreasePreference = function (a) {
-	return {ctor: 'DecreasePreference', _0: a};
+var _user$project$BelowTheLine$OrderPreferences = function (a) {
+	return {ctor: 'OrderPreferences', _0: a};
 };
-var _user$project$BelowTheLine$IncreasePreference = function (a) {
-	return {ctor: 'IncreasePreference', _0: a};
+var _user$project$BelowTheLine$BallotSelection = function (a) {
+	return {ctor: 'BallotSelection', _0: a};
 };
-var _user$project$BelowTheLine$TogglePreference = function (a) {
-	return {ctor: 'TogglePreference', _0: a};
-};
-var _user$project$BelowTheLine$RemoveAll = function (a) {
-	return {ctor: 'RemoveAll', _0: a};
-};
-var _user$project$BelowTheLine$AddAll = function (a) {
-	return {ctor: 'AddAll', _0: a};
-};
-var _user$project$BelowTheLine$candidatesView = F3(
-	function (model, division, tickets) {
-		var missingPreferences = A2(
-			_elm_lang$core$Basics$max,
-			0,
-			12 - _elm_lang$core$List$length(model.preferences));
-		var decrease = function (candidate) {
-			return A2(
-				_elm_lang$html$Html$button,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html_Attributes$class('decrease'),
-						_elm_lang$html$Html_Events$onClick(
-						_user$project$BelowTheLine$DecreasePreference(candidate))
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_user$project$BelowTheLine$icon('arrow_downward')
-					]));
-		};
-		var increase = function (candidate) {
-			return A2(
-				_elm_lang$html$Html$button,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html_Attributes$class('increase'),
-						_elm_lang$html$Html_Events$onClick(
-						_user$project$BelowTheLine$IncreasePreference(candidate))
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_user$project$BelowTheLine$icon('arrow_upward')
-					]));
-		};
-		var toggle = function (candidate) {
-			return A2(
-				_elm_lang$html$Html$button,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html_Events$onClick(
-						_user$project$BelowTheLine$TogglePreference(candidate))
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						A2(_elm_lang$core$List$member, candidate, model.preferences) ? _user$project$BelowTheLine$icon('remove') : _user$project$BelowTheLine$icon('add')
-					]));
-		};
-		var party = function (candidate) {
-			return _elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html$text(candidate.party)
-				]);
-		};
-		var name = function (candidate) {
-			return _elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html$text(candidate.givenName),
-					_elm_lang$html$Html$text(' '),
-					_elm_lang$html$Html$text(candidate.surname)
-				]);
-		};
-		var view = function (candidate) {
-			return _elm_lang$core$Native_List.fromArray(
-				[
-					increase(candidate),
-					decrease(candidate),
-					toggle(candidate),
-					A2(
-					_elm_lang$html$Html$span,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$class('name')
-						]),
-					name(candidate)),
-					_elm_lang$html$Html$text(' '),
-					A2(
-					_elm_lang$html$Html$span,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$class('party')
-						]),
-					party(candidate))
-				]);
-		};
-		var preference = function (candidate) {
-			return A2(
-				_elm_lang$html$Html$li,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html_Attributes$class('candidate')
-					]),
-				view(candidate));
-		};
-		var preferences = A2(
-			_elm_lang$html$Html$ol,
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html_Attributes$class('candidates'),
-					_elm_lang$html$Html_Attributes$style(
-					_user$project$BelowTheLine$unselectable(
-						_elm_lang$core$Native_List.fromArray(
-							[])))
-				]),
-			A2(_elm_lang$core$List$map, preference, model.preferences));
-		var preferencesBox = _elm_lang$core$Native_Utils.eq(
-			_elm_lang$core$List$length(model.preferences),
-			0) ? A2(
+var _user$project$BelowTheLine$ballotDisplay = F5(
+	function (ballotView, division, candidates, tickets, preferences) {
+		var view = A3(_user$project$BelowTheLine_SenateBallot$ballotView, division, tickets, preferences);
+		var order = A2(
+			_elm_lang$core$List$map,
+			_elm_lang$html$Html_App$map(_user$project$BelowTheLine$OrderPreferences),
+			A3(_user$project$BelowTheLine_OrderPreferences$view, division, tickets, preferences));
+		var selection = A2(
+			_elm_lang$html$Html_App$map,
+			_user$project$BelowTheLine$BallotSelection,
+			A3(
+				_user$project$BelowTheLine_BallotSelection$view,
+				_elm_lang$core$Maybe$Just(division),
+				ballotView,
+				candidates));
+		return A2(
 			_elm_lang$html$Html$div,
 			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html_Attributes$class('preferences empty')
-				]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					A2(
-					_elm_lang$html$Html$p,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$class('message')
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html$text('You must add 12 preferences')
-						]))
-				])) : ((_elm_lang$core$Native_Utils.cmp(missingPreferences, 0) > 0) ? A2(
-			_elm_lang$html$Html$div,
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html_Attributes$class('preferences missing')
-				]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					preferences,
-					A2(
-					_elm_lang$html$Html$p,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$class('message')
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html$text(
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								'Please add at least ',
-								A2(
-									_elm_lang$core$Basics_ops['++'],
-									_elm_lang$core$Basics$toString(missingPreferences),
-									' more preferences')))
-						]))
-				])) : A2(
-			_elm_lang$html$Html$div,
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html_Attributes$class('preferences')
-				]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					preferences,
-					A2(
-					_elm_lang$html$Html$p,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$class('message')
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html$text('You have the required 12 preferences but you may add more')
-						]))
-				])));
-		var choice = function (candidate) {
-			return A2(
-				_elm_lang$html$Html$li,
+				[]),
+			A2(
+				_elm_lang$core$Basics_ops['++'],
 				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html_Attributes$class('candidate')
-					]),
-				view(candidate));
-		};
-		var ticketCandidates = function (ticket) {
-			return A2(
-				_elm_lang$html$Html$td,
-				_elm_lang$core$Native_List.fromArray(
-					[]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						A2(
-						_elm_lang$html$Html$ul,
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html_Attributes$class('candidates')
-							]),
-						A2(_elm_lang$core$List$map, choice, ticket.candidates))
-					]));
-		};
-		var allPreferenced = _elm_lang$core$List$all(
-			function (candidate) {
-				return A2(_elm_lang$core$List$member, candidate, model.preferences);
-			});
-		var ticketParty = function (ticket) {
-			return A2(
-				_elm_lang$html$Html$th,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html_Attributes$class('ticket-party')
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						A2(
-						_elm_lang$html$Html$button,
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html_Events$onClick(
-								allPreferenced(ticket.candidates) ? _user$project$BelowTheLine$RemoveAll(ticket.candidates) : _user$project$BelowTheLine$AddAll(ticket.candidates))
-							]),
-						_elm_lang$core$Native_List.fromArray(
-							[
-								allPreferenced(ticket.candidates) ? _user$project$BelowTheLine$icon('remove') : _user$project$BelowTheLine$icon('add')
-							])),
-						A2(
-						_elm_lang$html$Html$span,
-						_elm_lang$core$Native_List.fromArray(
-							[]),
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html$text(ticket.party)
-							]))
-					]));
-		};
-		var choices = A2(
-			_elm_lang$html$Html$table,
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html_Attributes$class('choices'),
-					_elm_lang$html$Html_Attributes$style(
-					_user$project$BelowTheLine$unselectable(
-						_elm_lang$core$Native_List.fromArray(
-							[])))
-				]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					A2(
-					_elm_lang$html$Html$tr,
-					_elm_lang$core$Native_List.fromArray(
-						[]),
-					A2(_elm_lang$core$List$map, ticketParty, tickets)),
-					A2(
-					_elm_lang$html$Html$tr,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$class('tickets')
-						]),
-					A2(_elm_lang$core$List$map, ticketCandidates, tickets))
-				]));
-		var choicesBox = A2(
-			_elm_lang$html$Html$div,
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html_Attributes$class('choices')
-				]),
-			_elm_lang$core$Native_List.fromArray(
-				[choices]));
-		return _elm_lang$core$Native_List.fromArray(
-			[preferencesBox, choicesBox]);
+					[selection]),
+				function () {
+					var _p17 = ballotView;
+					if (_p17.ctor === 'OrderBallot') {
+						return order;
+					} else {
+						return _elm_lang$core$Native_List.fromArray(
+							[view]);
+					}
+				}()));
 	});
-var _user$project$BelowTheLine$ChangeView = function (a) {
-	return {ctor: 'ChangeView', _0: a};
-};
-var _user$project$BelowTheLine$SelectDivision = function (a) {
-	return {ctor: 'SelectDivision', _0: a};
+var _user$project$BelowTheLine$view = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				function () {
+				var _p18 = model.division;
+				if (_p18.ctor === 'Nothing') {
+					return A2(
+						_elm_lang$html$Html_App$map,
+						_user$project$BelowTheLine$BallotSelection,
+						A3(_user$project$BelowTheLine_Splash$view, model.division, model.candidates, model.error));
+				} else {
+					var _p22 = _p18._0;
+					var _p19 = {ctor: '_Tuple2', _0: model.candidates, _1: model.ballotCandidates};
+					if (((_p19.ctor === '_Tuple2') && (_p19._0.ctor === 'Just')) && (_p19._1.ctor === 'Just')) {
+						var _p20 = _p19._0._0;
+						return A5(
+							_user$project$BelowTheLine$ballotDisplay,
+							model.ballotView,
+							_p22,
+							_p20,
+							A2(_user$project$BelowTheLine_Data$ticketCandidates, _p22, _p20),
+							model.preferences);
+					} else {
+						return A2(
+							_elm_lang$html$Html$p,
+							_elm_lang$core$Native_List.fromArray(
+								[]),
+							_elm_lang$core$Native_List.fromArray(
+								[
+									function () {
+									var _p21 = model.error;
+									if (_p21.ctor === 'Just') {
+										return _elm_lang$html$Html$text('Oops, something has gone wrong. Try reloading the page');
+									} else {
+										return _elm_lang$html$Html$text('Loading candidates');
+									}
+								}()
+								]));
+					}
+				}
+			}()
+			]));
 };
 var _user$project$BelowTheLine$LoadFailed = function (a) {
 	return {ctor: 'LoadFailed', _0: a};
@@ -10867,245 +11194,6 @@ var _user$project$BelowTheLine$init = function (urlData) {
 		_0: model,
 		_1: _user$project$BelowTheLine$fetchPreferences(urlData.preferences)
 	};
-};
-var _user$project$BelowTheLine$ViewBallot = {ctor: 'ViewBallot'};
-var _user$project$BelowTheLine$OrderBallot = {ctor: 'OrderBallot'};
-var _user$project$BelowTheLine$urlParser = function (location) {
-	var ballotViewFromString = function (string) {
-		var _p10 = string;
-		switch (_p10) {
-			case 'OrderBallot':
-				return _elm_lang$core$Maybe$Just(_user$project$BelowTheLine$OrderBallot);
-			case 'ViewBallot':
-				return _elm_lang$core$Maybe$Just(_user$project$BelowTheLine$ViewBallot);
-			default:
-				return _elm_lang$core$Maybe$Nothing;
-		}
-	};
-	var getValue = function (entry) {
-		var _p11 = entry;
-		if (_p11.ctor === '::') {
-			if (_p11._1.ctor === '::') {
-				return _p11._1._0;
-			} else {
-				return _p11._0;
-			}
-		} else {
-			return '';
-		}
-	};
-	var getKey = function (entry) {
-		var _p12 = entry;
-		if (_p12.ctor === '::') {
-			return _p12._0;
-		} else {
-			return '';
-		}
-	};
-	var params = A2(
-		_elm_lang$core$List$map,
-		_elm_lang$core$String$split('='),
-		A2(
-			_elm_lang$core$String$split,
-			'&',
-			A2(
-				_elm_lang$core$String$dropLeft,
-				1,
-				A2(_elm_lang$core$Debug$log, 'search', location.search))));
-	var getParam = function (key) {
-		return A2(
-			_elm_community$list_extra$List_Extra$find,
-			function (entry) {
-				return _elm_lang$core$Native_Utils.eq(
-					getKey(entry),
-					key);
-			},
-			params);
-	};
-	var division = A2(
-		_elm_lang$core$Maybe$map,
-		getValue,
-		getParam('division'));
-	var ballotView = A2(
-		_elm_lang$core$Maybe$withDefault,
-		_user$project$BelowTheLine$OrderBallot,
-		A3(
-			_elm_lang$core$Basics$flip,
-			_elm_lang$core$Maybe$andThen,
-			ballotViewFromString,
-			A2(
-				_elm_lang$core$Maybe$map,
-				getValue,
-				getParam('ballotView'))));
-	var preferences = A2(
-		_elm_lang$core$Maybe$withDefault,
-		_elm_lang$core$Native_List.fromArray(
-			[]),
-		A2(
-			_elm_lang$core$Maybe$map,
-			_elm_lang$core$String$split(','),
-			A2(
-				_elm_lang$core$Maybe$map,
-				getValue,
-				getParam('preferences'))));
-	return {division: division, ballotView: ballotView, preferences: preferences};
-};
-var _user$project$BelowTheLine$ballotSelection = F2(
-	function (model, candidates) {
-		var viewToggle = function () {
-			var _p13 = model.ballotView;
-			if (_p13.ctor === 'OrderBallot') {
-				return A2(
-					_elm_lang$html$Html$button,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Events$onClick(
-							_user$project$BelowTheLine$ChangeView(_user$project$BelowTheLine$ViewBallot))
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html$text('View your ballot paper')
-						]));
-			} else {
-				return A2(
-					_elm_lang$html$Html$button,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Events$onClick(
-							_user$project$BelowTheLine$ChangeView(_user$project$BelowTheLine$OrderBallot))
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html$text('Change your preference order')
-						]));
-			}
-		}();
-		var defaultOption = A2(
-			_elm_lang$html$Html$option,
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html_Attributes$disabled(true),
-					_elm_lang$html$Html_Attributes$selected(true)
-				]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html$text('Select a state')
-				]));
-		var divisionOption = F2(
-			function ($default, division) {
-				return A2(
-					_elm_lang$html$Html$option,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$selected($default)
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html$text(division)
-						]));
-			});
-		var divisionOptions = A2(
-			_elm_lang$core$List_ops['::'],
-			defaultOption,
-			A2(
-				_elm_lang$core$List$map,
-				function (division) {
-					return A2(
-						divisionOption,
-						_elm_lang$core$Native_Utils.eq(
-							_elm_lang$core$Maybe$Just(division),
-							model.division),
-						division);
-				},
-				_user$project$BelowTheLine_Data$divisions(candidates)));
-		var divisionSelect = A2(
-			_elm_lang$html$Html$select,
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_user$project$BelowTheLine$onChange(_user$project$BelowTheLine$SelectDivision)
-				]),
-			divisionOptions);
-		var noSelection = _elm_lang$core$Native_Utils.eq(model.division, _elm_lang$core$Maybe$Nothing);
-		return A2(
-			_elm_lang$html$Html$div,
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html_Attributes$class(
-					A2(
-						_elm_lang$core$Basics_ops['++'],
-						'ballot-selection',
-						noSelection ? ' only' : ''))
-				]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html$text('Select your state'),
-					_elm_lang$html$Html$text(' '),
-					divisionSelect,
-					function () {
-					var _p14 = model.division;
-					if (_p14.ctor === 'Just') {
-						return viewToggle;
-					} else {
-						return _elm_lang$html$Html$text('');
-					}
-				}()
-				]));
-	});
-var _user$project$BelowTheLine$view = function (model) {
-	var _p15 = model.candidates;
-	if (_p15.ctor === 'Just') {
-		var _p19 = _p15._0;
-		return A2(
-			_elm_lang$html$Html$div,
-			_elm_lang$core$Native_List.fromArray(
-				[]),
-			A2(
-				_elm_lang$core$Basics_ops['++'],
-				_elm_lang$core$Native_List.fromArray(
-					[
-						A2(_user$project$BelowTheLine$ballotSelection, model, _p19)
-					]),
-				function () {
-					var _p16 = {ctor: '_Tuple2', _0: model.division, _1: model.ballotCandidates};
-					if (((_p16.ctor === '_Tuple2') && (_p16._0.ctor === 'Just')) && (_p16._1.ctor === 'Just')) {
-						var _p18 = _p16._0._0;
-						var _p17 = model.ballotView;
-						if (_p17.ctor === 'OrderBallot') {
-							return A3(
-								_user$project$BelowTheLine$candidatesView,
-								model,
-								_p18,
-								A2(_user$project$BelowTheLine_Data$ticketCandidates, _p18, _p16._1._0));
-						} else {
-							return _elm_lang$core$Native_List.fromArray(
-								[
-									A3(_user$project$BelowTheLine$ballotView, _p18, _p19, model.preferences)
-								]);
-						}
-					} else {
-						return _elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html$text('')
-							]);
-					}
-				}()));
-	} else {
-		return A2(
-			_elm_lang$html$Html$div,
-			_elm_lang$core$Native_List.fromArray(
-				[]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					function () {
-					var _p20 = model.error;
-					if (_p20.ctor === 'Just') {
-						return _elm_lang$html$Html$text(_p20._0);
-					} else {
-						return _elm_lang$html$Html$text('Loading candidates');
-					}
-				}()
-				]));
-	}
 };
 var _user$project$BelowTheLine$main = {
 	main: A2(
