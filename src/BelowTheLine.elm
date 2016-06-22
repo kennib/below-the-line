@@ -376,20 +376,20 @@ candidatesView model division tickets =
             Html.button
                 [onClick <| TogglePreference candidate]
                 [ if List.member candidate model.preferences then
-                    Html.text "-"
+                    icon "remove"
                   else
-                     Html.text "+"
+                    icon "add"
                  ]
 
         increase candidate =
             Html.button
                 [class "increase", onClick <| IncreasePreference candidate]
-                [Html.text "^"]
+                [icon "arrow_upward"]
 
         decrease candidate =
             Html.button
                 [class "decrease", onClick <| DecreasePreference candidate]
-                [Html.text "v"]
+                [icon "arrow_downward"]
 
         view candidate =
             [ increase candidate
@@ -458,7 +458,7 @@ candidatesView model division tickets =
                     [ onClick <| AddAll ticket.candidates
                     , Html.Attributes.disabled <| allPreferenced ticket.candidates
                     ]
-                    [Html.text "+"]
+                    [icon "add"]
                 , Html.span []
                     [Html.text ticket.party]
                 ]
@@ -501,6 +501,12 @@ unselectable style =
     , ("user-drag", "none")
     , ("-webkit-user-drag", "none")
     ]
+
+icon : String -> Html a
+icon name =
+    Html.i
+        [ class "material-icons md-24" ]
+        [ Html.text name ]
 
 -- Events
 
