@@ -26,6 +26,7 @@ type Msg
     | SelectDivision String
     | ChangeView BallotView
     | AddAll (List Candidate)
+    | RemoveAll (List Candidate)
     | TogglePreference Candidate
     | IncreasePreference Candidate
     | DecreasePreference Candidate
@@ -201,6 +202,10 @@ update msg model =
                     { model
                     | preferences = union candidates model.preferences
                     }
+                RemoveAll candidates ->
+                    { model
+                    | preferences = difference candidates model.preferences
+                    }
                 TogglePreference candidate ->
                     { model
                     | preferences = toggle candidate model.preferences
@@ -241,6 +246,10 @@ union items' items =
         diff = List.filter (\item -> not <| List.member item items) items'
     in
         items ++ diff
+
+difference : List a -> List a -> List a
+difference items' items =
+    List.filter (\item -> not <| List.member item items') items
 
 toggle : a -> List a -> List a
 toggle item items =
@@ -376,20 +385,20 @@ candidatesView model division tickets =
             Html.button
                 [onClick <| TogglePreference candidate]
                 [ if List.member candidate model.preferences then
-                    Html.text "-"
+                    icon "remove"
                   else
-                     Html.text "+"
+                    icon "add"
                  ]
 
         increase candidate =
             Html.button
                 [class "increase", onClick <| IncreasePreference candidate]
-                [Html.text "^"]
+                [icon "arrow_upward"]
 
         decrease candidate =
             Html.button
                 [class "decrease", onClick <| DecreasePreference candidate]
-                [Html.text "v"]
+                [icon "arrow_downward"]
 
         view candidate =
             [ increase candidate
@@ -455,10 +464,17 @@ candidatesView model division tickets =
             Html.th
                 [class "ticket-party"]
                 [ Html.button
-                    [ onClick <| AddAll ticket.candidates
-                    , Html.Attributes.disabled <| allPreferenced ticket.candidates
+                    [ onClick <|
+                        if allPreferenced ticket.candidates then
+                            RemoveAll ticket.candidates
+                        else
+                            AddAll ticket.candidates
                     ]
-                    [Html.text "+"]
+                    [ if allPreferenced ticket.candidates then
+                        icon "remove"
+                      else
+                        icon "add"
+                    ]
                 , Html.span []
                     [Html.text ticket.party]
                 ]
@@ -501,6 +517,12 @@ unselectable style =
     , ("user-drag", "none")
     , ("-webkit-user-drag", "none")
     ]
+
+icon : String -> Html a
+icon name =
+    Html.i
+        [ class "material-icons md-24" ]
+        [ Html.text name ]
 
 -- Events
 

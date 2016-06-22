@@ -10265,6 +10265,18 @@ var _user$project$BelowTheLine$onChange = function (msg) {
 					['target', 'value']),
 				_elm_lang$core$Json_Decode$string)));
 };
+var _user$project$BelowTheLine$icon = function (name) {
+	return A2(
+		_elm_lang$html$Html$i,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$class('material-icons md-24')
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html$text(name)
+			]));
+};
 var _user$project$BelowTheLine$unselectable = function (style) {
 	return A2(
 		_elm_lang$core$Basics_ops['++'],
@@ -10354,6 +10366,16 @@ var _user$project$BelowTheLine$toggle = F2(
 			items,
 			_elm_lang$core$Native_List.fromArray(
 				[item]));
+	});
+var _user$project$BelowTheLine$difference = F2(
+	function (items$, items) {
+		return A2(
+			_elm_lang$core$List$filter,
+			function (item) {
+				return _elm_lang$core$Basics$not(
+					A2(_elm_lang$core$List$member, item, items$));
+			},
+			items);
 	});
 var _user$project$BelowTheLine$union = F2(
 	function (items$, items) {
@@ -10466,6 +10488,12 @@ var _user$project$BelowTheLine$update = F2(
 						{
 							preferences: A2(_user$project$BelowTheLine$union, _p6._0, model.preferences)
 						});
+				case 'RemoveAll':
+					return _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							preferences: A2(_user$project$BelowTheLine$difference, _p6._0, model.preferences)
+						});
 				case 'TogglePreference':
 					return _elm_lang$core$Native_Utils.update(
 						model,
@@ -10528,6 +10556,9 @@ var _user$project$BelowTheLine$IncreasePreference = function (a) {
 var _user$project$BelowTheLine$TogglePreference = function (a) {
 	return {ctor: 'TogglePreference', _0: a};
 };
+var _user$project$BelowTheLine$RemoveAll = function (a) {
+	return {ctor: 'RemoveAll', _0: a};
+};
 var _user$project$BelowTheLine$AddAll = function (a) {
 	return {ctor: 'AddAll', _0: a};
 };
@@ -10548,7 +10579,7 @@ var _user$project$BelowTheLine$candidatesView = F3(
 					]),
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html$text('v')
+						_user$project$BelowTheLine$icon('arrow_downward')
 					]));
 		};
 		var increase = function (candidate) {
@@ -10562,7 +10593,7 @@ var _user$project$BelowTheLine$candidatesView = F3(
 					]),
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html$text('^')
+						_user$project$BelowTheLine$icon('arrow_upward')
 					]));
 		};
 		var toggle = function (candidate) {
@@ -10575,7 +10606,7 @@ var _user$project$BelowTheLine$candidatesView = F3(
 					]),
 				_elm_lang$core$Native_List.fromArray(
 					[
-						A2(_elm_lang$core$List$member, candidate, model.preferences) ? _elm_lang$html$Html$text('-') : _elm_lang$html$Html$text('+')
+						A2(_elm_lang$core$List$member, candidate, model.preferences) ? _user$project$BelowTheLine$icon('remove') : _user$project$BelowTheLine$icon('add')
 					]));
 		};
 		var party = function (candidate) {
@@ -10744,13 +10775,11 @@ var _user$project$BelowTheLine$candidatesView = F3(
 						_elm_lang$core$Native_List.fromArray(
 							[
 								_elm_lang$html$Html_Events$onClick(
-								_user$project$BelowTheLine$AddAll(ticket.candidates)),
-								_elm_lang$html$Html_Attributes$disabled(
-								allPreferenced(ticket.candidates))
+								allPreferenced(ticket.candidates) ? _user$project$BelowTheLine$RemoveAll(ticket.candidates) : _user$project$BelowTheLine$AddAll(ticket.candidates))
 							]),
 						_elm_lang$core$Native_List.fromArray(
 							[
-								_elm_lang$html$Html$text('+')
+								allPreferenced(ticket.candidates) ? _user$project$BelowTheLine$icon('remove') : _user$project$BelowTheLine$icon('add')
 							])),
 						A2(
 						_elm_lang$html$Html$span,
