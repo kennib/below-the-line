@@ -139,7 +139,8 @@ body {
     margin-left: 5px;
   }
 
-  .choices {
+  .choices,
+  .choices table {
     display: inline-table;
     margin-right: 15vw;
   }

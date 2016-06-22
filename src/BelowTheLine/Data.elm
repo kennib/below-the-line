@@ -10,6 +10,7 @@ module BelowTheLine.Data exposing
     , ticketCandidates
     , senatorCount
     , candidateId
+    , allPreferenced
     )
 
 import List.Extra as List
@@ -202,3 +203,9 @@ candidateId candidate =
             ballot.state ++ ballot.ticket ++ toString ballot.ballotPosition
         LowerBallot ballot ->
             ballot.division ++ toString ballot.ballotPosition
+
+allPreferenced : List Candidate -> List Candidate -> Bool
+allPreferenced preferences candidates =
+    List.all
+        (\candidate -> List.member candidate preferences)
+        candidates
