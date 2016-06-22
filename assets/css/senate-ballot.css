@@ -36,75 +36,81 @@ h1, h2, h3, h4 {
 /* Senate */
 .ballot-paper-sen {
   background: #fff url("/assets/images/senate-bp-official-block.png") top right no-repeat;
+  background-size: 32.5px 28px;
   position: relative;
   overflow-x: scroll;
 }
 .ballot-header {
   background: transparent url("/assets/images/senate-bp-state-block.png") 0 0 no-repeat;
-  font-size: 1.3em;
-  height: 56px;
-  margin-bottom: 20px;
+  background-size: 38px 28px;
+  font-size: 0.65em;
+  height: 28px;
+  margin-bottom: 10px;
 }
 .ballot-header-title {
-  padding: 10px 0 0 90px;
+  padding: 5px 0 0 45px;
 }
 .ballot-option-a, .ballot-option-b {
-  line-height: 20px;
+  line-height: 10px;
   vertical-align: top;
 }
 .ballot-line td {
   height: 0px;
   font-size: 0px;
-  border-bottom: 15px solid black;
+  border-bottom: 7.5px solid black;
 }
 .ballot-space {
-  height: 10px;
+  height: 5px;
 }
 .option-a-header, .option-b-header {
-  width: 164px;
+  width: 100px;
 }
 .option-a-header h2, .option-b-header h2 {
-  letter-spacing: -1px;
-  font-size: 1.7em;
-    font-weight: bold;
+  letter-spacing: -0.5px;
+  line-height: 13px;
+  font-size: 0.85em;
+  font-weight: bold;
   margin: 0;
 }
 .option-a-header p, .option-b-header p {
-    letter-spacing: -.5px;
+  letter-spacing: -.25px;
+  font-size: 0.5em;
 }
 p.senate-option {
   background: #fff url("/assets/images/senate-arrow.jpg") 0 0 no-repeat;
+  background-size: 80px 13.5px;
   color: #fff;
-  font-size: 1.6em;
+  font-size: 0.8em;
   font-weight: bold;
   letter-spacing: normal;
-  width: 160px;
-  height: 27px;
-  padding: 3px 0 0 5px;
-  margin: 5px 0;
+  width: 80px;
+  height: 13.5px;
+  padding: 1.5px 0 0 2.5px;
+  margin: 2.5px 0;
 }
 .ballot-logo-sen {
-  margin: 10px 10px 10px 0;
-  height: 40px;
-  width: 40px;
-  background: transparent url('/assets/images/sample-logo-sen.png') no-repeat 0 0;
+  margin: 5px 5px 5px 0;
+  height: 20px;
+  width: 20px;
+  background: transparent url('/assets/images/sample-logo-sen.png') 0 0 no-repeat;
+  background-size: 20px 20px;
 }
 .ballot-logo-sen.blank {
   background: none;
 }
 .ballot-position, .below-ballot-position {
-  font-size: 1.1em;
-  width: 136px;
+  font-size: 0.55em;
+  width: 100px;
   border-left: 1px solid #000;
   float: left;
 }
 .ballot-position {
-  height: 220px;
-  padding-left: 5px;
+  height: 110px;
+  padding-left: 2.5px;
 }
 .below-ballot-position {
-  padding-left: 5px;
-  padding-bottom: 20px;
+  padding-left: 2.5px;
+  padding-bottom: 10px;
 }
 .ballot-number {
   padding: 0;
@@ -112,54 +118,55 @@ p.senate-option {
 }
 .ballot-box {
   display: inline-block;
-  width: 40px;
-  height: 20px;
+  width: 20px;
+  height: 10px;
   float: left;
-  padding: 10px 0px;
+  padding: 5px 0px;
+  margin-right: 2.5px;
   border: 1px solid black;
   text-align: center;
-  font-size: 20px;
+  font-size: 10px;
 }
 .ballot-party {
-  padding: 10px 0 0;
+  padding: 5px 0 0;
   font-weight: bold;
-  font-size: 15px;
+  font-size: 7.5px;
   text-transform: uppercase;
   clear: both;
 }
 p.party-title {
-  min-height: 70px;
-  margin: 10px 0 50px 5px;
+  min-height: 35px;
+  margin: 5px 0 25px 2.5px;
   font-weight: 800;
-  line-height: 20px;
-  font-size: 15px;
+  line-height: 10px;
+  font-size: 7.5px;
   text-transform: uppercase;
 }
 .ballot-candidate-group {
   display: block;
-  margin: 20px 0;
-  padding-left: 5px;
+  margin: 10px 0;
+  padding-left: 2.5px;
 }
 .ballot-candidate {
-  margin-left: 45px;
-  font-size: 0.72em;
-  line-height: 16px;
+  margin-left: 22.5px;
+  font-size: 0.36em;
+  line-height: 8px;
 }
 .ballot-candidate span {
-  font-size: .9em;
+  font-size: 0.45em;
   font-weight: normal;
-  letter-spacing: -.5px;
+  letter-spacing: -0.25px;
 }
 .ballot-candidate span span {
-  font-size: .8em;
+  font-size: 0.4em;
   font-weight: normal;
   letter-spacing: normal;
 }
 .sample-text {
   background: transparent url("/assets/images/sample-banner.png") bottom right no-repeat;
   position: absolute;
-  height: 117px;
-  width: 117px;
+  height: 58.5px;
+  width: 58.5px;
   bottom: 0;
   right: 0;
 }

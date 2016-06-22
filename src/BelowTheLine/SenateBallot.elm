@@ -13,7 +13,7 @@ ballotView division tickets order =
   table
     [ class "ballot-paper-sen"
     , style
-      [ ("width", (toString <| List.length tickets * 150) ++ "px")
+      [ ("width", (toString <| List.length tickets * 110) ++ "px")
       ]
     ]
     [ tr [class "ballot-header"]
