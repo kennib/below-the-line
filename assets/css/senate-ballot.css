@@ -1,17 +1,21 @@
 /* Printing */
 @media print {
   body {
+     overflow: inherit !important;
+
      transform: scale(0.5);
+     transform-origin: 0% 0%;
+  }
+
+  .ballot-page.view {
+     overflow: inherit !important;
+
+     transform: rotate(90deg) translate(0px, -100%);
      transform-origin: 0% 0%;
   }
 
   .ballot-selection {
     display: none;
-  }
-
-  body > div {
-     transform: rotate(90deg) translate(0px, -100%);
-     transform-origin: 0% 0%;
   }
 }
 

@@ -1,10 +1,17 @@
 body {
+}
+
+.ballot-page.view {
   overflow-x: scroll;
+  overflow-y: scroll;
+}
+
+.ballot-selection {
+  background: #eee;
 }
 
 .ballot-selection button {
   display: block;
-  width: 100%;
   padding: 10px;
   margin: 3px;
 
@@ -12,6 +19,8 @@ body {
 }
 
 .preferences {
+  border-bottom: 1px solid black;
+  margin-bottom: 10px;
 }
   
 .preferences .message {
@@ -21,14 +30,15 @@ body {
 }
 
 .choices {
-  width: 100vw;
-  overflow-x: scroll;
 }
 
 .choices .ticket-party {
+  padding: 5px;
+
   font-weight: bold;
-  font-size: 12px;
-  min-height: 20px;
+  font-size: 14px;
+
+  background: #dadada;
 }
 
 .choices .tickets {
@@ -43,45 +53,48 @@ body {
 }
 
 .candidates {
-  background: #dadada;
 }
+
 .candidate {
   background-color: white;
   padding: 5px;
   font-size: 14px;
   margin: 2px;
-  min-height: 50px;
 }
 
-.candidate.moving {
-  box-shadow: 3px 3px 3px rgba(0,0,0, 0.4);
-}
-.candidate.moving button {
-  display: none;
+.ticket-party,
+.candidate {
+  display: flex;
+  justify-content: space-between;
 }
 
 .candidate .name {
-  display: block;
-  margin-left: 45px;
+  text-align: center;
 }
-
 .candidate .party {
-  display: block;
-  margin-left: 45px;
+  flex-shrink: 0;
+  width: 120px;
+  margin-left: 5px;
+
   font-size: 12px;
   font-weight: bold;
 }
 
-.ticket-party button,
-.candidate button {
-  float: left;
-  margin-right: 5px;
-  width: 40px;
-  height: 40px;
+.preferences .candidates .preference-controls {
+  width: 120px;
+  flex-shrink: 0;
 }
 
-.preferences .candidate button {
-  float: right;
+.ticket-party button,
+.candidate button {
+  margin-right: 5px;
+  width: 30px;
+  height: 30px;
+}
+
+.ticket-party button i,
+.candidate button i {
+  font-size: 15px;
 }
 
 .choices button.increase,
@@ -91,8 +104,8 @@ body {
 
 @media screen and (min-width: 900px) {
   body {
-    overflow-x: scroll;
-    overflow-y: scroll;
+    margin: 0px;
+    overflow: hidden;
   }
 
   .splash {
@@ -107,41 +120,45 @@ body {
     padding: 10px;
   }
 
-  .ballot-selection,
-  .preferences {
-    box-sizing: border-box;
-    padding: 10px;
-    background: #eee;
+  .ballot-page {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
   }
 
   .ballot-selection {
-    z-index: 1001;
-    position: fixed;
-    top: 0px;
-    right: 0px;
-    width: 30vw;
-    height: 70px;
+    flex-shrink: 0;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+
+  .ballot-selection button {
+    display: inline-block;
+    float: right;
+  }
+
+  .order-preferences {
+    display: flex;
+  }
+
+  .preferences,
+  .choices {
+    padding: 10px;
+    margin: 10px;
+    overflow-y: scroll;
+
+    background: #dadada;
   }
 
   .preferences {
-    z-index: 1000;
-    position: fixed;
-    top: 0px;
-    right: 0px;
-    width: 30vw;
-    height: 100vh;
-    padding-top: 70px;
-    overflow-y: scroll;
+    flex: 400px 1 0;
+    width: 400px;
+
+    border-bottom: 0px;
   }
 
-  .preferences .candidate .name,
-  .preferences .candidate .party {
-    margin-left: 5px;
-  }
-
-  .choices,
-  .choices table {
-    display: inline-table;
-    margin-right: 15vw;
+  .choices {
+    flex: 400px 1 0;
+    width: 400px;
   }
 }
