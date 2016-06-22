@@ -1,4 +1,5 @@
 body {
+  margin: 0px;
 }
 
 .ballot-page.view {
@@ -7,13 +8,23 @@ body {
 }
 
 .ballot-selection {
+  padding: 5px;
+  text-align: center;
   background: #eee;
+}
+
+.ballot-selection select {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0px;
 }
 
 .ballot-selection button {
   display: block;
+  width: 100%;
   padding: 10px;
-  margin: 3px;
+  margin: 5px 0px;
 
   text-align: center;
 }
@@ -104,7 +115,6 @@ body {
 
 @media screen and (min-width: 900px) {
   body {
-    margin: 0px;
     overflow: hidden;
   }
 
@@ -132,8 +142,15 @@ body {
     margin-bottom: 10px;
   }
 
+  .ballot-selection select {
+    display: inline-block;
+    width: initial;
+    float: left;
+  }
+
   .ballot-selection button {
     display: inline-block;
+    width: initial;
     float: right;
   }
 
