@@ -9605,7 +9605,7 @@ var _user$project$BelowTheLine_Data$ticketCandidates = F2(
 		var candidatesParty = function (candidates) {
 			return A2(
 				_elm_lang$core$String$join,
-				'/',
+				' / ',
 				_elm_community$list_extra$List_Extra$dropDuplicates(
 					A2(
 						_elm_lang$core$List$map,
@@ -9640,10 +9640,15 @@ var _user$project$BelowTheLine_Data$ticketCandidates = F2(
 					ticket,
 					_elm_lang$core$List$head(candidates)));
 		};
+		var party = function (candidates) {
+			return _elm_lang$core$Native_Utils.eq(
+				candidatesTicket(candidates),
+				'UG') ? 'Ungrouped' : candidatesParty(candidates);
+		};
 		var ticketCandidates = function (candidates) {
 			return {
 				ticket: candidatesTicket(candidates),
-				party: candidatesParty(candidates),
+				party: party(candidates),
 				candidates: candidates
 			};
 		};
