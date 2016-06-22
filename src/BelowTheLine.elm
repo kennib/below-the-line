@@ -13,6 +13,7 @@ import Html.Attributes exposing (style, class)
 import Html.App
 
 import BelowTheLine.Data exposing (..)
+import BelowTheLine.Splash as Splash
 import BelowTheLine.BallotSelection as BallotSelection exposing (BallotView(..), Msg(..))
 import BelowTheLine.OrderPreferences as OrderPreferences exposing (Msg(..))
 import BelowTheLine.SenateBallot as SenateBallot
@@ -297,41 +298,63 @@ subscriptions model =
 
 view : Model -> Html Msg
 view model =
-    case model.candidates of
-        Just candidates ->
-            Html.div []
-                <| [ BallotSelection.view
-                    model.division
-                    model.ballotView
-                    candidates
-                    |> Html.App.map BallotSelection
-                ] ++
-                case (model.division, model.ballotCandidates) of
-                    (Just division, Just ballotCandidates) ->
-                        case model.ballotView of
-                            OrderBallot ->
-                                OrderPreferences.view
-                                division
-                                (ticketCandidates division ballotCandidates)
-                                model.preferences
-                                |> List.map (Html.App.map OrderPreferences)
-                            ViewBallot ->
-                                [ ballotView
-                                division
-                                candidates
-                                model.preferences ]
-                    _ ->
-                        [Html.text ""]
+    Html.div
+    []
+    [ case model.division of
         Nothing ->
-            Html.div []
-            [case model.error of
-                Just error -> Html.text error
-                Nothing -> Html.text "Loading candidates"
-            ]
+            Splash.view
+                model.division
+                model.candidates
+                model.error
+            |> Html.App.map BallotSelection
+        Just division ->
+            case (model.candidates, model.ballotCandidates) of
+                (Just candidates, Just ballotCandidates) ->
+                    ballotDisplay
+                        model.ballotView
+                        division
+                        candidates
+                        (ticketCandidates division candidates)
+                        model.preferences
+                _ ->
+                    Html.p
+                        []
+                        [ case model.error of
+                            Just error ->
+                                Html.text "Oops, something has gone wrong. Try reloading the page"
+                            Nothing ->
+                                Html.text "Loading candidates"
+                        ]
+    ]
 
-ballotView : String -> List Candidate -> List Candidate -> Html Msg
-ballotView division candidates ballotCandidates =
-    SenateBallot.ballotView
-        division
-        (ticketCandidates division candidates)
-        ballotCandidates
+ballotDisplay : BallotView -> String -> List Candidate -> List Ticket -> List Candidate -> Html Msg
+ballotDisplay ballotView division candidates tickets preferences =
+    let
+        selection =
+            BallotSelection.view
+                (Just division)
+                ballotView
+                candidates
+            |> Html.App.map BallotSelection
+
+        order =
+            OrderPreferences.view
+                division
+                tickets
+                preferences
+            |> List.map (Html.App.map OrderPreferences)
+
+        view =
+            SenateBallot.ballotView
+                division
+                tickets
+                preferences
+    in
+        Html.div
+            []
+        <| [ selection ] ++ 
+        case ballotView of
+            OrderBallot ->
+                order
+            ViewBallot ->
+                [ view ]
