@@ -162,7 +162,7 @@ ticketCandidates division candidates =
 
         ticketCandidates candidates =
             { ticket = candidatesTicket candidates
-            , party = candidatesParty candidates
+            , party = party candidates
             , candidates = candidates
             }
 
@@ -175,7 +175,13 @@ ticketCandidates division candidates =
             List.sortBy position candidates
             |> List.map (.party)
             |> List.dropDuplicates
-            |> String.join "/"
+            |> String.join " / "
+
+        party candidates =
+            if candidatesTicket candidates == "UG" then
+                "Ungrouped"
+            else
+                candidatesParty candidates
 
         tickets =
             List.map ticketCandidates ticketGroups
