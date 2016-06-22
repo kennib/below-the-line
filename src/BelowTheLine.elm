@@ -26,6 +26,7 @@ type Msg
     | SelectDivision String
     | ChangeView BallotView
     | AddAll (List Candidate)
+    | RemoveAll (List Candidate)
     | TogglePreference Candidate
     | IncreasePreference Candidate
     | DecreasePreference Candidate
@@ -201,6 +202,10 @@ update msg model =
                     { model
                     | preferences = union candidates model.preferences
                     }
+                RemoveAll candidates ->
+                    { model
+                    | preferences = difference candidates model.preferences
+                    }
                 TogglePreference candidate ->
                     { model
                     | preferences = toggle candidate model.preferences
@@ -241,6 +246,10 @@ union items' items =
         diff = List.filter (\item -> not <| List.member item items) items'
     in
         items ++ diff
+
+difference : List a -> List a -> List a
+difference items' items =
+    List.filter (\item -> not <| List.member item items') items
 
 toggle : a -> List a -> List a
 toggle item items =
@@ -455,10 +464,17 @@ candidatesView model division tickets =
             Html.th
                 [class "ticket-party"]
                 [ Html.button
-                    [ onClick <| AddAll ticket.candidates
-                    , Html.Attributes.disabled <| allPreferenced ticket.candidates
+                    [ onClick <|
+                        if allPreferenced ticket.candidates then
+                            RemoveAll ticket.candidates
+                        else
+                            AddAll ticket.candidates
                     ]
-                    [icon "add"]
+                    [ if allPreferenced ticket.candidates then
+                        icon "remove"
+                      else
+                        icon "add"
+                    ]
                 , Html.span []
                     [Html.text ticket.party]
                 ]
