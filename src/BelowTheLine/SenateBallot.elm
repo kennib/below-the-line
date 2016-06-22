@@ -20,8 +20,8 @@ ballotView division tickets order =
       [ td [class "ballot-header-title", colspan <| List.length tickets + 1]
         [ text "Senate Ballot Paper"
         , br [] []
-        , strong [] [text "State"]
-        , text " - Election of 12 Senators"
+        , strong [] [text <| fullName division]
+        , text <| " - Election of " ++ toString (senatorCount division) ++ " Senators"
         ]
       ]
     , tr [class "ballot-space"] []
@@ -58,7 +58,7 @@ ballotView division tickets order =
         , h2 [] [text "Below the line"]
         , p []
           [ text "By numbering at least "
-          , strong [] [text <| toString <| senatorCount division]
+          , strong [] [text "12"]
           , br [] []
           , text "of these boxes in the order"
           , br [] []
@@ -122,3 +122,15 @@ candidateView candidate number =
         ]
       ]
     ]
+
+fullName division =
+    case division of
+        "ACT" -> "Australian Capital Territory"
+        "NSW" -> "New South Wales"
+        "NT" -> "Northern Territory"
+        "QLD" -> "Queensland"
+        "SA" -> "South Australia"
+        "TAS" -> "Tasmania"
+        "VIC" -> "Victoria"
+        "WA" -> "Western Australia"
+        _ -> division
