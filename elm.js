@@ -9553,6 +9553,15 @@ var _evancz$elm_http$Http$post = F3(
 			A2(_evancz$elm_http$Http$send, _evancz$elm_http$Http$defaultSettings, request));
 	});
 
+var _user$project$BelowTheLine_Data$allPreferenced = F2(
+	function (preferences, candidates) {
+		return A2(
+			_elm_lang$core$List$all,
+			function (candidate) {
+				return A2(_elm_lang$core$List$member, candidate, preferences);
+			},
+			candidates);
+	});
 var _user$project$BelowTheLine_Data$candidateId = function (candidate) {
 	var _p0 = candidate.ballot;
 	if (_p0.ctor === 'UpperBallot') {
@@ -9965,14 +9974,186 @@ var _user$project$BelowTheLine_OrderPreferences$unselectable = function (style) 
 				{ctor: '_Tuple2', _0: '-webkit-user-drag', _1: 'none'}
 			]));
 };
+var _user$project$BelowTheLine_OrderPreferences$party = function (candidate) {
+	return _elm_lang$core$Native_List.fromArray(
+		[
+			_elm_lang$html$Html$text(candidate.party)
+		]);
+};
+var _user$project$BelowTheLine_OrderPreferences$name = function (candidate) {
+	return _elm_lang$core$Native_List.fromArray(
+		[
+			_elm_lang$html$Html$text(candidate.givenName),
+			_elm_lang$html$Html$text(' '),
+			_elm_lang$html$Html$text(candidate.surname)
+		]);
+};
 var _user$project$BelowTheLine_OrderPreferences$DecreasePreference = function (a) {
 	return {ctor: 'DecreasePreference', _0: a};
+};
+var _user$project$BelowTheLine_OrderPreferences$decrease = function (candidate) {
+	return A2(
+		_elm_lang$html$Html$button,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$class('decrease'),
+				_elm_lang$html$Html_Events$onClick(
+				_user$project$BelowTheLine_OrderPreferences$DecreasePreference(candidate))
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_user$project$BelowTheLine_OrderPreferences$icon('arrow_downward')
+			]));
 };
 var _user$project$BelowTheLine_OrderPreferences$IncreasePreference = function (a) {
 	return {ctor: 'IncreasePreference', _0: a};
 };
+var _user$project$BelowTheLine_OrderPreferences$increase = function (candidate) {
+	return A2(
+		_elm_lang$html$Html$button,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$class('increase'),
+				_elm_lang$html$Html_Events$onClick(
+				_user$project$BelowTheLine_OrderPreferences$IncreasePreference(candidate))
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_user$project$BelowTheLine_OrderPreferences$icon('arrow_upward')
+			]));
+};
 var _user$project$BelowTheLine_OrderPreferences$TogglePreference = function (a) {
 	return {ctor: 'TogglePreference', _0: a};
+};
+var _user$project$BelowTheLine_OrderPreferences$toggle = F2(
+	function (candidate, preferences) {
+		return A2(
+			_elm_lang$html$Html$button,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html_Events$onClick(
+					_user$project$BelowTheLine_OrderPreferences$TogglePreference(candidate))
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A2(_elm_lang$core$List$member, candidate, preferences) ? _user$project$BelowTheLine_OrderPreferences$icon('remove') : _user$project$BelowTheLine_OrderPreferences$icon('add')
+				]));
+	});
+var _user$project$BelowTheLine_OrderPreferences$candidateView = F2(
+	function (candidate, preferences) {
+		return _elm_lang$core$Native_List.fromArray(
+			[
+				_user$project$BelowTheLine_OrderPreferences$increase(candidate),
+				_user$project$BelowTheLine_OrderPreferences$decrease(candidate),
+				A2(_user$project$BelowTheLine_OrderPreferences$toggle, candidate, preferences),
+				A2(
+				_elm_lang$html$Html$span,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('name')
+					]),
+				_user$project$BelowTheLine_OrderPreferences$name(candidate)),
+				_elm_lang$html$Html$text(' '),
+				A2(
+				_elm_lang$html$Html$span,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('party')
+					]),
+				_user$project$BelowTheLine_OrderPreferences$party(candidate))
+			]);
+	});
+var _user$project$BelowTheLine_OrderPreferences$preferencesView = function (preferences) {
+	var preference = function (candidate) {
+		return A2(
+			_elm_lang$html$Html$li,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html_Attributes$class('candidate')
+				]),
+			A2(_user$project$BelowTheLine_OrderPreferences$candidateView, candidate, preferences));
+	};
+	var preferenceList = A2(
+		_elm_lang$html$Html$ol,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$class('candidates'),
+				_elm_lang$html$Html_Attributes$style(
+				_user$project$BelowTheLine_OrderPreferences$unselectable(
+					_elm_lang$core$Native_List.fromArray(
+						[])))
+			]),
+		A2(_elm_lang$core$List$map, preference, preferences));
+	var missingPreferences = A2(
+		_elm_lang$core$Basics$max,
+		0,
+		12 - _elm_lang$core$List$length(preferences));
+	return _elm_lang$core$Native_Utils.eq(
+		_elm_lang$core$List$length(preferences),
+		0) ? A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$class('preferences empty')
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$html$Html$p,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('message')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('You must add 12 preferences')
+					]))
+			])) : ((_elm_lang$core$Native_Utils.cmp(missingPreferences, 0) > 0) ? A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$class('preferences missing')
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				preferenceList,
+				A2(
+				_elm_lang$html$Html$p,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('message')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text(
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							'Please add at least ',
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								_elm_lang$core$Basics$toString(missingPreferences),
+								' more preferences')))
+					]))
+			])) : A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$class('preferences')
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				preferenceList,
+				A2(
+				_elm_lang$html$Html$p,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('message')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('You have the required 12 preferences but you may add more')
+					]))
+			])));
 };
 var _user$project$BelowTheLine_OrderPreferences$RemoveAll = function (a) {
 	return {ctor: 'RemoveAll', _0: a};
@@ -9980,176 +10161,8 @@ var _user$project$BelowTheLine_OrderPreferences$RemoveAll = function (a) {
 var _user$project$BelowTheLine_OrderPreferences$AddAll = function (a) {
 	return {ctor: 'AddAll', _0: a};
 };
-var _user$project$BelowTheLine_OrderPreferences$view = F3(
-	function (division, tickets, preferences) {
-		var missingPreferences = A2(
-			_elm_lang$core$Basics$max,
-			0,
-			12 - _elm_lang$core$List$length(preferences));
-		var decrease = function (candidate) {
-			return A2(
-				_elm_lang$html$Html$button,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html_Attributes$class('decrease'),
-						_elm_lang$html$Html_Events$onClick(
-						_user$project$BelowTheLine_OrderPreferences$DecreasePreference(candidate))
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_user$project$BelowTheLine_OrderPreferences$icon('arrow_downward')
-					]));
-		};
-		var increase = function (candidate) {
-			return A2(
-				_elm_lang$html$Html$button,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html_Attributes$class('increase'),
-						_elm_lang$html$Html_Events$onClick(
-						_user$project$BelowTheLine_OrderPreferences$IncreasePreference(candidate))
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_user$project$BelowTheLine_OrderPreferences$icon('arrow_upward')
-					]));
-		};
-		var toggle = function (candidate) {
-			return A2(
-				_elm_lang$html$Html$button,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html_Events$onClick(
-						_user$project$BelowTheLine_OrderPreferences$TogglePreference(candidate))
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						A2(_elm_lang$core$List$member, candidate, preferences) ? _user$project$BelowTheLine_OrderPreferences$icon('remove') : _user$project$BelowTheLine_OrderPreferences$icon('add')
-					]));
-		};
-		var party = function (candidate) {
-			return _elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html$text(candidate.party)
-				]);
-		};
-		var name = function (candidate) {
-			return _elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html$text(candidate.givenName),
-					_elm_lang$html$Html$text(' '),
-					_elm_lang$html$Html$text(candidate.surname)
-				]);
-		};
-		var view = function (candidate) {
-			return _elm_lang$core$Native_List.fromArray(
-				[
-					increase(candidate),
-					decrease(candidate),
-					toggle(candidate),
-					A2(
-					_elm_lang$html$Html$span,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$class('name')
-						]),
-					name(candidate)),
-					_elm_lang$html$Html$text(' '),
-					A2(
-					_elm_lang$html$Html$span,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$class('party')
-						]),
-					party(candidate))
-				]);
-		};
-		var preference = function (candidate) {
-			return A2(
-				_elm_lang$html$Html$li,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html_Attributes$class('candidate')
-					]),
-				view(candidate));
-		};
-		var preferenceList = A2(
-			_elm_lang$html$Html$ol,
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html_Attributes$class('candidates'),
-					_elm_lang$html$Html_Attributes$style(
-					_user$project$BelowTheLine_OrderPreferences$unselectable(
-						_elm_lang$core$Native_List.fromArray(
-							[])))
-				]),
-			A2(_elm_lang$core$List$map, preference, preferences));
-		var preferencesBox = _elm_lang$core$Native_Utils.eq(
-			_elm_lang$core$List$length(preferences),
-			0) ? A2(
-			_elm_lang$html$Html$div,
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html_Attributes$class('preferences empty')
-				]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					A2(
-					_elm_lang$html$Html$p,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$class('message')
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html$text('You must add 12 preferences')
-						]))
-				])) : ((_elm_lang$core$Native_Utils.cmp(missingPreferences, 0) > 0) ? A2(
-			_elm_lang$html$Html$div,
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html_Attributes$class('preferences missing')
-				]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					preferenceList,
-					A2(
-					_elm_lang$html$Html$p,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$class('message')
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html$text(
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								'Please add at least ',
-								A2(
-									_elm_lang$core$Basics_ops['++'],
-									_elm_lang$core$Basics$toString(missingPreferences),
-									' more preferences')))
-						]))
-				])) : A2(
-			_elm_lang$html$Html$div,
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html_Attributes$class('preferences')
-				]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					preferenceList,
-					A2(
-					_elm_lang$html$Html$p,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$class('message')
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html$text('You have the required 12 preferences but you may add more')
-						]))
-				])));
+var _user$project$BelowTheLine_OrderPreferences$choicesView = F2(
+	function (tickets, preferences) {
 		var choice = function (candidate) {
 			return A2(
 				_elm_lang$html$Html$li,
@@ -10157,7 +10170,7 @@ var _user$project$BelowTheLine_OrderPreferences$view = F3(
 					[
 						_elm_lang$html$Html_Attributes$class('candidate')
 					]),
-				view(candidate));
+				A2(_user$project$BelowTheLine_OrderPreferences$candidateView, candidate, preferences));
 		};
 		var ticketCandidates = function (ticket) {
 			return A2(
@@ -10175,10 +10188,6 @@ var _user$project$BelowTheLine_OrderPreferences$view = F3(
 						A2(_elm_lang$core$List$map, choice, ticket.candidates))
 					]));
 		};
-		var allPreferenced = _elm_lang$core$List$all(
-			function (candidate) {
-				return A2(_elm_lang$core$List$member, candidate, preferences);
-			});
 		var ticketParty = function (ticket) {
 			return A2(
 				_elm_lang$html$Html$th,
@@ -10193,11 +10202,11 @@ var _user$project$BelowTheLine_OrderPreferences$view = F3(
 						_elm_lang$core$Native_List.fromArray(
 							[
 								_elm_lang$html$Html_Events$onClick(
-								allPreferenced(ticket.candidates) ? _user$project$BelowTheLine_OrderPreferences$RemoveAll(ticket.candidates) : _user$project$BelowTheLine_OrderPreferences$AddAll(ticket.candidates))
+								A2(_user$project$BelowTheLine_Data$allPreferenced, preferences, ticket.candidates) ? _user$project$BelowTheLine_OrderPreferences$RemoveAll(ticket.candidates) : _user$project$BelowTheLine_OrderPreferences$AddAll(ticket.candidates))
 							]),
 						_elm_lang$core$Native_List.fromArray(
 							[
-								allPreferenced(ticket.candidates) ? _user$project$BelowTheLine_OrderPreferences$icon('remove') : _user$project$BelowTheLine_OrderPreferences$icon('add')
+								A2(_user$project$BelowTheLine_Data$allPreferenced, preferences, ticket.candidates) ? _user$project$BelowTheLine_OrderPreferences$icon('remove') : _user$project$BelowTheLine_OrderPreferences$icon('add')
 							])),
 						A2(
 						_elm_lang$html$Html$span,
@@ -10213,7 +10222,6 @@ var _user$project$BelowTheLine_OrderPreferences$view = F3(
 			_elm_lang$html$Html$table,
 			_elm_lang$core$Native_List.fromArray(
 				[
-					_elm_lang$html$Html_Attributes$class('choices'),
 					_elm_lang$html$Html_Attributes$style(
 					_user$project$BelowTheLine_OrderPreferences$unselectable(
 						_elm_lang$core$Native_List.fromArray(
@@ -10234,7 +10242,7 @@ var _user$project$BelowTheLine_OrderPreferences$view = F3(
 						]),
 					A2(_elm_lang$core$List$map, ticketCandidates, tickets))
 				]));
-		var choicesBox = A2(
+		return A2(
 			_elm_lang$html$Html$div,
 			_elm_lang$core$Native_List.fromArray(
 				[
@@ -10242,10 +10250,45 @@ var _user$project$BelowTheLine_OrderPreferences$view = F3(
 				]),
 			_elm_lang$core$Native_List.fromArray(
 				[choices]));
-		return _elm_lang$core$Native_List.fromArray(
-			[preferencesBox, choicesBox]);
+	});
+var _user$project$BelowTheLine_OrderPreferences$view = F2(
+	function (tickets, preferences) {
+		return A2(
+			_elm_lang$html$Html$div,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html_Attributes$class('order-preferences')
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_user$project$BelowTheLine_OrderPreferences$preferencesView(preferences),
+					A2(_user$project$BelowTheLine_OrderPreferences$choicesView, tickets, preferences)
+				]));
 	});
 
+var _user$project$BelowTheLine_SenateBallot$fullName = function (division) {
+	var _p0 = division;
+	switch (_p0) {
+		case 'ACT':
+			return 'Australian Capital Territory';
+		case 'NSW':
+			return 'New South Wales';
+		case 'NT':
+			return 'Northern Territory';
+		case 'QLD':
+			return 'Queensland';
+		case 'SA':
+			return 'South Australia';
+		case 'TAS':
+			return 'Tasmania';
+		case 'VIC':
+			return 'Victoria';
+		case 'WA':
+			return 'Western Australia';
+		default:
+			return division;
+	}
+};
 var _user$project$BelowTheLine_SenateBallot$candidateView = F2(
 	function (candidate, number) {
 		return A2(
@@ -10340,8 +10383,8 @@ var _user$project$BelowTheLine_SenateBallot$belowTicketView = F2(
 			},
 			ticket.candidates);
 		var party = function () {
-			var _p0 = ticket.ticket;
-			if (_p0 === 'UG') {
+			var _p1 = ticket.ticket;
+			if (_p1 === 'UG') {
 				return 'Ungrouped';
 			} else {
 				return ticket.party;
@@ -10368,8 +10411,8 @@ var _user$project$BelowTheLine_SenateBallot$belowTicketView = F2(
 				candidates));
 	});
 var _user$project$BelowTheLine_SenateBallot$ticketView = function (ticket) {
-	var _p1 = ticket.ticket;
-	if (_p1 === 'UG') {
+	var _p2 = ticket.ticket;
+	if (_p2 === 'UG') {
 		return A2(
 			_elm_lang$html$Html$td,
 			_elm_lang$core$Native_List.fromArray(
@@ -10505,9 +10548,18 @@ var _user$project$BelowTheLine_SenateBallot$ballotView = F3(
 										[]),
 									_elm_lang$core$Native_List.fromArray(
 										[
-											_elm_lang$html$Html$text('State')
+											_elm_lang$html$Html$text(
+											_user$project$BelowTheLine_SenateBallot$fullName(division))
 										])),
-									_elm_lang$html$Html$text(' - Election of 12 Senators')
+									_elm_lang$html$Html$text(
+									A2(
+										_elm_lang$core$Basics_ops['++'],
+										' - Election of ',
+										A2(
+											_elm_lang$core$Basics_ops['++'],
+											_elm_lang$core$Basics$toString(
+												_user$project$BelowTheLine_Data$senatorCount(division)),
+											' Senators')))
 								]))
 						])),
 					A2(
@@ -10701,9 +10753,7 @@ var _user$project$BelowTheLine_SenateBallot$ballotView = F3(
 													[]),
 												_elm_lang$core$Native_List.fromArray(
 													[
-														_elm_lang$html$Html$text(
-														_elm_lang$core$Basics$toString(
-															_user$project$BelowTheLine_Data$senatorCount(division)))
+														_elm_lang$html$Html$text('12')
 													])),
 												A2(
 												_elm_lang$html$Html$br,
@@ -11086,12 +11136,12 @@ var _user$project$BelowTheLine$BallotSelection = function (a) {
 	return {ctor: 'BallotSelection', _0: a};
 };
 var _user$project$BelowTheLine$ballotDisplay = F5(
-	function (ballotView, division, candidates, tickets, preferences) {
+	function (division, ballotView, candidates, tickets, preferences) {
 		var view = A3(_user$project$BelowTheLine_SenateBallot$ballotView, division, tickets, preferences);
 		var order = A2(
-			_elm_lang$core$List$map,
-			_elm_lang$html$Html_App$map(_user$project$BelowTheLine$OrderPreferences),
-			A3(_user$project$BelowTheLine_OrderPreferences$view, division, tickets, preferences));
+			_elm_lang$html$Html_App$map,
+			_user$project$BelowTheLine$OrderPreferences,
+			A2(_user$project$BelowTheLine_OrderPreferences$view, tickets, preferences));
 		var selection = A2(
 			_elm_lang$html$Html_App$map,
 			_user$project$BelowTheLine$BallotSelection,
@@ -11104,19 +11154,18 @@ var _user$project$BelowTheLine$ballotDisplay = F5(
 			_elm_lang$html$Html$div,
 			_elm_lang$core$Native_List.fromArray(
 				[]),
-			A2(
-				_elm_lang$core$Basics_ops['++'],
-				_elm_lang$core$Native_List.fromArray(
-					[selection]),
-				function () {
+			_elm_lang$core$Native_List.fromArray(
+				[
+					selection,
+					function () {
 					var _p17 = ballotView;
 					if (_p17.ctor === 'OrderBallot') {
 						return order;
 					} else {
-						return _elm_lang$core$Native_List.fromArray(
-							[view]);
+						return view;
 					}
-				}()));
+				}()
+				]));
 	});
 var _user$project$BelowTheLine$view = function (model) {
 	return A2(
@@ -11139,8 +11188,8 @@ var _user$project$BelowTheLine$view = function (model) {
 						var _p20 = _p19._0._0;
 						return A5(
 							_user$project$BelowTheLine$ballotDisplay,
-							model.ballotView,
 							_p22,
+							model.ballotView,
 							_p20,
 							A2(_user$project$BelowTheLine_Data$ticketCandidates, _p22, _p20),
 							model.preferences);
