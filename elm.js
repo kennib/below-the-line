@@ -9960,18 +9960,6 @@ var _user$project$BelowTheLine_OrderPreferences$icon = function (name) {
 				_elm_lang$html$Html$text(name)
 			]));
 };
-var _user$project$BelowTheLine_OrderPreferences$unselectable = function (style) {
-	return A2(
-		_elm_lang$core$Basics_ops['++'],
-		style,
-		_elm_lang$core$Native_List.fromArray(
-			[
-				{ctor: '_Tuple2', _0: 'user-select', _1: 'none'},
-				{ctor: '_Tuple2', _0: '-webkit-user-select', _1: 'none'},
-				{ctor: '_Tuple2', _0: 'user-drag', _1: 'none'},
-				{ctor: '_Tuple2', _0: '-webkit-user-drag', _1: 'none'}
-			]));
-};
 var _user$project$BelowTheLine_OrderPreferences$party = function (candidate) {
 	return _elm_lang$core$Native_List.fromArray(
 		[
@@ -10091,11 +10079,7 @@ var _user$project$BelowTheLine_OrderPreferences$preferencesView = function (pref
 		_elm_lang$html$Html$ol,
 		_elm_lang$core$Native_List.fromArray(
 			[
-				_elm_lang$html$Html_Attributes$class('candidates'),
-				_elm_lang$html$Html_Attributes$style(
-				_user$project$BelowTheLine_OrderPreferences$unselectable(
-					_elm_lang$core$Native_List.fromArray(
-						[])))
+				_elm_lang$html$Html_Attributes$class('candidates')
 			]),
 		A2(_elm_lang$core$List$map, preference, preferences));
 	var missingPreferences = A2(
@@ -10241,12 +10225,7 @@ var _user$project$BelowTheLine_OrderPreferences$choicesView = F2(
 		var choices = A2(
 			_elm_lang$html$Html$div,
 			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html_Attributes$style(
-					_user$project$BelowTheLine_OrderPreferences$unselectable(
-						_elm_lang$core$Native_List.fromArray(
-							[])))
-				]),
+				[]),
 			A2(_elm_lang$core$List$map, ticketView, tickets));
 		return A2(
 			_elm_lang$html$Html$div,
