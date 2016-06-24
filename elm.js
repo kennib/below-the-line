@@ -9789,6 +9789,37 @@ var _user$project$BelowTheLine_BallotSelection$onChange = function (msg) {
 					['target', 'value']),
 				_elm_lang$core$Json_Decode$string)));
 };
+var _user$project$BelowTheLine_BallotSelection$icon = function (name) {
+	return A2(
+		_elm_lang$html$Html$i,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$class('material-icons')
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html$text(name)
+			]));
+};
+var _user$project$BelowTheLine_BallotSelection$ballotPrint = A2(
+	_elm_lang$html$Html$a,
+	_elm_lang$core$Native_List.fromArray(
+		[
+			_elm_lang$html$Html_Attributes$href('javascript:window.print()')
+		]),
+	_elm_lang$core$Native_List.fromArray(
+		[
+			A2(
+			_elm_lang$html$Html$button,
+			_elm_lang$core$Native_List.fromArray(
+				[]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_user$project$BelowTheLine_BallotSelection$icon('print'),
+					_elm_lang$html$Html$text(' '),
+					_elm_lang$html$Html$text('Print your preferences')
+				]))
+		]));
 var _user$project$BelowTheLine_BallotSelection$ViewBallot = {ctor: 'ViewBallot'};
 var _user$project$BelowTheLine_BallotSelection$OrderBallot = {ctor: 'OrderBallot'};
 var _user$project$BelowTheLine_BallotSelection$ChangeView = function (a) {
@@ -9884,6 +9915,7 @@ var _user$project$BelowTheLine_BallotSelection$view = F3(
 			_elm_lang$core$Native_List.fromArray(
 				[
 					A2(_user$project$BelowTheLine_BallotSelection$divisionSelect, division, candidates),
+					_user$project$BelowTheLine_BallotSelection$ballotPrint,
 					_user$project$BelowTheLine_BallotSelection$ballotToggle(ballotView)
 				]));
 	});
@@ -11146,17 +11178,7 @@ var _user$project$BelowTheLine$ballotDisplay = F5(
 						_elm_lang$core$Native_Utils.eq(ballotView, _user$project$BelowTheLine_BallotSelection$ViewBallot) ? 'view' : 'order'))
 				]),
 			_elm_lang$core$Native_List.fromArray(
-				[
-					selection,
-					function () {
-					var _p17 = ballotView;
-					if (_p17.ctor === 'OrderBallot') {
-						return order;
-					} else {
-						return view;
-					}
-				}()
-				]));
+				[selection, order, view]));
 	});
 var _user$project$BelowTheLine$view = function (model) {
 	return A2(
@@ -11166,23 +11188,23 @@ var _user$project$BelowTheLine$view = function (model) {
 		_elm_lang$core$Native_List.fromArray(
 			[
 				function () {
-				var _p18 = model.division;
-				if (_p18.ctor === 'Nothing') {
+				var _p17 = model.division;
+				if (_p17.ctor === 'Nothing') {
 					return A2(
 						_elm_lang$html$Html_App$map,
 						_user$project$BelowTheLine$BallotSelection,
 						A3(_user$project$BelowTheLine_Splash$view, model.division, model.candidates, model.error));
 				} else {
-					var _p22 = _p18._0;
-					var _p19 = {ctor: '_Tuple2', _0: model.candidates, _1: model.ballotCandidates};
-					if (((_p19.ctor === '_Tuple2') && (_p19._0.ctor === 'Just')) && (_p19._1.ctor === 'Just')) {
-						var _p20 = _p19._0._0;
+					var _p21 = _p17._0;
+					var _p18 = {ctor: '_Tuple2', _0: model.candidates, _1: model.ballotCandidates};
+					if (((_p18.ctor === '_Tuple2') && (_p18._0.ctor === 'Just')) && (_p18._1.ctor === 'Just')) {
+						var _p19 = _p18._0._0;
 						return A5(
 							_user$project$BelowTheLine$ballotDisplay,
-							_p22,
+							_p21,
 							model.ballotView,
-							_p20,
-							A2(_user$project$BelowTheLine_Data$ticketCandidates, _p22, _p20),
+							_p19,
+							A2(_user$project$BelowTheLine_Data$ticketCandidates, _p21, _p19),
 							model.preferences);
 					} else {
 						return A2(
@@ -11192,8 +11214,8 @@ var _user$project$BelowTheLine$view = function (model) {
 							_elm_lang$core$Native_List.fromArray(
 								[
 									function () {
-									var _p21 = model.error;
-									if (_p21.ctor === 'Just') {
+									var _p20 = model.error;
+									if (_p20.ctor === 'Just') {
 										return _elm_lang$html$Html$text('Oops, something has gone wrong. Try reloading the page');
 									} else {
 										return _elm_lang$html$Html$text('Loading candidates');
