@@ -1,16 +1,19 @@
 module BelowTheLine.Data exposing
-    ( Candidate
+    ( Party
+    , Candidate
     , CandidateId
     , House(..)
     , Ballot(..)
     , Ticket
     , fetchData
+    , fetchPartiesData
     , ballotCandidates
     , divisions
     , ticketCandidates
     , senatorCount
     , candidateId
     , allPreferenced
+    , partyUrl
     )
 
 import List.Extra as List
@@ -21,6 +24,11 @@ import Http
 import Json.Decode as Json exposing ((:=))
 
 -- Types
+
+type alias Party =
+    { name : String
+    , website : String
+    }
 
 type alias Candidate =
     { givenName : String
@@ -110,11 +118,29 @@ house houseCode =
         "S" -> Json.succeed Upper
         _ -> Json.fail (houseCode ++ " is not a proper house code")
 
+parties : Json.Decoder (List Party)
+parties =
+    Json.list party
+
+party : Json.Decoder Party
+party =
+    Json.object2
+        (\name website ->
+            { name = name
+            , website = website
+            })
+        ("party" := Json.string)
+        ("website" := Json.string)
+
 -- Functions
 
 fetchData : String -> Task Http.Error (List Candidate)
 fetchData url =
     Http.get candidates url
+
+fetchPartiesData : String -> Task Http.Error (List Party)
+fetchPartiesData url =
+    Http.get parties url
 
 ballotCandidates : String -> List Candidate -> List Candidate
 ballotCandidates division candidates =
@@ -209,3 +235,14 @@ allPreferenced preferences candidates =
     List.all
         (\candidate -> List.member candidate preferences)
         candidates
+
+partyUrl : List Party -> String -> Maybe String
+partyUrl parties name =
+    let
+        party =
+            List.find
+                (\party -> party.name == name)
+                parties
+    in
+        party
+        |> Maybe.map .website

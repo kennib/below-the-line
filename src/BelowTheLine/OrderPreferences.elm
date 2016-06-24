@@ -6,7 +6,7 @@ module BelowTheLine.OrderPreferences exposing
 import List.Extra as List
 
 import Html exposing (Html)
-import Html.Attributes exposing (class, style)
+import Html.Attributes exposing (class, style, href, target)
 import Html.Events exposing (onClick)
 
 import BelowTheLine.Data exposing (..)
@@ -21,12 +21,12 @@ type Msg
 
 -- View
 
-view : List Ticket -> List Candidate -> Html Msg
-view tickets preferences =
+view : List Party -> List Ticket -> List Candidate -> Html Msg
+view parties tickets preferences =
     Html.div
     [class "order-preferences"]
     [ preferencesView preferences
-    , choicesView tickets preferences
+    , choicesView parties tickets preferences
     ]
 
 preferencesView : List Candidate -> Html Msg
@@ -72,8 +72,8 @@ preferencesView preferences =
                     [Html.text <| "You have the required 12 preferences but you may add more"]
                 ]
 
-choicesView : List Ticket -> List Candidate -> Html Msg
-choicesView tickets preferences =
+choicesView : List Party -> List Ticket -> List Candidate -> Html Msg
+choicesView parties tickets preferences =
     let
         choices =
             Html.div
@@ -102,7 +102,10 @@ choicesView tickets preferences =
                       else
                         icon "add"
                     ]
-                , Html.span []
+                , Html.a
+                    (case partyUrl parties ticket.party of
+                        Just url -> [href url, target "_blank"]
+                        Nothing -> [])
                     [Html.text ticket.party]
                 ]
 

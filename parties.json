@@ -1,0 +1,259 @@
+[ { "party" : "Animal Justice Party",
+    "website" : "http://www.animaljusticeparty.org/"
+  },
+  { "party" : "Australia First Party",
+    "website" : "http://ausfirst.alphalink.com.au/"
+  },
+  { "party" : "Australian Antipaedophile Party",
+    "website" : "http://www.australianantipaedophileparty.com/"
+  },
+  { "party" : "Australian Christians",
+    "website" : "http://australianchristians.com.au/"
+  },
+  { "party" : "Australian Country Party",
+    "website" : "http://www.countryalliance.org/"
+  },
+  { "party" : "Australian Cyclists Party",
+    "website" : "https://australian-cyclists-party.org/"
+  },
+  { "party" : "Veterans Party",
+    "website" : "http://www.advp.org.au/"
+  },
+  { "party" : "Australian Equality Party (Marriage)",
+    "website" : "http://www.australianequality.org/"
+  },
+  { "party" : "The Greens",
+    "website" : "http://greens.org.au/"
+  },
+  { "party" : "The Australian Greens – Victoria",
+    "website" : "http://greens.org.au/vic"
+  },
+  { "party" : "The Greens NSW",
+    "website" : "http://www.nsw.greens.org.au/"
+  },
+  { "party" : "Queensland Greens",
+    "website" : "http://www.qld.greens.org.au/"
+  },
+  { "party" : "The Greens (WA)",
+    "website" : "http://www.wa.greens.org.au/"
+  },
+  { "party" : "Australian Labor Party",
+    "website" : "http://www.alp.org.au/"
+  },
+  { "party" : "Labor",
+    "website" : "http://www.alp.org.au/"
+  },
+  { "party" : "Australian Labor Party (NSW Branch)",
+    "website" : "http://www.nswalp.com/"
+  },
+  { "party" : "Australian Labor Party (Victorian Branch)",
+    "website" : "http://www.vic.alp.org.au/"
+  },
+  { "party" : "Australian Labor Party (State of Queensland)",
+    "website" : "http://www.qld.alp.org.au/"
+  },
+  { "party" : "Australian Labor Party (Western Australian Branch)",
+    "website" : "http://walabor.org.au/"
+  },
+  { "party" : "Australian Labor Party (South Australian Branch)",
+    "website" : "http://sa.alp.org.au/"
+  },
+  { "party" : "Australian Labor Party (Tasmanian Branch)",
+    "website" : "http://tas.alp.org.au/"
+  },
+  { "party" : "Australian Labor Party (ACT Branch)",
+    "website" : "http://www.actlabor.org.au/"
+  },
+  { "party" : "Australian Labor Party (Northern Territory Branch)",
+    "website" : "http://www.actlabor.org.au/"
+  },
+  { "party" : "Country Labor Party",
+    "website" : "http://www.countrylabor.com.au/home.aspx"
+  },
+  { "party" : "Australian Liberty Alliance",
+    "website" : "http://australianlibertyalliance.org/"
+  },
+  { "party" : "Australian Motoring Enthusiast Party",
+    "website" : "http://www.australianmotoringenthusiastparty.org.au/"
+  },
+  { "party" : "Australian Progressives",
+    "website" : "https://www.australianprogressives.org.au/"
+  },
+  { "party" : "Australian Sex Party",
+    "website" : "http://www.sexparty.org.au/"
+  },
+  { "party" : "Bullet Train For Australia",
+    "website" : "http://bullettrainforaustralia.com.au/"
+  },
+  { "party" : "Christian Democratic Party (Fred Nile Group)",
+    "website" : "http://www.cdp.org.au/"
+  },
+  { "party" : "Citizens Electoral Council",
+    "website" : "http://www.cecaust.com.au/"
+  },
+  { "party" : "Consumer Rights & No-Tolls",
+    "website" : "http://www.no-tolls.org/"
+  },
+  { "party" : "Country Liberals (Northern Territory)",
+    "website" : "http://www.countryliberals.org.au/"
+  },
+  { "party" : "CountryMinded",
+    "website" : "http://www.countryminded.org.au/"
+  },
+  { "party" : "Democratic Labour Party (DLP)",
+    "website" : "http://www.dlp.org.au/"
+  },
+  { "party" : "Derryn Hinch's Justice Party",
+    "website" : "http://www.justiceparty.com.au/"
+  },
+  { "party" : "Drug Law Reform",
+    "website" : "http://www.druglawreform.com.au/"
+  },
+  { "party" : "Family First Party",
+    "website" : "http://www.familyfirst.org.au/"
+  },
+  { "party" : "Family First",
+    "website" : "http://www.familyfirst.org.au/"
+  },
+  { "party" : "Glenn Lazarus Team",
+    "website" : "http://www.glennlazarusteam.com/"
+  },
+  { "party" : "Health Australia Party",
+    "website" : "http://nmpnsw.org/"
+  },
+  { "party" : "Marijuana (HEMP) Party",
+    "website" : "http://australianhempparty.com/"
+  },
+  { "party" : "Marijuana (HEMP) Party / Australian Sex Party",
+    "website" : "http://australianhempparty.com/"
+  },
+  { "party" : "Jacqui Lambie Network",
+    "website" : "http://senatorlambie.com.au/"
+  },
+  { "party" : "John Madigan’s Manufacturing and Farming Party",
+    "website" : "http://www.manufacturingandfarmingparty.org/"
+  },
+  { "party" : "Katter's Australian Party",
+    "website" : "http://www.ausparty.org.au/"
+  },
+  { "party" : "Liberal Democrats",
+    "website" : "http://www.ldp.org.au/"
+  },
+  { "party" : "Liberal",
+    "website" : "http://liberal.org.au/"
+  },
+  { "party" : "Liberal / The Nationals",
+    "website" : "http://liberal.org.au/"
+  },
+  { "party" : "Liberal Party of Australia, NSW Division",
+    "website" : "http://nsw.liberal.org.au/"
+  },
+  { "party" : "Liberal Party of Australia (Victorian Division)",
+    "website" : "http://vic.liberal.org.au/"
+  },
+  { "party" : "Liberal National Party of Queensland",
+    "website" : "http://lnp.org.au/"
+  },
+  { "party" : "Liberal Party (W.A. Division) Inc.",
+    "website" : "http://wa.liberal.org.au/"
+  },
+  { "party" : "Liberal Party of Australia (S.A. Division)",
+    "website" : "http://www.saliberal.org.au/"
+  },
+  { "party" : "Liberal Party of Australian – Tasmanian Division",
+    "website" : "http://tas.liberal.org.au/"
+  },
+  { "party" : "Liberal Party of Australia (ACT Division)",
+    "website" : "http://canberraliberals.org.au/"
+  },
+  { "party" : "Mature Australia",
+    "website" : "http://themap.org.au/"
+  },
+  { "party" : "The Nationals",
+    "website" : "http://www.nationals.org.au/"
+  },
+  { "party" : "National Party of Australia",
+    "website" : "http://www.nationals.org.au/"
+  },
+  { "party" : "National Party of Australia – N.S.W.",
+    "website" : "http://www.nswnationals.org.au/"
+  },
+  { "party" : "National Party of Australia – Victoria",
+    "website" : "http://vic.nationals.org.au/"
+  },
+  { "party" : "National Party of Australia (WA) Inc",
+    "website" : "http://www.nationalswa.com/"
+  },
+  { "party" : "National Party of Australia (S.A.) Inc",
+    "website" : "http://www.sa.nationals.org.au/"
+  },
+  { "party" : "Nick Xenophon Team",
+    "website" : "http://www.nickxenophon.com.au/"
+  },
+  { "party" : "Non-Custodial Parents Party (Equal Parenting)",
+    "website" : "http://www.equalparenting.org.au/"
+  },
+  { "party" : "Online Direct Democracy - (Empowering the People!)",
+    "website" : "http://www.senatoronline.org.au/"
+  },
+  { "party" : "Outdoor Recreation Party (Stop The Greens)",
+    "website" : "http://www.orp.org.au/"
+  },
+  { "party" : "Palmer United Party",
+    "website" : "http://palmerunited.com/"
+  },
+  { "party" : "Pauline Hanson's One Nation",
+    "website" : "http://www.onenation.com.au/"
+  },
+  { "party" : "Pirate Party Australia",
+    "website" : "http://pirateparty.org.au/"
+  },
+  { "party" : "Renewable Energy Party",
+    "website" : "http://renewableenergyparty.com.au/"
+  },
+  { "party" : "Rise Up Australia Party",
+    "website" : "http://riseupaustraliaparty.com/"
+  },
+  { "party" : "Science Party",
+    "website" : "http://scienceparty.org.au/"
+  },
+  { "party" : "Science Party / Australian Cyclists Party",
+    "website" : "http://scienceparty.org.au/"
+  },
+  { "party" : "Secular Party of Australia",
+    "website" : "http://www.secular.org.au/"
+  },
+  { "party" : "Seniors United Party of Australia",
+    "website" : "http://www.seniorsunited-nsw.com/"
+  },
+  { "party" : "Shooters, Fishers and Farmers",
+    "website" : "http://www.shootersandfishers.org.au/"
+  },
+  { "party" : "Smokers Rights Party",
+    "website" : "http://smokersrights.org.au/"
+  },
+  { "party" : "Socialist Alliance",
+    "website" : "http://www.socialist-alliance.org/"
+  },
+  { "party" : "Socialist Equality Party",
+    "website" : "http://www.sep.org.au/"
+  },
+  { "party" : "Sustainable Australia",
+    "website" : "http://www.populationparty.org.au/"
+  },
+  { "party" : "The Arts Party",
+    "website" : "http://www.artsparty.org/"
+  },
+  { "party" : "The Australian Mental Health Party",
+    "website" : "http://www.thementalhealthparty.com/"
+  },
+  { "party" : "21st Century Australia",
+    "website" : "http://21stcenturyaustralia.com.au/"
+  },
+  { "party" : "Voluntary Euthanasia Party",
+    "website" : "http://vep.org.au/"
+  },
+  { "party" : "VOTEFLUX.ORG | Upgrade Democracy!",
+    "website" : "https://voteflux.org/"
+  }
+]

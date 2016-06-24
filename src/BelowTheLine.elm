@@ -22,12 +22,14 @@ import BelowTheLine.SenateBallot as SenateBallot
 
 type Msg
     = LoadCandidates (List CandidateId) (List Candidate)
+    | LoadParties (List Party)
     | LoadFailed Http.Error
     | BallotSelection BallotSelection.Msg
     | OrderPreferences OrderPreferences.Msg
 
 type alias Model =
     { candidates : Maybe (List Candidate)
+    , parties : Maybe (List Party)
     , ballotCandidates : Maybe (List Candidate)
     , preferences : List Candidate
     , division : Maybe String
@@ -120,14 +122,26 @@ init urlData =
     let
         model =
             { candidates = Nothing
+            , parties = Nothing
             , ballotCandidates = Nothing
             , preferences = []
             , division = urlData.division
             , ballotView = urlData.ballotView
             , error = Nothing
             }
+
+        cmds =
+            Cmd.batch
+            [ fetchParties
+            , fetchPreferences urlData.preferences
+            ]
     in
-        (model, fetchPreferences urlData.preferences)
+        (model, cmds)
+
+fetchParties : Cmd Msg
+fetchParties =
+    Task.perform LoadFailed LoadParties
+        <| fetchPartiesData "parties.json"
 
 fetchPreferences : List CandidateId -> Cmd Msg
 fetchPreferences preferences =
@@ -176,6 +190,10 @@ update msg model =
                     | candidates = Just candidates
                     , ballotCandidates = Maybe.map (flip ballotCandidates <| candidates) model.division
                     , preferences = getPreferences preferences candidates
+                    }
+                LoadParties parties ->
+                    { model
+                    | parties = Just parties
                     }
                 LoadFailed error ->
                     { model
@@ -313,6 +331,7 @@ view model =
                     ballotDisplay
                         division
                         model.ballotView
+                        (model.parties |> Maybe.withDefault [])
                         candidates
                         (ticketCandidates division candidates)
                         model.preferences
@@ -327,8 +346,8 @@ view model =
                         ]
     ]
 
-ballotDisplay : String -> BallotView -> List Candidate -> List Ticket -> List Candidate -> Html Msg
-ballotDisplay division ballotView candidates tickets preferences =
+ballotDisplay : String -> BallotView -> List Party -> List Candidate -> List Ticket -> List Candidate -> Html Msg
+ballotDisplay division ballotView parties candidates tickets preferences =
     let
         selection =
             BallotSelection.view
@@ -339,6 +358,7 @@ ballotDisplay division ballotView candidates tickets preferences =
 
         order =
             OrderPreferences.view
+                parties
                 tickets
                 preferences
             |> Html.App.map OrderPreferences
