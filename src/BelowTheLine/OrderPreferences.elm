@@ -37,7 +37,6 @@ preferencesView preferences =
         preferenceList =
             Html.ol
                 [ class "candidates"
-                , style <| unselectable []
                 ]
                 (List.map preference preferences)
 
@@ -78,8 +77,7 @@ choicesView tickets preferences =
     let
         choices =
             Html.div
-                [ style <| unselectable []
-                ]
+                []
                 <| List.map ticketView tickets
 
         ticketView ticket =
@@ -167,15 +165,6 @@ decrease candidate =
 
 
 -- Extra view helpers
-
-unselectable : List (String, String) -> List (String, String)
-unselectable style =
-    style ++
-    [ ("user-select", "none")
-    , ("-webkit-user-select", "none")
-    , ("user-drag", "none")
-    , ("-webkit-user-drag", "none")
-    ]
 
 icon : String -> Html a
 icon name =
