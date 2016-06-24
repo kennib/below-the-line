@@ -352,9 +352,6 @@ ballotDisplay division ballotView candidates tickets preferences =
         Html.div
             [ class <| "ballot-page " ++ if ballotView == ViewBallot then "view" else "order" ]
             [ selection
-            , case ballotView of
-                OrderBallot ->
-                    order
-                ViewBallot ->
-                    view
+            , order
+            , view
             ]

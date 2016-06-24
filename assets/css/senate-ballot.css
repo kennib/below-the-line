@@ -2,16 +2,25 @@
 @media print {
   body {
      overflow: inherit !important;
-
-     transform: scale(0.5);
-     transform-origin: 0% 0%;
   }
 
-  .ballot-page.view {
+  .ballot-page {
      overflow: inherit !important;
 
      transform: rotate(90deg) translate(0px, -100%);
      transform-origin: 0% 0%;
+  }
+  
+  .ballot-paper-sen {
+    display: inherit !important;
+    visibility: visible !important;
+    flex: initial !important;
+  }
+
+  .order-preferences {
+    display: none !important;
+    visibility: hidden !important;
+    flex: 0px 0 0 !important;
   }
 
   .ballot-selection {

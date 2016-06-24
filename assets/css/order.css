@@ -7,6 +7,24 @@ body {
   overflow-y: scroll;
 }
 
+.ballot-page.view .ballot-paper-sen {
+  visibility: visible;
+}
+.ballot-page.view .order-preferences {
+  display: none;
+  visibility: hidden;
+  flex: 0px 0 0;
+}
+
+.ballot-page.order .order-preferences {
+  visibility: visible;
+}
+.ballot-page.order .ballot-paper-sen {
+  display: none;
+  visibility: hidden;
+  flex: 0px 0 0;
+}
+
 .ballot-selection {
   padding: 5px;
   text-align: center;
@@ -27,6 +45,15 @@ body {
   margin: 5px 0px;
 
   text-align: center;
+}
+
+.ballot-selection a {
+  display: none;
+  text-decoration: none;
+}
+.ballot-selection button i {
+  font-size: 15px;
+  margin-top: -5px;
 }
 
 .preferences {
@@ -148,6 +175,7 @@ body {
     float: left;
   }
 
+  .ballot-selection a,
   .ballot-selection button {
     display: inline-block;
     width: initial;
