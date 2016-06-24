@@ -11,7 +11,7 @@ import List.Extra as List
 import Json.Decode as Json exposing ((:=))
 
 import Html exposing (Html)
-import Html.Attributes exposing (class, style)
+import Html.Attributes exposing (class, style, href)
 import Html.Events exposing (on, onClick)
 
 import BelowTheLine.Data exposing (..)
@@ -31,6 +31,7 @@ view division ballotView candidates =
     Html.div
         [class <| "ballot-selection"]
         [ divisionSelect division candidates
+        , ballotPrint
         , ballotToggle ballotView
         ]
 
@@ -67,6 +68,24 @@ ballotToggle ballotView =
             Html.button
             [onClick <| ChangeView OrderBallot]
             [Html.text "Change your preference order"]
+
+ballotPrint : Html Msg
+ballotPrint =
+    Html.a
+        [href "javascript:window.print()"]
+        [ Html.button
+            []
+            [ icon "print"
+            , Html.text " "
+            , Html.text "Print your preferences"
+            ]
+        ]
+
+icon : String -> Html a
+icon name =
+    Html.i
+        [ class "material-icons" ]
+        [ Html.text name ]
 
 -- Events
 
