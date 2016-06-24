@@ -9553,6 +9553,21 @@ var _evancz$elm_http$Http$post = F3(
 			A2(_evancz$elm_http$Http$send, _evancz$elm_http$Http$defaultSettings, request));
 	});
 
+var _user$project$BelowTheLine_Data$partyUrl = F2(
+	function (parties, name) {
+		var party = A2(
+			_elm_community$list_extra$List_Extra$find,
+			function (party) {
+				return _elm_lang$core$Native_Utils.eq(party.name, name);
+			},
+			parties);
+		return A2(
+			_elm_lang$core$Maybe$map,
+			function (_) {
+				return _.website;
+			},
+			party);
+	});
 var _user$project$BelowTheLine_Data$allPreferenced = F2(
 	function (preferences, candidates) {
 		return A2(
@@ -9682,6 +9697,22 @@ var _user$project$BelowTheLine_Data$ballotCandidates = F2(
 					division);
 			},
 			candidates);
+	});
+var _user$project$BelowTheLine_Data$party = A3(
+	_elm_lang$core$Json_Decode$object2,
+	F2(
+		function (name, website) {
+			return {name: name, website: website};
+		}),
+	A2(_elm_lang$core$Json_Decode_ops[':='], 'party', _elm_lang$core$Json_Decode$string),
+	A2(_elm_lang$core$Json_Decode_ops[':='], 'website', _elm_lang$core$Json_Decode$string));
+var _user$project$BelowTheLine_Data$parties = _elm_lang$core$Json_Decode$list(_user$project$BelowTheLine_Data$party);
+var _user$project$BelowTheLine_Data$fetchPartiesData = function (url) {
+	return A2(_evancz$elm_http$Http$get, _user$project$BelowTheLine_Data$parties, url);
+};
+var _user$project$BelowTheLine_Data$Party = F2(
+	function (a, b) {
+		return {name: a, website: b};
 	});
 var _user$project$BelowTheLine_Data$Candidate = F5(
 	function (a, b, c, d, e) {
@@ -10191,8 +10222,8 @@ var _user$project$BelowTheLine_OrderPreferences$RemoveAll = function (a) {
 var _user$project$BelowTheLine_OrderPreferences$AddAll = function (a) {
 	return {ctor: 'AddAll', _0: a};
 };
-var _user$project$BelowTheLine_OrderPreferences$choicesView = F2(
-	function (tickets, preferences) {
+var _user$project$BelowTheLine_OrderPreferences$choicesView = F3(
+	function (parties, tickets, preferences) {
 		var choice = function (candidate) {
 			return A2(
 				_elm_lang$html$Html$li,
@@ -10232,9 +10263,20 @@ var _user$project$BelowTheLine_OrderPreferences$choicesView = F2(
 								A2(_user$project$BelowTheLine_Data$allPreferenced, preferences, ticket.candidates) ? _user$project$BelowTheLine_OrderPreferences$icon('remove') : _user$project$BelowTheLine_OrderPreferences$icon('add')
 							])),
 						A2(
-						_elm_lang$html$Html$span,
-						_elm_lang$core$Native_List.fromArray(
-							[]),
+						_elm_lang$html$Html$a,
+						function () {
+							var _p0 = A2(_user$project$BelowTheLine_Data$partyUrl, parties, ticket.party);
+							if (_p0.ctor === 'Just') {
+								return _elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html_Attributes$href(_p0._0),
+										_elm_lang$html$Html_Attributes$target('_blank')
+									]);
+							} else {
+								return _elm_lang$core$Native_List.fromArray(
+									[]);
+							}
+						}(),
 						_elm_lang$core$Native_List.fromArray(
 							[
 								_elm_lang$html$Html$text(ticket.party)
@@ -10268,8 +10310,8 @@ var _user$project$BelowTheLine_OrderPreferences$choicesView = F2(
 			_elm_lang$core$Native_List.fromArray(
 				[choices]));
 	});
-var _user$project$BelowTheLine_OrderPreferences$view = F2(
-	function (tickets, preferences) {
+var _user$project$BelowTheLine_OrderPreferences$view = F3(
+	function (parties, tickets, preferences) {
 		return A2(
 			_elm_lang$html$Html$div,
 			_elm_lang$core$Native_List.fromArray(
@@ -10279,7 +10321,7 @@ var _user$project$BelowTheLine_OrderPreferences$view = F2(
 			_elm_lang$core$Native_List.fromArray(
 				[
 					_user$project$BelowTheLine_OrderPreferences$preferencesView(preferences),
-					A2(_user$project$BelowTheLine_OrderPreferences$choicesView, tickets, preferences)
+					A3(_user$project$BelowTheLine_OrderPreferences$choicesView, parties, tickets, preferences)
 				]));
 	});
 
@@ -10964,6 +11006,12 @@ var _user$project$BelowTheLine$update = F2(
 								model.division),
 							preferences: A2(_user$project$BelowTheLine$getPreferences, _p6._0, _p7)
 						});
+				case 'LoadParties':
+					return _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							parties: _elm_lang$core$Maybe$Just(_p6._0)
+						});
 				case 'LoadFailed':
 					return _elm_lang$core$Native_Utils.update(
 						model,
@@ -11138,9 +11186,9 @@ var _user$project$BelowTheLine$urlParser = function (location) {
 				getParam('preferences'))));
 	return {division: division, ballotView: ballotView, preferences: preferences};
 };
-var _user$project$BelowTheLine$Model = F6(
-	function (a, b, c, d, e, f) {
-		return {candidates: a, ballotCandidates: b, preferences: c, division: d, ballotView: e, error: f};
+var _user$project$BelowTheLine$Model = F7(
+	function (a, b, c, d, e, f, g) {
+		return {candidates: a, parties: b, ballotCandidates: c, preferences: d, division: e, ballotView: f, error: g};
 	});
 var _user$project$BelowTheLine$UrlData = F3(
 	function (a, b, c) {
@@ -11152,13 +11200,13 @@ var _user$project$BelowTheLine$OrderPreferences = function (a) {
 var _user$project$BelowTheLine$BallotSelection = function (a) {
 	return {ctor: 'BallotSelection', _0: a};
 };
-var _user$project$BelowTheLine$ballotDisplay = F5(
-	function (division, ballotView, candidates, tickets, preferences) {
+var _user$project$BelowTheLine$ballotDisplay = F6(
+	function (division, ballotView, parties, candidates, tickets, preferences) {
 		var view = A3(_user$project$BelowTheLine_SenateBallot$ballotView, division, tickets, preferences);
 		var order = A2(
 			_elm_lang$html$Html_App$map,
 			_user$project$BelowTheLine$OrderPreferences,
-			A2(_user$project$BelowTheLine_OrderPreferences$view, tickets, preferences));
+			A3(_user$project$BelowTheLine_OrderPreferences$view, parties, tickets, preferences));
 		var selection = A2(
 			_elm_lang$html$Html_App$map,
 			_user$project$BelowTheLine$BallotSelection,
@@ -11199,10 +11247,15 @@ var _user$project$BelowTheLine$view = function (model) {
 					var _p18 = {ctor: '_Tuple2', _0: model.candidates, _1: model.ballotCandidates};
 					if (((_p18.ctor === '_Tuple2') && (_p18._0.ctor === 'Just')) && (_p18._1.ctor === 'Just')) {
 						var _p19 = _p18._0._0;
-						return A5(
+						return A6(
 							_user$project$BelowTheLine$ballotDisplay,
 							_p21,
 							model.ballotView,
+							A2(
+								_elm_lang$core$Maybe$withDefault,
+								_elm_lang$core$Native_List.fromArray(
+									[]),
+								model.parties),
 							_p19,
 							A2(_user$project$BelowTheLine_Data$ticketCandidates, _p21, _p19),
 							model.preferences);
@@ -11230,6 +11283,14 @@ var _user$project$BelowTheLine$view = function (model) {
 var _user$project$BelowTheLine$LoadFailed = function (a) {
 	return {ctor: 'LoadFailed', _0: a};
 };
+var _user$project$BelowTheLine$LoadParties = function (a) {
+	return {ctor: 'LoadParties', _0: a};
+};
+var _user$project$BelowTheLine$fetchParties = A3(
+	_elm_lang$core$Task$perform,
+	_user$project$BelowTheLine$LoadFailed,
+	_user$project$BelowTheLine$LoadParties,
+	_user$project$BelowTheLine_Data$fetchPartiesData('parties.json'));
 var _user$project$BelowTheLine$LoadCandidates = F2(
 	function (a, b) {
 		return {ctor: 'LoadCandidates', _0: a, _1: b};
@@ -11242,8 +11303,15 @@ var _user$project$BelowTheLine$fetchPreferences = function (preferences) {
 		_user$project$BelowTheLine_Data$fetchData('candidates.json'));
 };
 var _user$project$BelowTheLine$init = function (urlData) {
+	var cmds = _elm_lang$core$Platform_Cmd$batch(
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_user$project$BelowTheLine$fetchParties,
+				_user$project$BelowTheLine$fetchPreferences(urlData.preferences)
+			]));
 	var model = {
 		candidates: _elm_lang$core$Maybe$Nothing,
+		parties: _elm_lang$core$Maybe$Nothing,
 		ballotCandidates: _elm_lang$core$Maybe$Nothing,
 		preferences: _elm_lang$core$Native_List.fromArray(
 			[]),
@@ -11251,11 +11319,7 @@ var _user$project$BelowTheLine$init = function (urlData) {
 		ballotView: urlData.ballotView,
 		error: _elm_lang$core$Maybe$Nothing
 	};
-	return {
-		ctor: '_Tuple2',
-		_0: model,
-		_1: _user$project$BelowTheLine$fetchPreferences(urlData.preferences)
-	};
+	return {ctor: '_Tuple2', _0: model, _1: cmds};
 };
 var _user$project$BelowTheLine$main = {
 	main: A2(
