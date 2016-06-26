@@ -9975,7 +9975,7 @@ var _user$project$BelowTheLine_Splash$view = F3(
 						[]),
 					_elm_lang$core$Native_List.fromArray(
 						[
-							_elm_lang$html$Html$text('Below The Line')
+							_elm_lang$html$Html$text('Senate Voting')
 						])),
 					A2(
 					_elm_lang$html$Html$p,
