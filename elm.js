@@ -9679,6 +9679,14 @@ var _user$project$BelowTheLine_Data$ticketCandidates = F2(
 		var tickets = A2(_elm_lang$core$List$map, ticketCandidates, ticketGroups);
 		return tickets;
 	});
+var _user$project$BelowTheLine_Data$preferencesAreTickets = F3(
+	function (division, preferences, tickets) {
+		var isBallotTicket = function (ticket) {
+			return A2(_elm_lang$core$List$member, ticket, tickets);
+		};
+		var preferenceTickets = A2(_user$project$BelowTheLine_Data$ticketCandidates, division, preferences);
+		return A2(_elm_lang$core$List$all, isBallotTicket, preferenceTickets);
+	});
 var _user$project$BelowTheLine_Data$candidateDivision = function (candidate) {
 	var _p7 = candidate.ballot;
 	if (_p7.ctor === 'UpperBallot') {
@@ -10430,7 +10438,10 @@ var _user$project$BelowTheLine_SenateBallot$belowTicketView = F2(
 					function (x, y) {
 						return x + y;
 					})(1),
-				A2(_elm_community$list_extra$List_Extra$elemIndex, candidate, order));
+				A2(
+					_elm_lang$core$Maybe$andThen,
+					order,
+					_elm_community$list_extra$List_Extra$elemIndex(candidate)));
 		};
 		var candidates = A2(
 			_elm_lang$core$List$map,
@@ -10469,92 +10480,126 @@ var _user$project$BelowTheLine_SenateBallot$belowTicketView = F2(
 						])),
 				candidates));
 	});
-var _user$project$BelowTheLine_SenateBallot$ticketView = function (ticket) {
-	var _p2 = ticket.ticket;
-	if (_p2 === 'UG') {
-		return A2(
-			_elm_lang$html$Html$td,
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html_Attributes$class('ballot-position')
-				]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					A2(
-					_elm_lang$html$Html$div,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$class('ballot-number blank')
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[])),
-					A2(
-					_elm_lang$html$Html$div,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$class('ballot-party')
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[]))
-				]));
-	} else {
-		return A2(
-			_elm_lang$html$Html$td,
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html_Attributes$class('ballot-position')
-				]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					A2(
-					_elm_lang$html$Html$div,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$class('ballot-number')
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html$text(ticket.ticket),
-							A2(
-							_elm_lang$html$Html$div,
-							_elm_lang$core$Native_List.fromArray(
-								[
-									_elm_lang$html$Html_Attributes$class('ballot-logo-sen blank')
-								]),
-							_elm_lang$core$Native_List.fromArray(
-								[])),
-							A2(
-							_elm_lang$html$Html$div,
-							_elm_lang$core$Native_List.fromArray(
-								[
-									_elm_lang$html$Html_Attributes$class('ballot-logo-sen')
-								]),
-							_elm_lang$core$Native_List.fromArray(
-								[])),
-							A2(
-							_elm_lang$html$Html$div,
-							_elm_lang$core$Native_List.fromArray(
-								[
-									_elm_lang$html$Html_Attributes$class('ballot-box')
-								]),
-							_elm_lang$core$Native_List.fromArray(
-								[]))
-						])),
-					A2(
-					_elm_lang$html$Html$div,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$class('ballot-party')
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html$text(ticket.party)
-						]))
-				]));
-	}
-};
+var _user$project$BelowTheLine_SenateBallot$aboveTicketView = F2(
+	function (order, ticket) {
+		var number = function (ticket) {
+			return A2(
+				_elm_lang$core$Maybe$map,
+				F2(
+					function (x, y) {
+						return x + y;
+					})(1),
+				A2(
+					_elm_lang$core$Maybe$andThen,
+					order,
+					_elm_community$list_extra$List_Extra$elemIndex(ticket)));
+		};
+		var _p2 = ticket.ticket;
+		if (_p2 === 'UG') {
+			return A2(
+				_elm_lang$html$Html$td,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('ballot-position')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_elm_lang$html$Html$div,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$class('ballot-number blank')
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[])),
+						A2(
+						_elm_lang$html$Html$div,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$class('ballot-party')
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[]))
+					]));
+		} else {
+			return A2(
+				_elm_lang$html$Html$td,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('ballot-position')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_elm_lang$html$Html$div,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$class('ballot-number')
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text(ticket.ticket),
+								A2(
+								_elm_lang$html$Html$div,
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html_Attributes$class('ballot-logo-sen blank')
+									]),
+								_elm_lang$core$Native_List.fromArray(
+									[])),
+								A2(
+								_elm_lang$html$Html$div,
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html_Attributes$class('ballot-logo-sen')
+									]),
+								_elm_lang$core$Native_List.fromArray(
+									[])),
+								A2(
+								_elm_lang$html$Html$div,
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html_Attributes$class('ballot-box')
+									]),
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html$text(
+										A2(
+											_elm_lang$core$Maybe$withDefault,
+											'',
+											A2(
+												_elm_lang$core$Maybe$map,
+												_elm_lang$core$Basics$toString,
+												number(ticket))))
+									]))
+							])),
+						A2(
+						_elm_lang$html$Html$div,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$class('ballot-party')
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text(ticket.party)
+							]))
+					]));
+		}
+	});
 var _user$project$BelowTheLine_SenateBallot$ballotView = F3(
 	function (division, tickets, order) {
+		var _p3 = A3(_user$project$BelowTheLine_Data$preferencesAreTickets, division, order, tickets) ? {
+			ctor: '_Tuple2',
+			_0: _elm_lang$core$Maybe$Nothing,
+			_1: _elm_lang$core$Maybe$Just(
+				A2(_user$project$BelowTheLine_Data$ticketCandidates, division, order))
+		} : {
+			ctor: '_Tuple2',
+			_0: _elm_lang$core$Maybe$Just(order),
+			_1: _elm_lang$core$Maybe$Nothing
+		};
+		var belowOrder = _p3._0;
+		var aboveOrder = _p3._1;
 		return A2(
 			_elm_lang$html$Html$table,
 			_elm_lang$core$Native_List.fromArray(
@@ -10726,7 +10771,10 @@ var _user$project$BelowTheLine_SenateBallot$ballotView = F3(
 											]))
 									]))
 							]),
-						A2(_elm_lang$core$List$map, _user$project$BelowTheLine_SenateBallot$ticketView, tickets))),
+						A2(
+							_elm_lang$core$List$map,
+							_user$project$BelowTheLine_SenateBallot$aboveTicketView(aboveOrder),
+							tickets))),
 					A2(
 					_elm_lang$html$Html$tr,
 					_elm_lang$core$Native_List.fromArray(
@@ -10840,7 +10888,7 @@ var _user$project$BelowTheLine_SenateBallot$ballotView = F3(
 							]),
 						A2(
 							_elm_lang$core$List$map,
-							_user$project$BelowTheLine_SenateBallot$belowTicketView(order),
+							_user$project$BelowTheLine_SenateBallot$belowTicketView(belowOrder),
 							tickets)))
 				]));
 	});
