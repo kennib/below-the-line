@@ -2,6 +2,18 @@ body {
   margin: 0px;
 }
 
+.splash {
+  position: inherit;
+  margin: auto auto;
+
+  text-align: center;
+  font-size: 1.5em;
+}
+.splash select {
+  font-size: 1.5em;
+  padding: 10px;
+}
+
 .ballot-page.view {
   overflow-x: scroll;
   overflow-y: scroll;
@@ -143,18 +155,6 @@ body {
 @media screen and (min-width: 900px) {
   body {
     overflow: hidden;
-  }
-
-  .splash {
-    position: inherit;
-    margin: auto auto;
-
-    text-align: center;
-    font-size: 1.5em;
-  }
-  .splash select {
-    font-size: 1.5em;
-    padding: 10px;
   }
 
   .ballot-page {
