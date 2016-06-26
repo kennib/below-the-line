@@ -14,7 +14,7 @@ view division candidates error =
         [ class "splash" ]
         [ h1
             []
-            [ Html.text "Below The Line" ]
+            [ Html.text "Senate Voting" ]
         , p
             []
             [ Html.text "Prepare for your 2016 Australian Federal Election senate vote" ]
