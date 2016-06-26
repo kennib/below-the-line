@@ -10,6 +10,7 @@ module BelowTheLine.Data exposing
     , ballotCandidates
     , divisions
     , ticketCandidates
+    , preferencesAreTickets
     , senatorCount
     , candidateId
     , allPreferenced
@@ -214,6 +215,16 @@ ticketCandidates division candidates =
             List.map ticketCandidates ticketGroups
     in
         tickets
+
+preferencesAreTickets : String -> List Candidate -> List Ticket -> Bool
+preferencesAreTickets division preferences tickets =
+    let
+        preferenceTickets = ticketCandidates division preferences
+        isBallotTicket ticket = List.member ticket tickets
+    in
+        List.all
+            isBallotTicket
+            preferenceTickets
 
 senatorCount : String -> Int
 senatorCount state =

@@ -7,87 +7,100 @@ import List.Extra as List
 import Html exposing (table, tr, td, div, h1, h2, p, br, span, strong, text)
 import Html.Attributes exposing (class, style, colspan)
 
-import BelowTheLine.Data exposing (senatorCount)
+import BelowTheLine.Data exposing (senatorCount, preferencesAreTickets, ticketCandidates)
 
 ballotView division tickets order =
-  table
-    [ class "ballot-paper-sen"
-    , style
-      [ ("width", (toString <| List.length tickets * 110) ++ "px")
-      ]
-    ]
-    [ tr [class "ballot-header"]
-      [ td [class "ballot-header-title", colspan <| List.length tickets + 1]
-        [ text "Senate Ballot Paper"
-        , br [] []
-        , strong [] [text <| fullName division]
-        , text <| " - Election of " ++ toString (senatorCount division) ++ " Senators"
+  let
+    (belowOrder, aboveOrder) =
+      if preferencesAreTickets division order tickets then
+        (Nothing, Just <| ticketCandidates division order)
+      else
+        (Just order, Nothing)
+  in
+    table
+      [ class "ballot-paper-sen"
+      , style
+        [ ("width", (toString <| List.length tickets * 110) ++ "px")
         ]
       ]
-    , tr [class "ballot-space"] []
-    , tr [class "ballot-option-a"]
-      ([ td [class "option-a-header"]
-        [ h2 []
-          [ text "You may"
+      [ tr [class "ballot-header"]
+        [ td [class "ballot-header-title", colspan <| List.length tickets + 1]
+          [ text "Senate Ballot Paper"
           , br [] []
-          , text "vote in one of"
-          , br [] []
-          , text "two ways"
-          ]
-        , p [class "senate-option"] [text "Either"]
-        , h2 [] [text "Above the line"]
-        , p []
-          [ text "By numbering at least "
-          , strong [] [text "6"]
-          , br [] []
-          , text "of these boxes in the order"
-          , br [] []
-          , text "of your choice (with number"
-          , br [] []
-          , text "1 as your first choice)"
+          , strong [] [text <| fullName division]
+          , text <| " - Election of " ++ toString (senatorCount division) ++ " Senators"
           ]
         ]
-      ]
-      ++ (List.map ticketView tickets))
-    , tr [class "ballot-space"] []
-    , tr [class "ballot-line"] [ td [colspan <| List.length tickets + 1] [Html.text "-"]]
-    , tr [class "ballot-space"] []
-    , tr [class "ballot-option-b"]
-      ([ td [class "option-b-header"]
-        [ p [class "senate-option"] [text "Or"]
-        , h2 [] [text "Below the line"]
-        , p []
-          [ text "By numbering at least "
-          , strong [] [text "12"]
-          , br [] []
-          , text "of these boxes in the order"
-          , br [] []
-          , text "of your choice (with number"
-          , br [] []
-          , text "1 as your first choice)."
+      , tr [class "ballot-space"] []
+      , tr [class "ballot-option-a"]
+        ([ td [class "option-a-header"]
+          [ h2 []
+            [ text "You may"
+            , br [] []
+            , text "vote in one of"
+            , br [] []
+            , text "two ways"
+            ]
+          , p [class "senate-option"] [text "Either"]
+          , h2 [] [text "Above the line"]
+          , p []
+            [ text "By numbering at least "
+            , strong [] [text "6"]
+            , br [] []
+            , text "of these boxes in the order"
+            , br [] []
+            , text "of your choice (with number"
+            , br [] []
+            , text "1 as your first choice)"
+            ]
           ]
         ]
+        ++ (List.map (aboveTicketView aboveOrder) tickets))
+      , tr [class "ballot-space"] []
+      , tr [class "ballot-line"] [ td [colspan <| List.length tickets + 1] [Html.text "-"]]
+      , tr [class "ballot-space"] []
+      , tr [class "ballot-option-b"]
+        ([ td [class "option-b-header"]
+          [ p [class "senate-option"] [text "Or"]
+          , h2 [] [text "Below the line"]
+          , p []
+            [ text "By numbering at least "
+            , strong [] [text "12"]
+            , br [] []
+            , text "of these boxes in the order"
+            , br [] []
+            , text "of your choice (with number"
+            , br [] []
+            , text "1 as your first choice)."
+            ]
+          ]
+        ]
+        ++ (List.map (belowTicketView belowOrder) tickets))
       ]
-      ++ (List.map (belowTicketView order) tickets))
-    ]
 
-ticketView ticket =
-  case ticket.ticket of
-    "UG" ->
-      td [class "ballot-position"]
-        [ div [class "ballot-number blank"] [ ]
-        , div [class "ballot-party"] [ ]
-        ]
-    _ ->
-      td [class "ballot-position"]
-        [ div [class "ballot-number"]
-          [ text ticket.ticket
-          , div [class "ballot-logo-sen blank"] []
-          , div [class "ballot-logo-sen"] []
-          , div [class "ballot-box"] []
+aboveTicketView order ticket =
+  let
+    number ticket = 
+        order `Maybe.andThen`
+        (List.elemIndex ticket)
+        |> Maybe.map ((+) 1)
+  in
+    case ticket.ticket of
+      "UG" ->
+        td [class "ballot-position"]
+          [ div [class "ballot-number blank"] [ ]
+          , div [class "ballot-party"] [ ]
           ]
-        , div [class "ballot-party"] [text ticket.party]
-        ]
+      _ ->
+        td [class "ballot-position"]
+          [ div [class "ballot-number"]
+            [ text ticket.ticket
+            , div [class "ballot-logo-sen blank"] []
+            , div [class "ballot-logo-sen"] []
+            , div [class "ballot-box"] [number ticket |> Maybe.map toString |> Maybe.withDefault "" |> Html.text]
+            ]
+          , div [class "ballot-party"] [text ticket.party]
+          ]
 
 belowTicketView order ticket =
   let
@@ -96,7 +109,10 @@ belowTicketView order ticket =
         "UG" -> "Ungrouped"
         _ -> ticket.party
 
-    number candidate = List.elemIndex candidate order |> Maybe.map ((+) 1)
+    number candidate = 
+        order `Maybe.andThen`
+        (List.elemIndex candidate)
+        |> Maybe.map ((+) 1)
 
     candidates =
       List.map

@@ -19,7 +19,7 @@
   { "party" : "Veterans Party",
     "website" : "http://www.advp.org.au/"
   },
-  { "party" : "Australian Equality Party (Marriage)",
+  { "party" : "Marriage Equality",
     "website" : "http://www.australianequality.org/"
   },
   { "party" : "The Greens",
@@ -103,6 +103,9 @@
   { "party" : "Democratic Labour Party (DLP)",
     "website" : "http://www.dlp.org.au/"
   },
+  { "party" : "DLP Democratic Labour",
+    "website" : "http://www.dlp.org.au/"
+  },
   { "party" : "Derryn Hinch's Justice Party",
     "website" : "http://www.justiceparty.com.au/"
   },
@@ -130,7 +133,7 @@
   { "party" : "Jacqui Lambie Network",
     "website" : "http://senatorlambie.com.au/"
   },
-  { "party" : "John Madigan’s Manufacturing and Farming Party",
+  { "party" : "MFP",
     "website" : "http://www.manufacturingandfarmingparty.org/"
   },
   { "party" : "Katter's Australian Party",
@@ -206,6 +209,9 @@
     "website" : "http://www.onenation.com.au/"
   },
   { "party" : "Pirate Party Australia",
+    "website" : "http://pirateparty.org.au/"
+  },
+  { "party" : "Pirate Party",
     "website" : "http://pirateparty.org.au/"
   },
   { "party" : "Renewable Energy Party",
