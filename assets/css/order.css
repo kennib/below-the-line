@@ -96,7 +96,6 @@ body {
 }
 .choices .candidates {
   min-width: 200px;
-  overflow-y: scroll;
 
   list-style: none;
   -webkit-padding-start: 0px;
@@ -190,6 +189,7 @@ body {
   .choices {
     padding: 10px;
     margin: 10px;
+    height: 80vh;
     overflow-y: scroll;
 
     background: #dadada;
