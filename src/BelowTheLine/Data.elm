@@ -220,7 +220,8 @@ preferencesAreTickets : String -> List Candidate -> List Ticket -> Bool
 preferencesAreTickets division preferences tickets =
     let
         preferenceTickets = ticketCandidates division preferences
-        isBallotTicket ticket = List.member ticket tickets
+        groupTickets = List.filter (\ticket -> ticket.ticket /= "UG") tickets
+        isBallotTicket ticket = List.member ticket groupTickets
     in
         List.all
             isBallotTicket
