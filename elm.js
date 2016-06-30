@@ -9681,8 +9681,14 @@ var _user$project$BelowTheLine_Data$ticketCandidates = F2(
 	});
 var _user$project$BelowTheLine_Data$preferencesAreTickets = F3(
 	function (division, preferences, tickets) {
+		var groupTickets = A2(
+			_elm_lang$core$List$filter,
+			function (ticket) {
+				return !_elm_lang$core$Native_Utils.eq(ticket.ticket, 'UG');
+			},
+			tickets);
 		var isBallotTicket = function (ticket) {
-			return A2(_elm_lang$core$List$member, ticket, tickets);
+			return A2(_elm_lang$core$List$member, ticket, groupTickets);
 		};
 		var preferenceTickets = A2(_user$project$BelowTheLine_Data$ticketCandidates, division, preferences);
 		return A2(_elm_lang$core$List$all, isBallotTicket, preferenceTickets);
