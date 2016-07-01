@@ -10594,11 +10594,13 @@ var _user$project$BelowTheLine_SenateBallot$aboveTicketView = F2(
 	});
 var _user$project$BelowTheLine_SenateBallot$ballotView = F3(
 	function (division, tickets, order) {
-		var _p3 = A3(_user$project$BelowTheLine_Data$preferencesAreTickets, division, order, tickets) ? {
+		var preferenceTickets = A2(_user$project$BelowTheLine_Data$ticketCandidates, division, order);
+		var _p3 = (A3(_user$project$BelowTheLine_Data$preferencesAreTickets, division, order, tickets) && (_elm_lang$core$Native_Utils.cmp(
+			_elm_lang$core$List$length(preferenceTickets),
+			6) > -1)) ? {
 			ctor: '_Tuple2',
 			_0: _elm_lang$core$Maybe$Nothing,
-			_1: _elm_lang$core$Maybe$Just(
-				A2(_user$project$BelowTheLine_Data$ticketCandidates, division, order))
+			_1: _elm_lang$core$Maybe$Just(preferenceTickets)
 		} : {
 			ctor: '_Tuple2',
 			_0: _elm_lang$core$Maybe$Just(order),
