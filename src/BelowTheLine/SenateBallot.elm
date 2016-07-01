@@ -11,9 +11,11 @@ import BelowTheLine.Data exposing (senatorCount, preferencesAreTickets, ticketCa
 
 ballotView division tickets order =
   let
+    preferenceTickets = ticketCandidates division order
     (belowOrder, aboveOrder) =
-      if preferencesAreTickets division order tickets then
-        (Nothing, Just <| ticketCandidates division order)
+      if preferencesAreTickets division order tickets
+      && List.length preferenceTickets >= 6 then
+        (Nothing, Just preferenceTickets)
       else
         (Just order, Nothing)
   in
